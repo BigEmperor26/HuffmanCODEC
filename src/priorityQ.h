@@ -34,11 +34,11 @@ int size(struct vectorTree *v);
 // debug
 int intlog2(int x);
 int intpow2(int x);
-// swap two elements in the vector
+// swap two elements in the vector value and priority. Return 1 upon success. Undefined behavior if fails or indexes are out of bounds
 int swap(void **value, int *priority, int index_a, int index_b);
-// insert with priority
+// insert with priority the data in the vector. Return 1 upon success. 0 upon failure
 int push(struct vectorTree *v, void *data,int priority);
-// return the first element ( top of the heap )
+// return the first element ( top of the heap ). Places result in data and priority. Returns 0 if failed. 1 if success
 int top(struct vectorTree *v,void ** data, int*priority);
-// remove max priority
+// remove max priority. Places result in data and priority. Returns 0 if failed. 1 if success
 int pop(struct vectorTree *v,void ** data, int *priority);
