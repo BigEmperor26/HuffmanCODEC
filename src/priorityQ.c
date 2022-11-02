@@ -1,23 +1,11 @@
+#include "priorityQ.h"
 // simple implementation of priority queue using binary max heap
 
 // implemented using a vector because it's more efficient and easier to send using MPI
 
-
-
-#include <stdio.h>
-#include <stdlib.h>
-//#include <math.h>
-
-struct vectorTree{
-    int *data;
-    int *priority;
-    int size;
-    int capacity;
-};
-
 struct vectorTree *createVectorTree(int capacity){
     struct vectorTree *v = malloc(sizeof(struct vectorTree));
-    v->data = malloc(sizeof(int) * capacity);
+    v->data = malloc(sizeof(void*) * capacity);
     v->priority = malloc(sizeof(int) * capacity);
     v->size = 0;
     v->capacity = capacity;
@@ -33,29 +21,51 @@ void freeVectorTree(struct vectorTree *v){
 void printVectorTree(struct vectorTree *v){
     printf("Data: \t");
     for(int i = 0; i < v->size; i++){
-        printf("%d ", v->data[i]);
+        printf("%X ",  * (unsigned int*) (v->data[i]));
 
     }
     printf("\n");
     printf("Priority: \t");
     for(int i = 0; i < v->size; i++){
-        printf("%d ", v->priority[i]);
+        printf("%d ",v->priority[i]);
         
     }
     printf("\n");
 }
+void printHeight(struct vectorTree *v,int height){
+    int start = intpow2(height) - 1;
+    int end = intpow2(height + 1) - 1;
+    for(int i = start; i < end; i++){
+        printf("(%X,%d)",* (unsigned int*) v->data[i], v->priority[i]);
+    }
+}
+void printTree(struct vectorTree *v){
+    printf("Tree: \n");
+    int height = (int) intlog2(v->size);
+    for(int i = 0; i < height; i++){
+        printHeight(v, i);
+        printf("\n");
+    }
+    int start = intpow2(height) - 1;
+    int end = v->size;
+    for(int i = start; i < end; i++){
+        printf("(%X,%d)", * (unsigned int*) v->data[i], v->priority[i]);
+    }
+    printf("\n");
+        
+}
+
+
 int empty(struct vectorTree *v){
     return v->size == 0;
 }
-int top(struct vectorTree *v){
-    return v->data[0];
+int full(struct vectorTree *v){
+    return v->size == v->capacity;
 }
 int size(struct vectorTree *v){
     return v->size;
 }
-int topPriority(struct vectorTree *v){
-    return v->priority[0];
-}
+
 int intlog2(int x){
     int i = 0;
     while(x > 1){
@@ -73,45 +83,17 @@ int intpow2(int x){
     return i;
 }
 
-void printHeight(struct vectorTree *v,int height){
-    int start = intpow2(height) - 1;
-    int end = intpow2(height + 1) - 1;
-    for(int i = start; i < end; i++){
-        printf("(%d,%d)", v->data[i], v->priority[i]);
-    }
-}
-void printTree(struct vectorTree *v){
-    printf("Tree: \n");
-    int height = (int) intlog2(v->size);
-    for(int i = 0; i < height; i++){
-        printHeight(v, i);
-        printf("\n");
-    }
-    int start = intpow2(height) - 1;
-    int end = v->size;
-    for(int i = start; i < end; i++){
-        printf("(%d,%d)", v->data[i], v->priority[i]);
-    }
-    printf("\n");
-        
-}
-
-// void swap(int *a, int *b){
-//     int temp = *a;
-//     *a = *b;
-//     *b = temp;
-// }
-
-void swap(int *value, int *priority, int index_a, int index_b){
-    int temp = *(value+index_a);
+int swap(void **value, int *priority, int index_a, int index_b){
+    void  *temp = *(value+index_a);
     *(value+index_a) = *(value+index_b);
     *(value+index_b) = temp;
-    temp = *(priority+index_a);
+    int tmp = *(priority+index_a);
     *(priority+index_a) = *(priority+index_b);
-    *(priority+index_b) = temp;
+    *(priority+index_b) = tmp;
+    return 1;
 }
 
-int push(struct vectorTree *v, int value,int priority){
+int push(struct vectorTree *v, void * value,int priority){
     if(v->size == v->capacity){
         return 0;
     }
@@ -125,31 +107,21 @@ int push(struct vectorTree *v, int value,int priority){
     }
     return 1;
 }
-
-int heap(struct vectorTree *v, int i){
-    int left = 2 * i + 1;
-    int right = 2 * i + 2;
-    int largest = i;
-    if(left < v->size && v->priority[left] > v->priority[largest]){
-        largest = left;
+int top(struct vectorTree *v,void ** data, int *priority){
+    if (empty(v)){
+        return 0;
     }
-    if(right < v->size && v->priority[right] > v->priority[largest]){
-        largest = right;
-    }
-    if(largest != i){
-        swap(v->data, v->priority, i, largest);
-        heap(v, largest);
-    }
+    *data = v->data[0];
+    *priority = v->priority[0];
     return 1;
 }
-
 // remove max priority
-int pop(struct vectorTree *v){
+int pop(struct vectorTree *v,void ** data, int *priority){
     if(v->size == 0){
         return 0;
     }
-    int value = v->data[0];
-    // duplication bug
+    *data = v->data[0];
+    *priority = v->priority[0];
     v->data[0] = v->data[v->size - 1];
     v->priority[0] = v->priority[v->size - 1];
     v->size--;
@@ -186,36 +158,42 @@ int pop(struct vectorTree *v){
             break;
         }
     }
-    return value;
+    return 1;
 }
 int main(){
     struct vectorTree *v = createVectorTree(20);
     // v, value, priority
-    push(v, 5,5);
-    push(v, 6,6);
+    int * a = malloc(sizeof(int));
+    *a = 1;
+    push(v, a,5);
+    int * b = malloc(sizeof(int));
+    *b = 2;
+    push(v, b,4);
+    // int c = 2;
+    // push(v, &c,10);
+    // int d = 3;
+    // push(v, &d,6);
   
-    push(v, 9,9);
-    push(v, 10,8);
-    push(v, 1,3);
-    push(v, 2,2);
-    push(v, 3,1);
-    push(v, 4,7);
-    push(v, 7,4);
-    push(v, 8,10);
+    // push(v, 9,9);
+    // push(v, 10,8);
+    // push(v, 1,3);
+    // push(v, 2,2);
+    // push(v, 3,1);
+    // push(v, 4,7);
+    // push(v, 7,4);
+    // push(v, 8,10);
 
     // printVectorTree(v);
     printVectorTree(v);    
     printTree(v);
 
-    for(int i = 0; i < 10; i++){
-        printf("%d ", pop(v));
-
-        printTree(v);
-        printf("\n");
-    }
-    printVectorTree(v);
-    printTree(v);
-
-    freeVectorTree(v);
+    int p = 0;
+    int ** g = malloc(sizeof(int*));
+    int res = pop(v,(void **)g, &p);
+    printf("pop: %X, %d\n", **g, p);
+    free(*g);
+    free(g);
+    //printf("pop: %X, %d\n", *g, p);
+    // freeVectorTree(v);
     return 0;
 }
