@@ -117,32 +117,26 @@ void printDictionary(Dictionary * d){
 }
 
 // with offset each partition is up to 2^64
-int charCounter(MPI_File *readfile, Dictionary *d, ull offset, ull size){
+bool charCounter(MPI_File *readfile, Dictionary *d, ull offset, ull size){
     // with binary offset
-    char c;
+    char c[size];
     ull read = 0;
-    MPI_File_seek(*readfile, offset, MPI_SEEK_SET);
-    while ((MPI_File_read(*readfile, &c, 1, MPI_CHAR, MPI_STATUS_IGNORE) == MPI_SUCCESS) && (read<size)){
-        // printf("rank %d read %c \n",rank, c);
-        d->frequency[c]++;
-        read++;
+    MPI_Offset off_set = offset;
+    if (MPI_File_read_at(*readfile,off_set, c, size, MPI_CHAR, MPI_STATUS_IGNORE) == MPI_SUCCESS){
+        for(int i = 0; i < size; i++){
+            d->frequency[c[i]]++;
+        }
+    }else{
+        return false;
     }
-    return 0;
+    return true;
 }
 
-
-int main(int argc, char ** argv) {
-    MPI_Init(&argc, &argv);
-
-    char * filename = argv[1];
-    int rank, size;
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    MPI_Comm_size(MPI_COMM_WORLD, &size);
-    
+bool charCounterProcess(char * filename,int rank, int size, Dictionary *d){
+    // file size, offset of each process, size to readof each process
     int file_size = 0;
     int offset = 0;
     int size_to_read = 0;
-    MPI_Barrier( MPI_COMM_WORLD );
     // if process 0, get the file size
     if(rank==0){
         printf("World size is %d\n", size);
@@ -157,7 +151,6 @@ int main(int argc, char ** argv) {
         fclose(ptr);
         printf("File size : %d\n", file_size);
     }
-    MPI_Barrier( MPI_COMM_WORLD );
     // broadcast the file size to all processes
     MPI_Bcast(&file_size, 1, MPI_INT, 0, MPI_COMM_WORLD);
     // compute the offset for each process
@@ -177,9 +170,8 @@ int main(int argc, char ** argv) {
         offset = 0;
         size_to_read = 0;
     }
-    printf("rank= %d, offset= %d, amount to read = %d \n", rank, offset, size_to_read);
-    // for all processes, 
-    // open the file
+    //printf("rank= %d, offset= %d, amount to read = %d \n", rank, offset, size_to_read);
+    // for all processes, open the file
     MPI_File readfile;
     int rc = MPI_File_open(MPI_COMM_WORLD, filename ,MPI_MODE_RDONLY,MPI_INFO_NULL, &readfile);
     if(rc){
@@ -187,19 +179,30 @@ int main(int argc, char ** argv) {
         MPI_Abort(MPI_COMM_WORLD, rc);
     }
     // create a dictionary
-    Dictionary * d = createDictionary(256);
-    // count the frequency of each character
+    Dictionary * counts = createDictionary(256);
+    // count the frequency of each character if the process is active
     if (rank<active_processes){
-        charCounter(&readfile, d, offset, size_to_read);
+        charCounter(&readfile, counts, offset, size_to_read);
     }
     MPI_File_close(&readfile);
+    // reduce the dictionary
+    MPI_Reduce( (counts->frequency), d->frequency, 256, MPI_UNSIGNED_LONG_LONG, MPI_SUM, 0, MPI_COMM_WORLD);
+    return true;
+}
+int main(int argc, char ** argv) {
+    MPI_Init(&argc, &argv);
 
+    char * filename = argv[1];
+    int rank, size;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &size);
+    
     Dictionary * counts = createDictionary(256);
-    MPI_Reduce( (d->frequency), counts->frequency, 256, MPI_UNSIGNED_LONG_LONG, MPI_SUM, 0, MPI_COMM_WORLD);
+    charCounterProcess(filename, rank, size, counts);
     if(rank==0){
         printDictionary(counts);
     }
-    freeDictionary(d);
+    freeDictionary(counts);
     MPI_Finalize();
     return 0;
 }
