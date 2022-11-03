@@ -132,6 +132,9 @@ bool charCounter(MPI_File *readfile, Dictionary *d, ull offset, ull size){
     return true;
 }
 
+// function to count the frequency of each character in the file
+// divides the file in 4 partitions and each process counts the frequency of each character in its partition
+// if the file is smaller than the number of processes, only file size processes are active. The others are idle
 bool charCounterProcess(char * filename,int rank, int size, Dictionary *d){
     // file size, offset of each process, size to readof each process
     int file_size = 0;
@@ -139,7 +142,7 @@ bool charCounterProcess(char * filename,int rank, int size, Dictionary *d){
     int size_to_read = 0;
     // if process 0, get the file size
     if(rank==0){
-        printf("World size is %d\n", size);
+        //printf("World size is %d\n", size);
         FILE *ptr;
         ptr = fopen(filename,"rb"); 
         if (ptr == NULL){
@@ -149,7 +152,7 @@ bool charCounterProcess(char * filename,int rank, int size, Dictionary *d){
         fseek(ptr, 0, SEEK_END); // seek to end of file
         file_size = ftell(ptr); // get current file pointer
         fclose(ptr);
-        printf("File size : %d\n", file_size);
+        //printf("File size : %d\n", file_size);
     }
     // broadcast the file size to all processes
     MPI_Bcast(&file_size, 1, MPI_INT, 0, MPI_COMM_WORLD);
@@ -189,6 +192,8 @@ bool charCounterProcess(char * filename,int rank, int size, Dictionary *d){
     MPI_Reduce( (counts->frequency), d->frequency, 256, MPI_UNSIGNED_LONG_LONG, MPI_SUM, 0, MPI_COMM_WORLD);
     return true;
 }
+
+
 int main(int argc, char ** argv) {
     MPI_Init(&argc, &argv);
 
