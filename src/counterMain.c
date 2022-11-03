@@ -1,7 +1,7 @@
 //  example of run "mpiexec -n 4 ./read test.bin"
 
-#include "priorityQ.h"
-#include "dictionary.h"
+#include "datastructures/priorityQ.h"
+#include "datastructures/dictionary.h"
 #include <stdio.h>
 #include <sys/types.h>
 #include <dirent.h>

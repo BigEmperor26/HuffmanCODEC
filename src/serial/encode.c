@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "priorityQ.h"
+#include "../datastructures/priorityQ.h"
+#include "../datastructures/dictionary.h"
 
 int main() {
+    Dictionary* dict = createDictionary(MAX_HEAP_SIZE);
+
     PriorityQ* pq = createPriorityQ();
 
     Node* node3 = createNode(3, 30, NULL, NULL);

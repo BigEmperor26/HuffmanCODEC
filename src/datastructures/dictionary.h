@@ -1,4 +1,3 @@
-
 #ifndef __DICTIONARY__
 #define __DICTIONARY__
 
@@ -16,10 +15,10 @@ typedef struct Dictionary {
 } Dictionary;
 
 
-Dictionary *  createDictionary(int size);
+Dictionary* createDictionary(int size);
 
-void freeDictionary(Dictionary * d);
+void freeDictionary(Dictionary* d);
 
-void printDictionary(Dictionary * d);
+void printDictionary(Dictionary* d);
 
 #endif

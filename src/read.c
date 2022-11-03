@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "priorityQ.h"
+#include "datastructures/priorityQ.h"
 #include <mpi.h>
 
 // int parseFileListFromFind(int readDescriptor, NamesList *fileList){
