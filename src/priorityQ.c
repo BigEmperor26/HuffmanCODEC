@@ -1,37 +1,142 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include "priorityQ.h"
-// simple implementation of priority queue using binary max heap
 
-// implemented using a vector because it's more efficient and easier to send using MPI
+Node* createNode(int value, ull priority, Node* left, Node* right) {
+    Node* node = (Node*)malloc(sizeof(Node));
+    node->left = left;
+    node->right = right;
+    node->value = value;
+    node->priority = priority;
 
-struct vectorTree* createVectorTree(int capacity) {
-    struct vectorTree* v = malloc(sizeof(struct vectorTree));
-    v->data = malloc(sizeof(void*) * capacity);
-    v->priority = malloc(sizeof(int) * capacity);
-    v->size = 0;
-    v->capacity = capacity;
-    return v;
+    return node;
 }
 
-void freeVectorTree(struct vectorTree* v) {
-    free(v->data);
-    free(v->priority);
-    free(v);
+PriorityQ* createPriorityQ() {
+    PriorityQ* pq = (PriorityQ*)malloc(sizeof(PriorityQ));
+    pq->size = 0;
+    pq->capacity = MAX_HEAP_SIZE;
+    // pq->minHeap is an array of Node* stored in the stack
+
+    return pq;
 }
 
-void printVectorTree(struct vectorTree* v) {
-    printf("Data: \t");
-    for (int i = 0; i < v->size; i++) {
-        printf("%X ", *(unsigned int*)(v->data[i]));
-
+void freePriorityQ(PriorityQ* pq) {
+    for (int i = 0; i < pq->size; i++) {
+        free(pq->minHeap[i]);
+        pq->minHeap[i] = NULL;
     }
-    printf("\n");
-    printf("Priority: \t");
-    for (int i = 0; i < v->size; i++) {
-        printf("%d ", v->priority[i]);
-
-    }
-    printf("\n");
+    return;
 }
+
+void printPriorityQ(PriorityQ* pq) {
+    printf("Value\tPriority\n");
+
+    for (int i = 0; i < pq->size; i++) {
+        printf("%d\t%llu\n", pq->minHeap[i]->value, pq->minHeap[i]->priority);
+    }
+
+    printf("\nSize: %d\n", pq->size);
+    printf("Capacity %d\n", pq->capacity);
+    return;
+}
+
+bool isEmpty(PriorityQ* pq) {
+    return pq->size == 0;
+}
+
+bool isFull(PriorityQ* pq) {
+    return pq->size == pq->capacity;
+}
+
+bool swapMinHeapElements(Node* minHeap[], int index_a, int index_b) {
+    Node* temp = *(minHeap + index_a);
+
+    *(minHeap + index_a) = *(minHeap + index_b);
+    *(minHeap + index_b) = temp;
+
+    return true;
+}
+
+bool pushPriorityQ(PriorityQ* pq, Node* node) {
+    if (pq->size == pq->capacity) {
+        return false;
+    }
+
+    pq->minHeap[pq->size] = node;
+    pq->size++;
+
+    int i = pq->size - 1;
+    while (i > 0 && pq->minHeap[i]->priority < pq->minHeap[(i - 1) / 2]->priority) {
+        swapMinHeapElements(pq->minHeap, i, (i - 1) / 2);
+        i = (i - 1) / 2;
+    }
+    return true;
+}
+
+bool popPriorityQ(PriorityQ* pq, Node* node) {
+    if (pq->size == 0) {
+        return false;
+    }
+    node = pq->minHeap[0];
+
+    pq->minHeap[0] = pq->minHeap[pq->size - 1];
+    pq->size--;
+
+    int i = 0;
+    while (i < pq->size) {
+        Node* current = pq->minHeap[i];
+        int leftChildIndex = 2 * i + 1;
+        int rightChildIndex = 2 * i + 2;
+
+        // if all children
+        if (leftChildIndex < pq->size && leftChildIndex < pq->size) {
+            Node* leftChild = pq->minHeap[leftChildIndex];
+            Node* rightChild = pq->minHeap[rightChildIndex];
+            if (current->priority > leftChild->priority || current->priority > rightChild->priority) {
+                if (leftChild->priority < rightChild->priority) {
+                    swapMinHeapElements(pq->minHeap, i, leftChildIndex);
+                    i = leftChildIndex;
+                }
+                else {
+                    swapMinHeapElements(pq->minHeap, i, rightChildIndex);
+                    i = rightChildIndex;
+                }
+            }
+            else {
+                break;
+            }
+        }
+        // if no right child
+        else if (2 * i + 1 < pq->size) {
+            Node* leftChild = pq->minHeap[leftChildIndex];
+            if (current->priority < leftChild->priority) {
+                swapMinHeapElements(pq->minHeap, i, leftChildIndex);
+                i = leftChildIndex;
+            }
+            else {
+                break;
+            }
+        }
+        // if no children
+        else {
+            break;
+        }
+    }
+    return true;
+}
+
+bool topPriorityQ(PriorityQ* pq, Node* node) {
+    if (isEmpty(pq)) {
+        return false;
+    }
+
+    // the first element in the min heap is the minimum
+    node = pq->minHeap[0];
+    return true;
+}
+
+/*
 void printHeight(struct vectorTree* v, int height) {
     int start = intpow2(height) - 1;
     int end = intpow2(height + 1) - 1;
@@ -55,17 +160,6 @@ void printTree(struct vectorTree* v) {
 
 }
 
-
-int empty(struct vectorTree* v) {
-    return v->size == 0;
-}
-int full(struct vectorTree* v) {
-    return v->size == v->capacity;
-}
-int size(struct vectorTree* v) {
-    return v->size;
-}
-
 int intlog2(int x) {
     int i = 0;
     while (x > 1) {
@@ -82,118 +176,4 @@ int intpow2(int x) {
     }
     return i;
 }
-
-int swap(void** value, int* priority, int index_a, int index_b) {
-    void* temp = *(value + index_a);
-    *(value + index_a) = *(value + index_b);
-    *(value + index_b) = temp;
-    int tmp = *(priority + index_a);
-    *(priority + index_a) = *(priority + index_b);
-    *(priority + index_b) = tmp;
-    return 1;
-}
-
-int push(struct vectorTree* v, void* value, int priority) {
-    if (v->size == v->capacity) {
-        return 0;
-    }
-    v->data[v->size] = value;
-    v->priority[v->size] = priority;
-    v->size++;
-    int i = v->size - 1;
-    while (i > 0 && v->priority[i] > v->priority[(i - 1) / 2]) {
-        swap(v->data, v->priority, i, (i - 1) / 2);
-        i = (i - 1) / 2;
-    }
-    return 1;
-}
-int top(struct vectorTree* v, void** data, int* priority) {
-    if (empty(v)) {
-        return 0;
-    }
-    *data = v->data[0];
-    *priority = v->priority[0];
-    return 1;
-}
-// remove max priority
-int pop(struct vectorTree* v, void** data, int* priority) {
-    if (v->size == 0) {
-        return 0;
-    }
-    *data = v->data[0];
-    *priority = v->priority[0];
-    v->data[0] = v->data[v->size - 1];
-    v->priority[0] = v->priority[v->size - 1];
-    v->size--;
-    int i = 0;
-    while (i < v->size) {
-        // if all children
-        if (2 * i + 1 < v->size && 2 * i + 2 < v->size) {
-            if (v->priority[i] < v->priority[2 * i + 1] || v->priority[i] < v->priority[2 * i + 2]) {
-                if (v->priority[2 * i + 1] > v->priority[2 * i + 2]) {
-                    swap(v->data, v->priority, i, 2 * i + 1);
-                    i = 2 * i + 1;
-                }
-                else {
-                    swap(v->data, v->priority, i, 2 * i + 2);
-                    i = 2 * i + 2;
-                }
-            }
-            else {
-                break;
-            }
-        }
-        // if no right child
-        else if (2 * i + 1 < v->size) {
-            if (v->priority[i] < v->priority[2 * i + 1]) {
-                swap(v->data, v->priority, i, 2 * i + 1);
-                i = 2 * i + 1;
-            }
-            else {
-                break;
-            }
-        }
-        // if no children
-        else {
-            break;
-        }
-    }
-    return 1;
-}
-int main() {
-    struct vectorTree* v = createVectorTree(20);
-    // v, value, priority
-    int* a = malloc(sizeof(int));
-    *a = 1;
-    push(v, a, 5);
-    int* b = malloc(sizeof(int));
-    *b = 2;
-    push(v, b, 4);
-    // int c = 2;
-    // push(v, &c,10);
-    // int d = 3;
-    // push(v, &d,6);
-
-    // push(v, 9,9);
-    // push(v, 10,8);
-    // push(v, 1,3);
-    // push(v, 2,2);
-    // push(v, 3,1);
-    // push(v, 4,7);
-    // push(v, 7,4);
-    // push(v, 8,10);
-
-    // printVectorTree(v);
-    printVectorTree(v);
-    printTree(v);
-
-    int p = 0;
-    int** g = malloc(sizeof(int*));
-    int res = pop(v, (void**)g, &p);
-    printf("pop: %X, %d\n", **g, p);
-    free(*g);
-    free(g);
-    //printf("pop: %X, %d\n", *g, p);
-    // freeVectorTree(v);
-    return 0;
-}
+*/

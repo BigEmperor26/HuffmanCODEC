@@ -1,44 +1,59 @@
-#include <stdio.h>
+#ifndef __PRIORITY_Q__
+#define __PRIORITY_Q__
+
 #include <stdlib.h>
+#include <stdbool.h>
 
-// vector with data and priority
-struct vectorTree {
-    void** data; // data
-    int* priority; // priority
-    int size; // size
-    int capacity; // capacity
-};
+#define MAX_HEAP_SIZE 256
 
-// simple implementation of priority queue using binary max heap
+/*
+** Priority queue implementation using the min heap data structure.
+** The min heap is implemented as an array of nodes.
+**
+** Since the Huffman algorithm is going to deal with bytes,
+** the priority queue max capacity is set to the number of
+** different values a byte can assume.
+*/
 
-// implemented using a vector because it's more efficient and easier to send using MPI
+typedef unsigned long long ull;
 
-// costructor
-struct vectorTree* createVectorTree(int capacity);
+typedef struct Node {
+    int value;  // 0-255 for data, -1 for placeholder
+    ull priority;
+    struct Node* left;
+    struct Node* right;
+} Node;
 
-// destructor
-void freeVectorTree(struct vectorTree* v);
-// print the vector 
-void printVectorTree(struct vectorTree* v);
-// debug
+typedef struct PriorityQ {
+    Node* minHeap[MAX_HEAP_SIZE];
+    int size;
+    int capacity;
+} PriorityQ;
+
+Node* createNode(int value, ull priority, Node* left, Node* right);
+
+PriorityQ* createPriorityQ();
+void freePriorityQ(PriorityQ* pq);
+
+void printPriorityQ(PriorityQ* pq);
+
+bool isEmpty(PriorityQ* pq);
+bool isFull(PriorityQ* pq);
+
+bool swapMinHeapElements(Node* minHeap[MAX_HEAP_SIZE], int index_a, int index_b);
+
+bool pushPriorityQ(PriorityQ* pq, Node* node);
+bool popPriorityQ(PriorityQ* pq, Node* node);
+bool topPriorityQ(PriorityQ* pq, Node* node);
+
+
+/*
 void printHeight(struct vectorTree* v, int height);
 // print the tree in a nice format
 void printTree(struct vectorTree* v);
-// check if empty
-int empty(struct vectorTree* v);
-// check if full
-int full(struct vectorTree* v);
-// return the current size
-int size(struct vectorTree* v);
 
-// debug
 int intlog2(int x);
 int intpow2(int x);
-// swap two elements in the vector value and priority. Return 1 upon success. Undefined behavior if fails or indexes are out of bounds
-int swap(void** value, int* priority, int index_a, int index_b);
-// insert with priority the data in the vector. Return 1 upon success. 0 upon failure
-int push(struct vectorTree* v, void* data, int priority);
-// return the first element ( top of the heap ). Places result in data and priority. Returns 0 if failed. 1 if success
-int top(struct vectorTree* v, void** data, int* priority);
-// remove max priority. Places result in data and priority. Returns 0 if failed. 1 if success
-int pop(struct vectorTree* v, void** data, int* priority);
+*/
+
+#endif
