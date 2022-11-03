@@ -8,7 +8,6 @@ Node* createNode(int value, ull priority, Node* left, Node* right) {
     node->right = right;
     node->value = value;
     node->priority = priority;
-
     return node;
 }
 
@@ -17,7 +16,6 @@ PriorityQ* createPriorityQ() {
     pq->size = 0;
     pq->capacity = MAX_HEAP_SIZE;
     // pq->minHeap is an array of Node* stored in the stack
-
     return pq;
 }
 
@@ -31,11 +29,9 @@ void freePriorityQ(PriorityQ* pq) {
 
 void printPriorityQ(PriorityQ* pq) {
     printf("Value\tPriority\n");
-
     for (int i = 0; i < pq->size; i++) {
         printf("%d\t%llu\n", pq->minHeap[i]->value, pq->minHeap[i]->priority);
     }
-
     printf("\nSize: %d\n", pq->size);
     printf("Capacity %d\n", pq->capacity);
     return;
@@ -51,10 +47,8 @@ bool isFull(PriorityQ* pq) {
 
 bool swapMinHeapElements(Node* minHeap[], int index_a, int index_b) {
     Node* temp = *(minHeap + index_a);
-
     *(minHeap + index_a) = *(minHeap + index_b);
     *(minHeap + index_b) = temp;
-
     return true;
 }
 
@@ -62,10 +56,8 @@ bool pushPriorityQ(PriorityQ* pq, Node* node) {
     if (pq->size == pq->capacity) {
         return false;
     }
-
     pq->minHeap[pq->size] = node;
     pq->size++;
-
     int i = pq->size - 1;
     while (i > 0 && pq->minHeap[i]->priority < pq->minHeap[(i - 1) / 2]->priority) {
         swapMinHeapElements(pq->minHeap, i, (i - 1) / 2);
@@ -79,16 +71,13 @@ bool popPriorityQ(PriorityQ* pq, Node* node) {
         return false;
     }
     node = pq->minHeap[0];
-
     pq->minHeap[0] = pq->minHeap[pq->size - 1];
     pq->size--;
-
     int i = 0;
     while (i < pq->size) {
         Node* current = pq->minHeap[i];
         int leftChildIndex = 2 * i + 1;
         int rightChildIndex = 2 * i + 2;
-
         // if all children
         if (leftChildIndex < pq->size && leftChildIndex < pq->size) {
             Node* leftChild = pq->minHeap[leftChildIndex];
