@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include "priorityQ.h"
 
+
+// TO DO fix children references
 Node* createNode(int value, ull priority, Node* left, Node* right) {
     Node* node = (Node*)malloc(sizeof(Node));
     node->left = left;
@@ -166,3 +168,12 @@ int intpow2(int x) {
     return i;
 }
 */
+
+
+// // Conversion table, that has to be passed to each process
+// // needs to be MPI compatible
+// struct code {
+//     int value[MAX_CODE_LENGTH];
+//     unsigned int code[MAX_CODE_LENGTH];
+// };
+// void priorityToCode(PriorityQ * pq, )
