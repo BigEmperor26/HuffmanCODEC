@@ -8,4 +8,4 @@
 - [ ] Create Tree ( single process )
 - [ ] Create binary code for tree nodes ( single process ? )
 - [ ] Use binary code to encode ( multi process )
-- [ ] Test over all possibilities
+- [ ] Test over all possibilities ( parallelism, data size, alphabet size, file type, etc)
