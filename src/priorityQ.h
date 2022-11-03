@@ -2,6 +2,7 @@
 #define __PRIORITY_Q__
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <stdbool.h>
 
 #define MAX_HEAP_SIZE 256

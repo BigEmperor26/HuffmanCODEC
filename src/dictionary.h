@@ -3,6 +3,7 @@
 #define __DICTIONARY__
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <stdbool.h>
 
 #define MAX_HEAP_SIZE 256

@@ -1,7 +1,5 @@
 //  example of run "mpiexec -n 4 ./read test.bin"
 
-#include <stdio.h>
-#include <stdlib.h>
 #include "priorityQ.h"
 #include "dictionary.h"
 // #include "priorityQ.c"
