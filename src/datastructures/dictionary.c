@@ -1,4 +1,4 @@
-#include "dictionary.h"
+#include "./dictionary.h"
 
 Dictionary* createDictionary(int size) {
     Dictionary* d = (Dictionary*)malloc(sizeof(Dictionary));

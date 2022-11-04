@@ -1,11 +1,7 @@
 #ifndef __PRIORITY_Q__
 #define __PRIORITY_Q__
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdbool.h>
-
-#define MAX_HEAP_SIZE 256
+#include "../commons/commons.h"
 
 /*
 ** Priority queue implementation using the min heap data structure.

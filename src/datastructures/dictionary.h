@@ -1,13 +1,7 @@
 #ifndef __DICTIONARY__
 #define __DICTIONARY__
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdbool.h>
-
-#define MAX_HEAP_SIZE 256
-
-typedef unsigned long long ull;
+#include "../commons/commons.h"
 
 typedef struct Dictionary {
     ull frequencies[MAX_HEAP_SIZE];

@@ -14,9 +14,9 @@
 // with offset each partition is up to 2^64
 bool charCounter(MPI_File *readfile, Dictionary *d, ull offset, ull size){
     // with binary offset
-    unsigned char c[size];
+    u_int8_t c[size];
     MPI_Offset off_set = offset;
-    if (MPI_File_read_at_all(*readfile,off_set, c, size, MPI_CHAR, MPI_STATUS_IGNORE) == MPI_SUCCESS){
+    if (MPI_File_read_at_all(*readfile,off_set, c, size, MPI_UINT8_T, MPI_STATUS_IGNORE) == MPI_SUCCESS){
         for(int i = 0; i < size; i++){
             d->frequencies[c[i]]++;
         }

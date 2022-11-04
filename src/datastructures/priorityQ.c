@@ -1,5 +1,4 @@
-#include "priorityQ.h"
-
+#include "./priorityQ.h"
 
 Node* createNode(int value, ull priority, Node* left, Node* right) {
     Node* node = (Node*)malloc(sizeof(Node));
