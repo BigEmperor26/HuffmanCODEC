@@ -1,4 +1,6 @@
-//  example of run "mpiexec -n 4 ./read test.bin"
+//  example of compile mpicc -o counterMain ./fileCounter/counterMain.c ./datastructures/dictionary.c ./datastructures/priorityQ.c 
+//  example of run mpiexec -n 2 ./counterMain ../data/ 
+
 
 // every process needs to work on a list of chunks and they get redistributed to the processes
 
