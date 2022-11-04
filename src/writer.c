@@ -1,3 +1,4 @@
+// simplle function to write a 256 different valued bytes to the output file
 #include <stdio.h>
 #include <stdlib.h>
 
