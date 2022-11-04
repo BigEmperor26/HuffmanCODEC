@@ -4,10 +4,12 @@
 #include "dictionary.h"
 #include <mpi.h>
 
-
 // the key is the char as integer
 // size is the number of different character or bytes, so 1 byte = 256
 // the character is the key as integer, the frequency is the value
+
+
+// in case, we can expand the char from 1 byte to 2 bytes 4 bytes or 8 bytes by using unsigned short, unsigned int, long, unsigned long long respectively
 
 // with offset each partition is up to 2^64
 bool charCounter(MPI_File *readfile, Dictionary *d, ull offset, ull size){
