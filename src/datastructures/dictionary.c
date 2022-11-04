@@ -3,7 +3,7 @@
 Dictionary* createDictionary(int size) {
     Dictionary* d = (Dictionary*)malloc(sizeof(Dictionary));
     for (int i = 0; i < size; i++) {
-        d->frequency[i] = 0;
+        d->frequencies[i] = 0;
     }
     d->size = size;
     return d;
@@ -21,7 +21,7 @@ void printDictionary(Dictionary* d) {
     }
     printf("\nFrequency\t");
     for (int i = 0; i < d->size; i++) {
-        printf("%llu ", d->frequency[i]);
+        printf("%llu ", d->frequencies[i]);
     }
     printf("\nSize: %d\n", d->size);
     return;

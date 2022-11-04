@@ -10,7 +10,7 @@
 typedef unsigned long long ull;
 
 typedef struct Dictionary {
-    ull frequency[MAX_HEAP_SIZE];
+    ull frequencies[MAX_HEAP_SIZE];
     int size;
 } Dictionary;
 

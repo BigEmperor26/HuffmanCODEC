@@ -8,5 +8,5 @@ This repository contains the High Performance Computing for Data Science project
 ### How to run
 
 ```bash
-gcc src/serial/encode.c src/datastructures/priorityQ.c && ./a.out
+gcc src/serial/encode.c src/datastructures/priorityQ.c src/datastructures/dictionary.c && ./a.out data/test.bin
 ```
