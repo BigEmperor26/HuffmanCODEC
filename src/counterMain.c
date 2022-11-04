@@ -1,7 +1,7 @@
 //  example of run "mpiexec -n 4 ./read test.bin"
 
-#include "priorityQ.h"
-#include "dictionary.h"
+#include "datastructures/priorityQ.h"
+#include "datastructures/dictionary.h"
 #include <stdio.h>
 #include <sys/types.h>
 #include <dirent.h>
@@ -97,7 +97,30 @@ void fileSizeCounter(char** filenames, int files_count, int rank, int size, int*
         //file_sizes[file_index_start+i] = file_size;
 
     }
-
+    else {
+        offset = 0;
+        size_to_read = 0;
+    }
+    //printf("rank= %d, offset= %d, amount to read = %d \n", rank, offset, size_to_read);
+    // for all processes, open the file
+    MPI_File readfile;
+    int rc = MPI_File_open(MPI_COMM_WORLD, filename, MPI_MODE_RDONLY, MPI_INFO_NULL, &readfile);
+    if (rc) {
+        printf("Error opening file\n");
+        MPI_Abort(MPI_COMM_WORLD, rc);
+    }
+    // create a dictionary
+    Dictionary* counts = createDictionary(MAX_HEAP_SIZE);
+    // count the frequency of each character if the process is active
+    if (rank < active_processes) {
+        charCounter(&readfile, counts, offset, size_to_read);
+    }
+    MPI_File_close(&readfile);
+    // reduce the dictionary
+    MPI_Reduce(counts->frequencies, d->frequencies, MAX_HEAP_SIZE, MPI_UNSIGNED_LONG_LONG, MPI_SUM, 0, MPI_COMM_WORLD);
+    // free the dictionary
+    freeDictionary(counts);
+    return true;
 }
 
 // then get all the files

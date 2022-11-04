@@ -1,4 +1,3 @@
-
 #ifndef __DICTIONARY__
 #define __DICTIONARY__
 
@@ -11,15 +10,15 @@
 typedef unsigned long long ull;
 
 typedef struct Dictionary {
-    ull frequency[MAX_HEAP_SIZE];
+    ull frequencies[MAX_HEAP_SIZE];
     int size;
 } Dictionary;
 
 
-Dictionary *  createDictionary(int size);
+Dictionary* createDictionary(int size);
 
-void freeDictionary(Dictionary * d);
+void freeDictionary(Dictionary* d);
 
-void printDictionary(Dictionary * d);
+void printDictionary(Dictionary* d);
 
 #endif

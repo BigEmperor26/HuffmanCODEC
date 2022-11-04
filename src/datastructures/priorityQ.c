@@ -1,7 +1,6 @@
 #include "priorityQ.h"
 
 
-// TO DO fix children references
 Node* createNode(int value, ull priority, Node* left, Node* right) {
     Node* node = (Node*)malloc(sizeof(Node));
     node->left = left;
@@ -9,6 +8,18 @@ Node* createNode(int value, ull priority, Node* left, Node* right) {
     node->value = value;
     node->priority = priority;
     return node;
+}
+
+void freeNode(Node* node){
+    if (node->left != NULL){
+        freeNode(node->left);
+    }
+
+    if (node->right != NULL){
+        freeNode(node->right);
+    }
+
+    free(node);
 }
 
 PriorityQ* createPriorityQ() {
@@ -66,11 +77,12 @@ bool pushPriorityQ(PriorityQ* pq, Node* node) {
     return true;
 }
 
-bool popPriorityQ(PriorityQ* pq, Node* node) {
+bool popPriorityQ(PriorityQ* pq, Node** node) {
     if (pq->size == 0) {
         return false;
     }
-    node = pq->minHeap[0];
+    // pop the first element, which is the minimum
+    *node = pq->minHeap[0];
     pq->minHeap[0] = pq->minHeap[pq->size - 1];
     pq->size--;
     int i = 0;
@@ -115,13 +127,13 @@ bool popPriorityQ(PriorityQ* pq, Node* node) {
     return true;
 }
 
-bool topPriorityQ(PriorityQ* pq, Node* node) {
+bool topPriorityQ(PriorityQ* pq, Node** node) {
     if (isEmpty(pq)) {
         return false;
     }
 
     // the first element in the min heap is the minimum
-    node = pq->minHeap[0];
+    *node = pq->minHeap[0];
     return true;
 }
 

@@ -14,4 +14,6 @@ int main(int argc, char *argv[]){
         fprintf(ptr, "%c", (char) i);
     }
     fclose(ptr);
+
+    return 0;
 }

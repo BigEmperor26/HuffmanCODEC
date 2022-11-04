@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "priorityQ.h"
+#include "datastructures/priorityQ.h"
 #include <mpi.h>
 
 // int parseFileListFromFind(int readDescriptor, NamesList *fileList){
@@ -84,7 +84,7 @@
 // size is the number of different character or bytes, so 1 byte = 256
 // the character is the key as integer, the frequency is the value
 typedef struct Dictionary {
-    ull frequency[MAX_HEAP_SIZE];
+    ull frequencies[MAX_HEAP_SIZE];
     int size;
 } Dictionary;
 
@@ -92,7 +92,7 @@ typedef struct Dictionary {
 Dictionary *  createDictionary(int size){
     Dictionary * d = (Dictionary*)malloc(sizeof(Dictionary));
     for(int i = 0; i < size; i++){
-        d->frequency[i] = 0;
+        d->frequencies[i] = 0;
     }
     d->size = size;
     return d;
@@ -110,7 +110,7 @@ void printDictionary(Dictionary * d){
     }
     printf("\nFrequency\t");
     for (int i = 0; i < d->size; i++) {
-        printf("%llu ", d->frequency[i]);
+        printf("%llu ", d->frequencies[i]);
     }
     printf("\nSize: %d\n", d->size);
     return;
@@ -124,7 +124,7 @@ bool charCounter(MPI_File *readfile, Dictionary *d, ull offset, ull size){
     MPI_Offset off_set = offset;
     if (MPI_File_read_at(*readfile,off_set, c, size, MPI_CHAR, MPI_STATUS_IGNORE) == MPI_SUCCESS){
         for(int i = 0; i < size; i++){
-            d->frequency[c[i]]++;
+            d->frequencies[c[i]]++;
         }
     }else{
         return false;
@@ -189,7 +189,7 @@ bool charCounterProcess(char * filename,int rank, int size, Dictionary *d){
     }
     MPI_File_close(&readfile);
     // reduce the dictionary
-    MPI_Reduce( (counts->frequency), d->frequency, 256, MPI_UNSIGNED_LONG_LONG, MPI_SUM, 0, MPI_COMM_WORLD);
+    MPI_Reduce( (counts->frequencies), d->frequencies, 256, MPI_UNSIGNED_LONG_LONG, MPI_SUM, 0, MPI_COMM_WORLD);
     return true;
 }
 

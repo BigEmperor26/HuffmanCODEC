@@ -32,6 +32,7 @@ typedef struct PriorityQ {
 } PriorityQ;
 
 Node* createNode(int value, ull priority, Node* left, Node* right);
+void freeNode(Node* node);
 
 PriorityQ* createPriorityQ();
 void freePriorityQ(PriorityQ* pq);
@@ -44,8 +45,8 @@ bool isFull(PriorityQ* pq);
 bool swapMinHeapElements(Node* minHeap[MAX_HEAP_SIZE], int index_a, int index_b);
 
 bool pushPriorityQ(PriorityQ* pq, Node* node);
-bool popPriorityQ(PriorityQ* pq, Node* node);
-bool topPriorityQ(PriorityQ* pq, Node* node);
+bool popPriorityQ(PriorityQ* pq, Node** node);
+bool topPriorityQ(PriorityQ* pq, Node** node);
 
 
 /*

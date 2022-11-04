@@ -1,7 +1,7 @@
 //  example of run "mpiexec -n 4 ./read test.bin"
 
-#include "priorityQ.h"
-#include "dictionary.h"
+#include "datastructures/priorityQ.h"
+#include "datastructures/dictionary.h"
 #include <mpi.h>
 
 // the key is the char as integer
@@ -18,7 +18,7 @@ bool charCounter(MPI_File *readfile, Dictionary *d, ull offset, ull size){
     MPI_Offset off_set = offset;
     if (MPI_File_read_at_all(*readfile,off_set, c, size, MPI_CHAR, MPI_STATUS_IGNORE) == MPI_SUCCESS){
         for(int i = 0; i < size; i++){
-            d->frequency[c[i]]++;
+            d->frequencies[c[i]]++;
         }
     }else{
         return false;
@@ -83,6 +83,6 @@ bool charCounterProcess(char * filename,int rank, int size, Dictionary *d){
     }
     MPI_File_close(&readfile);
     // reduce the dictionary
-    MPI_Reduce( (counts->frequency), d->frequency, 256, MPI_UNSIGNED_LONG_LONG, MPI_SUM, 0, MPI_COMM_WORLD);
+    MPI_Reduce( (counts->frequencies), d->frequencies, 256, MPI_UNSIGNED_LONG_LONG, MPI_SUM, 0, MPI_COMM_WORLD);
     return true;
 }

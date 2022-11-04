@@ -4,8 +4,9 @@ This repository contains the High Performance Computing for Data Science project
 - Bozzo Francesco, 229312
 - Yin Michele, 229359
 
+## Serial
 ### How to run
 
 ```bash
-gcc src/main.c src/priorityQ.c && ./a.out
+gcc src/serial/encode.c src/datastructures/priorityQ.c src/datastructures/dictionary.c && ./a.out data/test.bin
 ```
