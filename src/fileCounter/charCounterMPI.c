@@ -12,10 +12,9 @@
 // in case, we can expand the char from 1 byte to 2 bytes 4 bytes or 8 bytes by using unsigned short, unsigned int, long, unsigned long long respectively
 
 // with offset each partition is up to 2^64
-bool charCounter(MPI_File *readfile, Dictionary *d, ull offset, ull size){
+bool charCounter(MPI_File *readfile, Dictionary *d, ull size){
     // with binary offset
     u_int8_t c[size];
-    MPI_Offset off_set = offset;
     // int MPI_File_read_ordered(MPI_File fh, void *buf,
     // int count, MPI_Datatype datatype,
     // MPI_Status *status)
@@ -50,7 +49,7 @@ bool charCounterProcess(char * filename,int rank, int size, Dictionary *d){
         fseek(ptr, 0, SEEK_END); // seek to end of file
         file_size = ftell(ptr); // get current file pointer
         fclose(ptr);
-        //printf("File size : %d\n", file_size);
+        printf("File size : %d\n", file_size);
     }
     // broadcast the file size to all processes
     MPI_Bcast(&file_size, 1, MPI_INT, 0, MPI_COMM_WORLD);
@@ -71,10 +70,11 @@ bool charCounterProcess(char * filename,int rank, int size, Dictionary *d){
         offset = 0;
         size_to_read = 0;
     }
-    //printf("rank= %d, offset= %d, amount to read = %d \n", rank, offset, size_to_read);
+    printf("rank= %d, offset= %d, amount to read = %d \n", rank, offset, size_to_read);
     // for all processes, open the file
     MPI_File readfile;
     int rc = MPI_File_open(MPI_COMM_WORLD, filename ,MPI_MODE_RDONLY,MPI_INFO_NULL, &readfile);
+    
     if(rc){
         printf("Error opening file\n");
         MPI_Abort(MPI_COMM_WORLD, rc);
@@ -83,7 +83,7 @@ bool charCounterProcess(char * filename,int rank, int size, Dictionary *d){
     Dictionary * counts = createDictionary(256);
     // count the frequency of each character if the process is active
     if (rank<active_processes){
-        charCounter(&readfile, counts, offset, size_to_read);
+        charCounter(&readfile, counts, size_to_read);
     }
     MPI_File_close(&readfile);
     // reduce the dictionary
@@ -105,7 +105,10 @@ int main(int argc, char ** argv){
     Dictionary * d = createDictionary(256);
     // count the frequency of each character
     charCounterProcess(argv[1],rank,size,d);
-
+    // if process 0, print the dictionary
+    if(rank==0){
+        printDictionary(d);
+    }
     MPI_Finalize();
     return 0;
 }
