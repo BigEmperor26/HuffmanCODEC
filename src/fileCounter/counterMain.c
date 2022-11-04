@@ -83,20 +83,20 @@ void fileDistributer(char** filenames, int files_count, int rank, int size, char
         if (i < active_processes) {
             files_per_process_count[i] = (files_count / active_processes) * MAX_PATH;
             displacements[i] = i * MAX_PATH;
-        }
-        else {
+        }else {
             files_per_process_count[i] = 0;
             displacements[i] = 0;
         }
-    }
-    files_per_process_count[active_processes - 1] = (files_count - (files_count / active_processes) * (active_processes - 1)) * MAX_PATH;
-    if (rank < active_processes) {
-        MPI_Scatterv(filenames, files_per_process_count, displacements, MPI_CHAR, files_to_process, MAX_PATH * files_count, MPI_CHAR, 0, MPI_COMM_WORLD);
-        *files_to_process_count = files_per_process_count[rank] / MAX_PATH;
-    }
-    else {
-        MPI_Scatterv(filenames, 0, displacements, MPI_CHAR, files_to_process, 0, MPI_CHAR, 0, MPI_COMM_WORLD);
-        *files_to_process_count = 0;
+        
+        files_per_process_count[active_processes - 1] = (files_count - (files_count / active_processes) * (active_processes - 1)) * MAX_PATH;
+        if (rank < active_processes) {
+            MPI_Scatterv(filenames, files_per_process_count, displacements, MPI_CHAR, files_to_process, MAX_PATH * files_count, MPI_CHAR, 0, MPI_COMM_WORLD);
+            *files_to_process_count = files_per_process_count[rank] / MAX_PATH;
+        }
+        else {
+            MPI_Scatterv(filenames, 0, displacements, MPI_CHAR, files_to_process, 0, MPI_CHAR, 0, MPI_COMM_WORLD);
+            *files_to_process_count = 0;
+        }
     }
 }
 
@@ -123,10 +123,6 @@ void fileSizeCounter(char** filenames, int files_count, int rank, int* file_size
     }
 }
 
-void fileChunker(char** filenames, int files_count, int rank, int* file_sizes){
-
-}
-
 // then get all the files
 // count the sizes of each file
 // divide the files in chunks according to parallelism
@@ -134,11 +130,11 @@ void fileChunker(char** filenames, int files_count, int rank, int* file_sizes){
 int main(int argc, char** argv) {
     MPI_Init(&argc, &argv);
 
-    char* filename = argv[1];
-    char* dirname = argv[2];
+    char* dirname = argv[1];
     int rank, size;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
+    int a = 0;
 
 
     int files_count = 0;
@@ -165,17 +161,16 @@ int main(int argc, char** argv) {
     char process_files[files_count][MAX_PATH];
     int process_count = 0;
     MPI_Barrier(MPI_COMM_WORLD);
+    
     fileDistributer((char**)files, files_count, rank, size, (char**)process_files, &process_count);
-    //printf("rank %d, process_count %d\n", rank, process_count);
-    // for (int i = 0;i < process_count;i++) {
-    //     printf("rank %d, file to process %s\n", rank, process_files[i]);
-    // }
+
     int file_sizes[process_count];
     MPI_Barrier(MPI_COMM_WORLD);
     char* process_files_ptr[process_count];
     for (int i = 0;i < process_count;i++) {
         process_files_ptr[i] = process_files[i];
     }
+
     fileSizeCounter((char**)process_files_ptr, process_count, rank, file_sizes);
     MPI_Barrier(MPI_COMM_WORLD);
     // fileSizeCounter((char**)process_files,process_count,rank,file_sizes);
@@ -192,13 +187,6 @@ int main(int argc, char** argv) {
     if (rank == 0) {
         printf("Total size of files: %d\n", total_file_size);
     }
-
-    // MPI_Bcast(&count, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    // MPI_Bcast(&current, 1, MPI_INT, 0, MPI_COMM_WORLD);
-
-    // //MPI_Bcast(*files, count, MPI_CHAR, 0, MPI_COMM_WORLD);
-    // int* file_sizes = malloc(sizeof(int) * count);
-    // fileSizeCounter(files, count, rank, size, file_sizes);
 
     MPI_Finalize();
     return 0;
