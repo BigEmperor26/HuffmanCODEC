@@ -33,7 +33,7 @@ bool fileCounter(char *readfile ,Dictionary *d){
     fseek(readptr, 0, SEEK_SET); // seek to end of file
     printf("File size is %d\n", file_size);
     // chunks
-    unsigned char chunk [4][32*4096];
+    unsigned char chunk [4][4096];
     int chunk_size = 4096;
     int chunk_count = 0;
     chunk_count = file_size/chunk_size;
