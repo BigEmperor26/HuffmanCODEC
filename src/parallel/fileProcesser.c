@@ -88,9 +88,7 @@ int main(int argc, char ** argv){
     if (rank==0){
         printf("MPI initialized %d\n", provided);
     }
-    // create a dictionary
-    Dictionary * d = createDictionary(MAX_HEAP_SIZE);
-    // count the frequency of each character
+    // process file in chunks and apply copyChunk
     fileProcesser(argv[1],argv[2],copyChunk);
 
     MPI_Finalize();

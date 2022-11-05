@@ -10,15 +10,16 @@
 
 
 // function that counts the chars in a chunk
-void countChunk(char *chunk,Dictionary *d){
-    for(int i = 0; i < 32*4096; i++){
+void countChunk(unsigned char *chunk,int size,Dictionary *d){
+    for(int i = 0; i < size; i++){
+        #pragma omp atomic
         d->frequencies[chunk[i]]++;
     }
 }
 
 
 // function that reads chunks from readfile, applies processChunk to each chunk, and writes the result in writefile 
-bool fileCounter(char *readfile,void (*processChunk)(char*,Dictionary *) ){
+bool fileCounter(char *readfile ,Dictionary *d){
     FILE * readptr;
     readptr = fopen(readfile,"rb");
     if (readptr == NULL){
@@ -32,7 +33,7 @@ bool fileCounter(char *readfile,void (*processChunk)(char*,Dictionary *) ){
     fseek(readptr, 0, SEEK_SET); // seek to end of file
     printf("File size is %d\n", file_size);
     // chunks
-    char chunk [4][32*4096];
+    unsigned char chunk [4][32*4096];
     int chunk_size = 4096;
     int chunk_count = 0;
     chunk_count = file_size/chunk_size;
@@ -46,7 +47,7 @@ bool fileCounter(char *readfile,void (*processChunk)(char*,Dictionary *) ){
         // sequential read of 4 chunks
         int read[4];
         for(int j=0;j<4;j++){
-            read[j] = fread(chunk[j],sizeof(char),chunk_size,readptr);
+            read[j] = fread(chunk[j],sizeof(unsigned char),chunk_size,readptr);
             printf("current_read %d of chunk %d\n",read[j],j);
         }
         omp_set_dynamic(0); 
@@ -55,7 +56,7 @@ bool fileCounter(char *readfile,void (*processChunk)(char*,Dictionary *) ){
         for(int j=0;j<4;j++){
             int thread_id = omp_get_thread_num();
             // compress of decompress 4 chunks
-            (*processChunk)(chunk[thread_id],d);
+            countChunk(chunk[thread_id],read[j],d);
         }
     }
     fclose(readptr);
@@ -78,8 +79,8 @@ int main(int argc, char ** argv){
     // create a dictionary
     Dictionary * d = createDictionary(MAX_HEAP_SIZE);
     // count the frequency of each character
-    fileProcesser(argv[1],argv[2],countChunk);
-
+    fileCounter(argv[1],d);
+    printDictionary(d);
     MPI_Finalize();
     return 0;
 }
