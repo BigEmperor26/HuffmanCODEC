@@ -8,5 +8,11 @@ This repository contains the High Performance Computing for Data Science project
 ### How to run
 
 ```bash
-gcc src/serial/encode.c src/datastructures/priorityQ.c src/datastructures/dictionary.c && ./a.out data/test.bin
+gcc src/serial/encode.c src/datastructures/priorityQ.c src/datastructures/dictionary.c src/serial/huffman.c && ./a.out data/test.bin
+```
+
+### Test against valgrind
+```bash
+gcc -g src/serial/encode.c src/datastructures/priorityQ.c src/datastructures/dictionary.c src/serial/huffman.c
+valgrind -s --leak-check=full --show-leak-kinds=all ./a.out ./data/test.bin
 ```

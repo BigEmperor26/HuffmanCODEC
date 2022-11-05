@@ -1,6 +1,9 @@
 #ifndef __PRIORITY_Q__
 #define __PRIORITY_Q__
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdbool.h>
 #include "../commons/commons.h"
 
 /*

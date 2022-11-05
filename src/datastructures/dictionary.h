@@ -1,6 +1,9 @@
 #ifndef __DICTIONARY__
 #define __DICTIONARY__
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdbool.h>
 #include "../commons/commons.h"
 
 typedef struct Dictionary {

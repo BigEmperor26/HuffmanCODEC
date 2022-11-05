@@ -1,94 +1,133 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
+#include "huffman.h"
 #include "../datastructures/priorityQ.h"
 #include "../datastructures/dictionary.h"
 
 
-ull get_frequencies(FILE* file, Dictionary* dict) {
-    int	character;
-    ull position;
+/*
+** Encode an input file to an output file using an huffman encoding alphabet
+** Returns true in case of success, false otherwise.
+*/
+bool encodeOutputFile(FILE* inputFile, FILE* outputFile, char* huffmanAlphabet[], int* outputFileSize) {
+    unsigned char inputBuffer[MAX_DECODED_BUFFER_SIZE];
+    unsigned char outputBuffer[MAX_ENCODED_BUFFER_SIZE];
 
-    for (position = 0; ; position++) {
-        character = fgetc(file);
+    char* currentCharHuffmanEncoded;
+    int currentCharHuffmanEncodedLength;
 
-        if (feof(file)) {
-            break;
+    int nbits, nbytes;
+    *outputFileSize = 0;
+
+    bool isEncodingSuccessful = true;
+
+    while (!feof(inputFile)) {
+        // get of bytes from original decoded file
+        int inputBufferSize = fread(inputBuffer, 1, MAX_DECODED_BUFFER_SIZE, inputFile);
+
+        nbits = 0;
+        nbytes = 0;
+
+        // encode the chunk
+        for (int i = 0; i < inputBufferSize; i++) {
+            currentCharHuffmanEncoded = huffmanAlphabet[inputBuffer[i]];
+            currentCharHuffmanEncodedLength = strlen(currentCharHuffmanEncoded);
+
+            for (int i = 0; i < currentCharHuffmanEncodedLength; i++) {
+                if (!fwriteBitInBuffer(currentCharHuffmanEncoded[i], outputFile, outputBuffer, &nbits, &nbytes, outputFileSize)) {
+                    isEncodingSuccessful = false;
+                }
+            }
         }
 
-        dict->frequencies[character]++;
+        // add padding bits for the last byte of the output chunk
+        while (nbits != 0) {
+            if (!fwriteBitInBuffer('0', outputFile, outputBuffer, &nbits, &nbytes, outputFileSize)) {
+                isEncodingSuccessful = false;
+            }
+        }
+
+        // flush the buffer for the output chunk
+        fwrite(outputBuffer, 1, nbytes, outputFile);
     }
-    return position;
+
+    return isEncodingSuccessful;
 }
 
+/*
+** Get the output filename adding a suffix to the input filename.
+** The output filename is stored in the heap and can be freed with free()
+*/
+char* getOutputFileName(char* inputFileName) {
+    // add .huf extension in the output file
+    char* outputFileName = (char*)malloc(strlen(inputFileName) + 4 + 1);
+    sprintf(outputFileName, "%s.huf", inputFileName);
 
-void getHuffmanAlphabet(Node* node, int level, char currentCode[], char* alphabet[]) {
-
-    if ((node->left == NULL) && (node->right == NULL)) {
-        currentCode[level] = 0;  // end of string
-        alphabet[node->value] = strdup(currentCode);
-    }
-    else {
-        // left -> 0
-        currentCode[level] = '0';
-        getHuffmanAlphabet(node->left, level + 1, currentCode, alphabet);
-
-        // right -> 1
-        currentCode[level] = '1';
-        getHuffmanAlphabet(node->right, level + 1, currentCode, alphabet);
-    }
+    return outputFileName;
 }
 
 
 int main(int argc, char* argv[]) {
+    // get input and output filenames
+    char* inputFileName = argv[1];
+    char* outputFileName = getOutputFileName(inputFileName);
 
-    Dictionary* dict = createDictionary(256);
-    PriorityQ* pq = createPriorityQ();
-
-    FILE* inputFile = fopen(argv[1], "r");
-    ull fileSize = get_frequencies(inputFile, dict);
+    // get byte frequencies in the input file
+    FILE* inputFile = fopen(inputFileName, "r");
+    if (!inputFile) {
+        perror(inputFileName);
+        exit(1);
+    }
+    Dictionary* dict = createDictionary(MAX_HEAP_SIZE);
+    ull originalFileSize = get_frequencies(inputFile, dict);
     fclose(inputFile);
     inputFile = NULL;
 
-
-    // TODO: this operation takes O(nlogn), but it could take just O(n) with heapify
-    for (int i = 0; i < dict->size; i++) {
-        Node* node = createNode(i, dict->frequencies[i], NULL, NULL);
-        pushPriorityQ(pq, node);
-    }
-
-    for (int i = 0; i < dict->size - 1; i++) {
-        Node* child1;
-        Node* child2;
-        popPriorityQ(pq, &child1);
-        popPriorityQ(pq, &child2);
-
-        Node* newNode = createNode(-1, child1->priority + child2->priority, child1, child2);
-        pushPriorityQ(pq, newNode);
-    }
-
-    Node* huffmanTree;
-    popPriorityQ(pq, &huffmanTree);
-
-    char* alphabet[MAX_HEAP_SIZE];
+    // get huffman tree and alphabet
+    char* huffmanAlphabet[MAX_HEAP_SIZE];
     char codeBuffer[MAX_HEAP_SIZE];
+    Node* huffmanTree = getHuffmanTree(dict);
+    getHuffmanAlphabet(huffmanTree, 0, codeBuffer, huffmanAlphabet);
+    // printHuffmanAlphabet(huffmanAlphabet);
 
-    getHuffmanAlphabet(huffmanTree, 0, codeBuffer, alphabet);
-
-    for (int i=0; i<MAX_HEAP_SIZE; i++){
-        printf("%d\t%s\n", i, alphabet[i]);
-        free(alphabet[i]);
-        alphabet[i] = NULL;
+    // prepare input and output files for encoding
+    inputFile = fopen(inputFileName, "r");
+    FILE* outputFile = fopen(outputFileName, "w");
+    if (!inputFile) {
+        perror(inputFileName);
+        exit(1);
+    }
+    if (!outputFile) {
+        perror(outputFileName);
+        exit(1);
     }
 
+    /* write frequencies to file so they can be reproduced */
+    //fwrite(dict->frequencies, MAX_HEAP_SIZE, sizeof(ull), outputFile);
+
+    /* write number of characters to file as binary int */
+    //fwrite(&originalFileSize, 1, sizeof(ull), outputFile);
+
+    int outputFileSize;
+    bool isEncodingSuccessful = encodeOutputFile(inputFile, outputFile, huffmanAlphabet, &outputFileSize);
+    printf("%s is %0.2f%% of %s\n", outputFileName, (float)outputFileSize / (float)originalFileSize, inputFileName);
+
+    // free resources
+    fclose(inputFile);
+    fclose(outputFile);
 
     freeNode(huffmanTree);
-    freeDictionary(dict);
-    freePriorityQ(pq);
-
     huffmanTree = NULL;
-    dict = NULL;
-    pq = NULL;
 
-    return 0;
+    freeDictionary(dict);
+    dict = NULL;
+
+    free(outputFileName);
+    outputFileName = NULL;
+
+    freeHuffmanAlphabet(huffmanAlphabet);
+
+    return isEncodingSuccessful;
 }

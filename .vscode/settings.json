@@ -1,5 +1,11 @@
 {
     "files.associations": {
-        "priorityq.h": "c"
+        "priorityq.h": "c",
+        "random": "c",
+        "dictionary.h": "c",
+        "stdio.h": "c",
+        "stdbool.h": "c",
+        "commons.h": "c",
+        "huffman.h": "c"
     }
 }
