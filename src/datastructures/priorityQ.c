@@ -12,10 +12,12 @@ Node* createNode(int value, ull priority, Node* left, Node* right) {
 void freeNode(Node* node){
     if (node->left != NULL){
         freeNode(node->left);
+        node->left = NULL;
     }
 
     if (node->right != NULL){
         freeNode(node->right);
+        node->right = NULL;
     }
 
     free(node);
@@ -34,6 +36,7 @@ void freePriorityQ(PriorityQ* pq) {
         free(pq->minHeap[i]);
         pq->minHeap[i] = NULL;
     }
+    free(pq);
     return;
 }
 
