@@ -47,6 +47,9 @@ int main(int argc, char* argv[]) {
 
     FILE* inputFile = fopen(argv[1], "r");
     ull fileSize = get_frequencies(inputFile, dict);
+    fclose(inputFile);
+    inputFile = NULL;
+
 
     // TODO: this operation takes O(nlogn), but it could take just O(n) with heapify
     for (int i = 0; i < dict->size; i++) {
@@ -74,11 +77,18 @@ int main(int argc, char* argv[]) {
 
     for (int i=0; i<MAX_HEAP_SIZE; i++){
         printf("%d\t%s\n", i, alphabet[i]);
+        free(alphabet[i]);
+        alphabet[i] = NULL;
     }
+
 
     freeNode(huffmanTree);
     freeDictionary(dict);
     freePriorityQ(pq);
+
+    huffmanTree = NULL;
+    dict = NULL;
+    pq = NULL;
 
     return 0;
 }
