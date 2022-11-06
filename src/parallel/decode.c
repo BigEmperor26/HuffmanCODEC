@@ -23,7 +23,7 @@
 // fseek(inputFile, chunkOffsets[indexChunk], SEEK_SET);
 // int inputBufferSize = fread(inputBuffer, 1, chunkSize, inputFile);
 
-int chunksReader(FILE * file, unsigned char * outputChunk[],ull chunkOffsets[],int read[]){
+int chunksReader(FILE * file, unsigned char * outputChunk[],ull chunkOffsets[],ull read[]){
     ull totalRead = 0;
     ull chunkSize = 0;
     for(int j=0;j<NUM_THREADS;j++){
@@ -115,29 +115,25 @@ ull* getOriginalChunkSizesFromEncodedFile(FILE* inputFile, int* numChunks) {
 /*
 ** Function to decode a inputChunk to a outputChunk according to huffmanAlphabet
 */
-bool chunkDecoder( char* inputChunk,  char * outputChunk,Node * huffmanTree,int inputChunkSize,int* outputChunkSize){
+bool chunkDecoder(unsigned char* inputChunk, unsigned char * outputChunk,Node * huffmanTree,ull inputChunkSize,ull* outputChunkSize){
     int nbytes = 0;
     int nbits = 0;
     int outputCharCounter = 0;
-    bool isDecodingSuccessful;
-
-    if (inputChunkSize != inputChunkSize) {
-            isDecodingSuccessful = false;
-    }
+    bool isDecodingSuccessful = true;
 
     // decode the chunk
     while (outputCharCounter <= inputChunkSize) {
         outputChunk[outputCharCounter] = getCharFromHuffmanEncodedBitStream(inputChunk, &nbytes, &nbits, huffmanTree);
         outputCharCounter++;
     }
-
+    *outputChunkSize = outputCharCounter-1;
     return isDecodingSuccessful;
 }
 
 /*
 ** Function to decode a file to an outputfile according huffmanAlphabet
 */
-bool fileDecoder(FILE *inputFile,FILE* outputFile, Node *huffmanTree,ull chunkOffsets[],ull inputChunkSizes[], int numOfChunks){
+bool fileDecoder(FILE *inputFile,FILE* outputFile, Node *huffmanTree,ull inputChunkOffsets[],ull inputChunkSizes[], int numOfChunks){
     // chunks
     unsigned char inputChunk[NUM_THREADS][MAX_ENCODED_BUFFER_SIZE];
     unsigned char outputChunk[NUM_THREADS][MAX_DECODED_BUFFER_SIZE];
@@ -146,29 +142,47 @@ bool fileDecoder(FILE *inputFile,FILE* outputFile, Node *huffmanTree,ull chunkOf
     
     ull inputBufferChunkSizes[NUM_THREADS];
     ull outputBufferChunkSizes[NUM_THREADS];
+
     for(int i = 0; i < numOfChunks; i+=NUM_THREADS){
+        printf("Chunks %d - %d\n",i,i+4);
+        fflush(stdout);
         for(int j=0;j<NUM_THREADS;j++){
             if (i+j<numOfChunks)
-                inputBufferChunkSizes[j] = inputChunkSizes[j+i];
+                inputBufferChunkSizes[j] = inputChunkOffsets[j+i+1] - inputChunkOffsets[j+i];
             else
                 inputBufferChunkSizes[j] = 0;
         }
-        chunksReader(inputFile,(unsigned char**)inputChunk,chunkOffsets,inputBufferChunkSizes);
+
+        printf("Reader %d - %d\n",i,i+4);
+        ull readSize = 0;
+        for(int j=0;j<NUM_THREADS;j++){
+            printf("Expecting read decoding of size %llu\n", inputBufferChunkSizes[j]);
+            if (inputBufferChunkSizes[j]>0){
+                fseek(inputFile, inputChunkOffsets[j], SEEK_SET);
+                readSize = fread(inputChunk[j],sizeof(unsigned char),inputBufferChunkSizes[j],inputFile);
+                if (readSize != inputBufferChunkSizes[j])
+                    isDecodingSuccessful = false;
+            }else{
+                readSize=0;
+            }
+            printf("Read chunk of size %llu \n",readSize);
+        }
+           
+        
         // set the parallel decoder
         omp_set_dynamic(0); 
         omp_set_num_threads(NUM_THREADS); 
         #pragma omp parallel for
         for(int j=0;j<NUM_THREADS;j++){
-            if (inputBufferChunkSizes[j]>0){
-                isDecodingSuccessful = chunkDecoder(inputChunk,outputChunk,huffmanTree,inputBufferChunkSizes[j],&outputBufferChunkSizes[j]) && isDecodingSuccessful;
-            }else{
-                outputBufferChunkSizes[j] = 0;
-            }
+            chunkDecoder(inputChunk[j], outputChunk[j], huffmanTree, inputChunkSizes[j], &outputBufferChunkSizes[j]);
         }
         
         for(int j=0;j<NUM_THREADS;j++){
-            if (outputBufferChunkSizes[j]>0){
-                fwrite(outputChunk[j],sizeof(unsigned char),outputBufferChunkSizes[j],outputFile);
+            if (inputBufferChunkSizes[j]>0){
+                if (inputChunkSizes[j+i]>0){
+                    fwrite(outputChunk[j],sizeof(unsigned char),inputChunkSizes[j+i],outputFile);
+                    printf("Write chunks of sizes %d \n",inputChunkSizes[j+i]);
+                }
             }
         }
 
@@ -178,7 +192,8 @@ bool fileDecoder(FILE *inputFile,FILE* outputFile, Node *huffmanTree,ull chunkOf
 }
 
 
-int main(int argc, char ** argv){
+int main(int argc, char* argv[]) {
+
     // initialize MPI
     int provided;
     MPI_Init_thread(&argc, &argv,MPI_THREAD_FUNNELED, &provided);
@@ -188,7 +203,10 @@ int main(int argc, char ** argv){
     // get the number of processes
     int size;
     MPI_Comm_size(MPI_COMM_WORLD, &size);
-    
+    if (rank==0){
+        printf("MPI initialized %d\n", provided);
+    }
+    // get input and output filenames
     char* inputFileName = argv[1];
     char* outputFileName = argv[2];
 
@@ -218,7 +236,7 @@ int main(int argc, char ** argv){
     }
 
     // decode
-    bool isDecodingSuccessful = decodeFile(inputFile, outputFile, huffmanTree, chunkOffsets, inputChunkSizes, numChunks);
+    bool isDecodingSuccessful = fileDecoder(inputFile, outputFile, huffmanTree, chunkOffsets, inputChunkSizes, numChunks);
 
 
     // int outputFileSize;
@@ -242,6 +260,6 @@ int main(int argc, char ** argv){
     free(outputFileName);
     outputFileName = NULL;
 
-    return isDecodingSuccessful ? 0 : 1;
+    MPI_Finalize(); 
+    return  0;
 }
-

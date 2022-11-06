@@ -11,7 +11,10 @@ fileProcesser:
 
 encoder:
 	gcc -std=c99 -o ./bin/encode.out ./src/serial/encode.c ./src/datastructures/priorityQ.c ./src/datastructures/dictionary.c ./src/serial/huffman.c
-	
+
+decoder:
+	gcc -std=c99 -o ./bin/decode.out ./src/serial/decode.c ./src/datastructures/priorityQ.c ./src/datastructures/dictionary.c ./src/serial/huffman.c
+		
 parallelEncoder:
 	@mpicc -fopenmp -std=c99 -o ./bin/parallelEncode.out ./src/parallel/encode.c ./src/datastructures/priorityQ.c ./src/datastructures/dictionary.c ./src/parallel/huffman.c  ./src/parallel/frequency.c
 

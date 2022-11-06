@@ -236,6 +236,6 @@ int main(int argc, char ** argv){
     free(outputChunkSizes);
 
     MPI_Finalize(); 
-    return isEncodingSuccessful ? 0 : 1;
+    return 0;
     
 }
