@@ -63,7 +63,7 @@ bool decodeFile(FILE* inputFile, FILE* outputFile, Node* huffmanTree, ull chunkO
             outputBuffer[outputCharCounter] = getCharFromHuffmanEncodedBitStream(inputBuffer, &nbytes, &nbits, huffmanTree);
             outputCharCounter++;
         }
-
+        printf("Written chunk of %d bytes \n", outputCharCounter - 1);
         // flush the buffer for the output chunk
         fwrite(outputBuffer, 1, outputCharCounter - 1, outputFile);
     }

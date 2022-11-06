@@ -11,49 +11,7 @@
 #include "../datastructures/priorityQ.h"
 #include "../datastructures/dictionary.h"
 
-#define NUM_THREADS 4
-
-/*
-** Function to read NUMTHREAD chunks from readFile, each of size in chunkSizes,
-** according to the correct offset 
-** Actual read chunk sizes are storead in read
-*/
-// // get chunk of bytes from encoded file
-// chunkSize = chunkOffsets[indexChunk + 1] - chunkOffsets[indexChunk];
-// fseek(inputFile, chunkOffsets[indexChunk], SEEK_SET);
-// int inputBufferSize = fread(inputBuffer, 1, chunkSize, inputFile);
-
-int chunksReader(FILE * file, unsigned char * outputChunk[],ull chunkOffsets[],ull read[]){
-    ull totalRead = 0;
-    ull chunkSize = 0;
-    for(int j=0;j<NUM_THREADS;j++){
-        chunkSize = chunkOffsets[j + 1] - chunkOffsets[j];
-        fseek(file, chunkOffsets[j], SEEK_SET);
-        if (chunkSize>0){
-            read[j] = fread(outputChunk[j],sizeof(unsigned char),chunkSize,file);
-            totalRead +=read[j];
-        }else{
-            read[j]=0;
-        }
-    }
-    return totalRead;
-}
-
-
-/*
-** Function to read NUMTHREAD chunks from readFile, each of size chunkSize. 
-** Actual read chunk sizes are storead in read
-*/
-int chunksWriter(FILE * file, char * outputChunk[],int* chunkSizes,int* written){
-    int totalWritten = 0;
-    for(int j=0;j<NUM_THREADS;j++){
-        if (chunkSizes[j]>0){
-            written[j] = fwrite(outputChunk[j],sizeof(unsigned char),chunkSizes[j],file);
-            totalWritten +=written[j];
-        }
-    }
-    return totalWritten;
-}
+#define NUM_THREADS 1
 
 
 unsigned char getCharFromHuffmanEncodedBitStream(unsigned char buffer[], int* nbytes, int* nbits, Node* node) {
@@ -115,7 +73,7 @@ ull* getOriginalChunkSizesFromEncodedFile(FILE* inputFile, int* numChunks) {
 /*
 ** Function to decode a inputChunk to a outputChunk according to huffmanAlphabet
 */
-bool chunkDecoder(unsigned char* inputChunk, unsigned char * outputChunk,Node * huffmanTree,ull inputChunkSize,ull* outputChunkSize){
+bool chunkDecoder(unsigned char* inputChunk, unsigned char * outputChunk,Node * huffmanTree,ull inputChunkSize){
     int nbytes = 0;
     int nbits = 0;
     int outputCharCounter = 0;
@@ -126,7 +84,6 @@ bool chunkDecoder(unsigned char* inputChunk, unsigned char * outputChunk,Node * 
         outputChunk[outputCharCounter] = getCharFromHuffmanEncodedBitStream(inputChunk, &nbytes, &nbits, huffmanTree);
         outputCharCounter++;
     }
-    *outputChunkSize = outputCharCounter-1;
     return isDecodingSuccessful;
 }
 
@@ -142,30 +99,32 @@ bool fileDecoder(FILE *inputFile,FILE* outputFile, Node *huffmanTree,ull inputCh
     
     ull inputBufferChunkSizes[NUM_THREADS];
     ull outputBufferChunkSizes[NUM_THREADS];
-
+    ull inputBufferChunkOffsets[NUM_THREADS];
     for(int i = 0; i < numOfChunks; i+=NUM_THREADS){
-        printf("Chunks %d - %d\n",i,i+4);
-        fflush(stdout);
+        //printf("Chunks %d - %d\n",i,i+NUM_THREADS);
+        //fflush(stdout);
         for(int j=0;j<NUM_THREADS;j++){
-            if (i+j<numOfChunks)
+            if (i+j<numOfChunks){
                 inputBufferChunkSizes[j] = inputChunkOffsets[j+i+1] - inputChunkOffsets[j+i];
-            else
+                outputBufferChunkSizes[j] = inputChunkSizes[j+i];
+                inputBufferChunkOffsets[j] = inputChunkOffsets[j+i];
+            }else{
                 inputBufferChunkSizes[j] = 0;
+                outputBufferChunkSizes[j] = 0;
+                inputBufferChunkOffsets[j] = 0;
+            }
         }
-
-        printf("Reader %d - %d\n",i,i+4);
         ull readSize = 0;
         for(int j=0;j<NUM_THREADS;j++){
-            printf("Expecting read decoding of size %llu\n", inputBufferChunkSizes[j]);
+            //printf("Expecting read decoding of size %llu\n", inputBufferChunkSizes[j]);
             if (inputBufferChunkSizes[j]>0){
-                fseek(inputFile, inputChunkOffsets[j], SEEK_SET);
+                fseek(inputFile, inputBufferChunkOffsets[j], SEEK_SET);
                 readSize = fread(inputChunk[j],sizeof(unsigned char),inputBufferChunkSizes[j],inputFile);
                 if (readSize != inputBufferChunkSizes[j])
                     isDecodingSuccessful = false;
-            }else{
-                readSize=0;
+                //printf("Read chunk of size %llu \n",readSize);
             }
-            printf("Read chunk of size %llu \n",readSize);
+            
         }
            
         
@@ -174,16 +133,17 @@ bool fileDecoder(FILE *inputFile,FILE* outputFile, Node *huffmanTree,ull inputCh
         omp_set_num_threads(NUM_THREADS); 
         #pragma omp parallel for
         for(int j=0;j<NUM_THREADS;j++){
-            chunkDecoder(inputChunk[j], outputChunk[j], huffmanTree, inputChunkSizes[j], &outputBufferChunkSizes[j]);
+            if(outputBufferChunkSizes[j]>0){
+                chunkDecoder(inputChunk[j], outputChunk[j], huffmanTree, outputBufferChunkSizes[j]);
+            }
         }
         
         for(int j=0;j<NUM_THREADS;j++){
-            if (inputBufferChunkSizes[j]>0){
-                if (inputChunkSizes[j+i]>0){
-                    fwrite(outputChunk[j],sizeof(unsigned char),inputChunkSizes[j+i],outputFile);
-                    printf("Write chunks of sizes %d \n",inputChunkSizes[j+i]);
-                }
+            if (outputBufferChunkSizes[j]>0){
+                fwrite(outputChunk[j],sizeof(unsigned char),outputBufferChunkSizes[j],outputFile);
+                printf("Write chunks of sizes %d \n",outputBufferChunkSizes[j]);
             }
+            
         }
 
     }
@@ -203,9 +163,6 @@ int main(int argc, char* argv[]) {
     // get the number of processes
     int size;
     MPI_Comm_size(MPI_COMM_WORLD, &size);
-    if (rank==0){
-        printf("MPI initialized %d\n", provided);
-    }
     // get input and output filenames
     char* inputFileName = argv[1];
     char* outputFileName = argv[2];

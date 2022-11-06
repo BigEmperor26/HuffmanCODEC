@@ -6,7 +6,7 @@
 #include "huffman.h"
 #include "../datastructures/dictionary.h"
 
-#define NUM_THREADS 4
+#define NUM_THREADS 1
 /*
 ** function that counts the chars in a chunk
 */ 
