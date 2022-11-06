@@ -31,9 +31,6 @@ bool encodeOutputFile(FILE* inputFile, FILE* outputFile, char* huffmanAlphabet[]
         nbits = 0;
         nbytes = 0;
 
-        chunkSizes[chunkCounter] = nbytes;
-        chunkCounter++;
-
         // encode the chunk
         for (int i = 0; i < inputBufferSize; i++) {
             currentCharHuffmanEncoded = huffmanAlphabet[inputBuffer[i]];
@@ -53,6 +50,9 @@ bool encodeOutputFile(FILE* inputFile, FILE* outputFile, char* huffmanAlphabet[]
             }
         }
 
+        chunkSizes[chunkCounter] = nbytes;
+        chunkCounter++;
+        
         // flush the buffer for the output chunk
         fwrite(outputBuffer, 1, nbytes, outputFile);
     }
@@ -66,7 +66,7 @@ bool encodeOutputFile(FILE* inputFile, FILE* outputFile, char* huffmanAlphabet[]
 */
 char* getOutputFileName(char* inputFileName) {
     // add .huf extension in the output file
-    char* outputFileName = (char*)malloc(strlen(inputFileName) + 4 + 1);
+    char* outputFileName = (char*)malloc(sizeof(char) * (strlen(inputFileName) + 4 + 1));
     sprintf(outputFileName, "%s.huf", inputFileName);
 
     return outputFileName;
@@ -94,7 +94,7 @@ int main(int argc, char* argv[]) {
     char codeBuffer[MAX_HEAP_SIZE];
     Node* huffmanTree = getHuffmanTree(dict);
     getHuffmanAlphabet(huffmanTree, 0, codeBuffer, huffmanAlphabet);
-    // printHuffmanAlphabet(huffmanAlphabet);
+    printHuffmanAlphabet(huffmanAlphabet);
 
     // prepare input and output files for encoding
     inputFile = fopen(inputFileName, "r");
@@ -115,18 +115,17 @@ int main(int argc, char* argv[]) {
     printf("%s is %0.2f%% of %s\n", outputFileName, (float)outputFileSize / (float)originalFileSize, inputFileName);
 
     // write encoded file header footer:
-    // - number of chunks
-    ull offsetAccumulator = 0;
-    fwrite(&numOfChunks, 1, sizeof(ull), outputFile);
     // - chunk offsets
-    for (int i = 0; i < numOfChunks; i++) {
-        chunkSizes[i] += offsetAccumulator;
-        offsetAccumulator += chunkSizes[i];
+    ull firstOffset = 0;
+    for (int i = 1; i < numOfChunks; i++) {
+        chunkSizes[i] += chunkSizes[i-1];
     }
-    fwrite(chunkSizes, numOfChunks, sizeof(ull), outputFile);
-    fwrite(&offsetAccumulator, 1, sizeof(ull), outputFile);
+    fwrite(&firstOffset, sizeof(ull), 1, outputFile);
+    fwrite(chunkSizes, sizeof(ull), numOfChunks, outputFile);
     // - frequencies
-    fwrite(dict->frequencies, MAX_HEAP_SIZE, sizeof(ull), outputFile);
+    fwrite(dict->frequencies, sizeof(ull), MAX_HEAP_SIZE, outputFile);
+    // - number of chunks
+    fwrite(&numOfChunks, sizeof(ull), 1, outputFile);
 
 
     // free resources
