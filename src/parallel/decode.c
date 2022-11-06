@@ -11,7 +11,7 @@
 #include "../datastructures/priorityQ.h"
 #include "../datastructures/dictionary.h"
 
-#define NUM_THREADS 1
+#define NUM_THREADS 4
 
 
 unsigned char getCharFromHuffmanEncodedBitStream(unsigned char buffer[], int* nbytes, int* nbits, Node* node) {
