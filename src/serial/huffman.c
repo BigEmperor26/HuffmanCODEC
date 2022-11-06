@@ -42,7 +42,7 @@ Node* getHuffmanTree(Dictionary* dict){
 
     freePriorityQ(pq);
     pq = NULL;
-    
+
     return huffmanTree;
 }
 
@@ -67,7 +67,7 @@ void getHuffmanAlphabet(Node* node, int level, char currentCode[], char* huffman
 
 void printHuffmanAlphabet(char* huffmanAlphabet[]) {
     for (int i=0; i<MAX_HEAP_SIZE; i++){
-        printf("%d\t%s\n", i, huffmanAlphabet[i]);
+        printf("%d\t%c\t%s\n", i, i, huffmanAlphabet[i]);
     }
 }
 

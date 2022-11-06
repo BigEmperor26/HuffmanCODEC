@@ -11,7 +11,7 @@
 ** Encode an input file to an output file using an huffman encoding alphabet
 ** Returns true in case of success, false otherwise.
 */
-bool encodeOutputFile(FILE* inputFile, FILE* outputFile, char* huffmanAlphabet[], int* outputFileSize, ull chunkSizes[]) {
+bool encodeOutputFile(FILE* inputFile, FILE* outputFile, char* huffmanAlphabet[], int* outputFileSize, ull inputChunkSizes[], ull outputChunkSizes[]) {
     unsigned char inputBuffer[MAX_DECODED_BUFFER_SIZE];
     unsigned char outputBuffer[MAX_ENCODED_BUFFER_SIZE];
 
@@ -50,7 +50,8 @@ bool encodeOutputFile(FILE* inputFile, FILE* outputFile, char* huffmanAlphabet[]
             }
         }
 
-        chunkSizes[chunkCounter] = nbytes;
+        inputChunkSizes[chunkCounter] = inputBufferSize;
+        outputChunkSizes[chunkCounter] = nbytes;
         chunkCounter++;
         
         // flush the buffer for the output chunk
@@ -94,7 +95,7 @@ int main(int argc, char* argv[]) {
     char codeBuffer[MAX_HEAP_SIZE];
     Node* huffmanTree = getHuffmanTree(dict);
     getHuffmanAlphabet(huffmanTree, 0, codeBuffer, huffmanAlphabet);
-    printHuffmanAlphabet(huffmanAlphabet);
+    // printHuffmanAlphabet(huffmanAlphabet);
 
     // prepare input and output files for encoding
     inputFile = fopen(inputFileName, "r");
@@ -110,18 +111,21 @@ int main(int argc, char* argv[]) {
 
     int outputFileSize;
     int numOfChunks = (originalFileSize / MAX_DECODED_BUFFER_SIZE) + 1;
-    ull* chunkSizes = (ull*)malloc(sizeof(ull) * numOfChunks);
-    bool isEncodingSuccessful = encodeOutputFile(inputFile, outputFile, huffmanAlphabet, &outputFileSize, chunkSizes);
+    ull* inputChunkSizes = (ull*)malloc(sizeof(ull) * numOfChunks);
+    ull* outputChunkSizes = (ull*)malloc(sizeof(ull) * numOfChunks);
+    bool isEncodingSuccessful = encodeOutputFile(inputFile, outputFile, huffmanAlphabet, &outputFileSize, inputChunkSizes, outputChunkSizes);
     printf("%s is %0.2f%% of %s\n", outputFileName, (float)outputFileSize / (float)originalFileSize, inputFileName);
 
     // write encoded file header footer:
-    // - chunk offsets
+    // - output chunk offsets
     ull firstOffset = 0;
     for (int i = 1; i < numOfChunks; i++) {
-        chunkSizes[i] += chunkSizes[i-1];
+        outputChunkSizes[i] += outputChunkSizes[i-1];
     }
     fwrite(&firstOffset, sizeof(ull), 1, outputFile);
-    fwrite(chunkSizes, sizeof(ull), numOfChunks, outputFile);
+    fwrite(outputChunkSizes, sizeof(ull), numOfChunks, outputFile);
+    // - input chunk sizes
+    fwrite(inputChunkSizes, sizeof(ull), numOfChunks, outputFile);
     // - frequencies
     fwrite(dict->frequencies, sizeof(ull), MAX_HEAP_SIZE, outputFile);
     // - number of chunks
@@ -143,7 +147,8 @@ int main(int argc, char* argv[]) {
 
     freeHuffmanAlphabet(huffmanAlphabet);
 
-    free(chunkSizes);
+    free(inputChunkSizes);
+    free(outputChunkSizes);
 
     return isEncodingSuccessful ? 0 : 1;
 }
