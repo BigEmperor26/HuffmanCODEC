@@ -22,9 +22,9 @@ bin/decode.out data/test.bin.huf
 ### How to run
 ```bash
 make parallelEncoder
-bin/parallelEncode.out data/test.bin
+bin/parallelEncode.out data/test.bin data/test.bin.huf
 make parallelDecoder
-bin/parallelDecode.out data/test.bin.huf
+bin/parallelDecode.out data/test.bin.huf data/test.bin.huf.dec
 ```
 ### Test against valgrind
 ```bash
