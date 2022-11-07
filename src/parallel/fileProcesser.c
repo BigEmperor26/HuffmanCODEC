@@ -6,7 +6,6 @@
 // used only for cute strncpy in copyChunk
 #include <string.h>
 
-#define NUM_THREADS 4
 
 
 // empty function that processes a chunk of size 32*4096

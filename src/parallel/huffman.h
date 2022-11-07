@@ -22,6 +22,6 @@ void freeHuffmanAlphabet(char* huffmanAlphabet[]);
 ** Write a single huffman encoded bit to the output file chunk buffer.
 ** Returns true in case of success, false otherwise.
 */
-bool fwriteBitInBuffer(char bit, char buffer[], int* nbits, int* nbytes);
+bool fwriteBitInBuffer(char bit, char buffer[], int* nbits, ull* nbytes);
 
 #endif

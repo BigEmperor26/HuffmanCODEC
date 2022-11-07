@@ -11,61 +11,21 @@
 #include "../datastructures/priorityQ.h"
 #include "../datastructures/dictionary.h"
 
-#define NUM_THREADS 4
-
-/*
-** Function to read NUMTHREAD chunks from readFile, each of size chunkSize. 
-** Actual read chunk sizes are storead in read
-*/
-int chunksReader(FILE * file,unsigned char * outputChunk[],int chunkSize,int read[]){
-    int totalRead = fread(outputChunk,sizeof(unsigned char),chunkSize*NUM_THREADS,file);
-    for(int j=0;j<NUM_THREADS;j++){
-        read[j]=0;
-    }
-    int j=0;
-    while((totalRead-chunkSize)>0){
-        totalRead = totalRead-chunkSize;
-        read[j] = chunkSize;
-        j++;
-    }
-    read[j]=totalRead;
-    return totalRead;
-}
-
-
-/*
-** Function to read NUMTHREAD chunks from readFile, each of size chunkSize. 
-** Actual read chunk sizes are storead in read
-*/
-int chunksWriter(FILE * file, unsigned char * outputChunk[],int chunkSizes[]){
-    int totalWritten = 0; 
-    printf("writing \n");
-    for(int j=0;j<NUM_THREADS;j++){  
-        printf("writing chunks from %d of size %d\n",j,chunkSizes[j]);
-    }
-    for(int j=0;j<NUM_THREADS;j++){
-        if (chunkSizes[j]>0){
-            totalWritten += fwrite((unsigned char*) outputChunk[j],sizeof(unsigned char),chunkSizes[j],file);
-        }
-        printf("writing chunks from %d of size %d\n",j,chunkSizes[j]);
-    }
-    return totalWritten;
-}
 
 /*
 ** Function to encode a inputChunk to a outputChunk according to huffmanAlphabet
 */
-bool chunkEncoder( unsigned char* inputChunk,  unsigned char * outputChunk,char * huffmanAlphabet[],int inputBufferSize,int* outputChunkSize){
+bool chunkEncoder( unsigned char* inputChunk,  unsigned char * outputChunk,char * huffmanAlphabet[],ull inputBufferSize,ull* outputChunkSize){
     int nbits=0;
-    int nbytes=0;
+    ull nbytes=0;
     unsigned char* currentCharHuffmanEncoded;
-    int currentCharHuffmanEncodedLength = 0;
+    ull currentCharHuffmanEncodedLength = 0;
     bool isEncodingSuccessful = false;
     // encode the chunk
-    for (int i = 0; i < inputBufferSize; i++) {
+    for (ull i = 0; i < inputBufferSize; i++) {
         currentCharHuffmanEncoded = huffmanAlphabet[inputChunk[i]];
         currentCharHuffmanEncodedLength = strlen(currentCharHuffmanEncoded);
-        for (int i = 0; i < currentCharHuffmanEncodedLength; i++) {
+        for (ull i = 0; i < currentCharHuffmanEncodedLength; i++) {
             if (!fwriteBitInBuffer(currentCharHuffmanEncoded[i], outputChunk, &nbits, &nbytes)) {
                 isEncodingSuccessful = false;
             }
@@ -93,11 +53,11 @@ bool fileEncoder(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[],int* 
     unsigned char inputChunk[NUM_THREADS][MAX_DECODED_BUFFER_SIZE];
     unsigned char outputChunk[NUM_THREADS][MAX_ENCODED_BUFFER_SIZE];
     // input
-    int chunkSize = MAX_DECODED_BUFFER_SIZE;
+    ull chunkSize = MAX_DECODED_BUFFER_SIZE;
     // output variable length
-    int inputBufferChunkSizes[NUM_THREADS];
+    ull inputBufferChunkSizes[NUM_THREADS];
     // output variable length
-    int outputBufferChunkSizes[NUM_THREADS];
+    ull outputBufferChunkSizes[NUM_THREADS];
     int numOfChunks = 0;
     // error detection
     bool isEncodingSuccessful = true;
@@ -106,8 +66,10 @@ bool fileEncoder(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[],int* 
         numOfChunks++;
     }
     for(int i = 0; i < numOfChunks; i+=NUM_THREADS){
-        chunksReader(inputFile,(unsigned char**)inputChunk,chunkSize,inputBufferChunkSizes);
+        
+        // reader
         for(int j=0;j<NUM_THREADS;j++){
+            inputBufferChunkSizes[j] = fread(inputChunk[j],sizeof(unsigned char),chunkSize,inputFile);
             inputChunkSizes[i+j] = inputBufferChunkSizes[j];
         }
         
@@ -124,15 +86,13 @@ bool fileEncoder(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[],int* 
                 outputBufferChunkSizes[j] = 0;
             }
         }
-        // bugfix TODO, 
-        // questa funzione va in segfault
-        //*outputFileSize += chunksWriter(outputFile,(unsigned char**)outputChunk,(int *)outputBufferChunkSizes);
+        
+        // writer
         for(int j=0;j<NUM_THREADS;j++){
             if (outputBufferChunkSizes[j]>0){
-                fwrite((unsigned char*) outputChunk[j],sizeof(unsigned char),outputBufferChunkSizes[j],outputFile);
+                fwrite((unsigned char*) outputChunk+j*MAX_ENCODED_BUFFER_SIZE,sizeof(unsigned char),outputBufferChunkSizes[j],outputFile);
                 *outputFileSize +=outputBufferChunkSizes[j];
             }
-            //printf("writing chunks from %d of size %d\n",j,outputBufferChunkSizes[j]);
         }
 
     }
@@ -149,9 +109,6 @@ int main(int argc, char ** argv){
     // get the number of processes
     int size;
     MPI_Comm_size(MPI_COMM_WORLD, &size);
-    if (rank==0){
-        printf("MPI initialized %d\n", provided);
-    }
 
     // get input and output filenames
     char* inputFileName = argv[1];

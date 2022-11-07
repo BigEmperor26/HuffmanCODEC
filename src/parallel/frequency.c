@@ -1,7 +1,6 @@
 #include <omp.h>
 #include "frequency.h"
 
-#define NUM_THREADS 4
 /*
 ** function that counts the chars in a chunk
 */ 
