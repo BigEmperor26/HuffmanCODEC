@@ -2,7 +2,7 @@
 #!/bin/bash
 
 #PBS -l select=1:ncpus=2:mem=2gb 
-#PBS -l walltime=0:50:00
+#PBS -l walltime=0:05:00
 #PBS -q short_cpuQ
 #PBS -o output_test.out
 #PBS -e errro_test.out 
