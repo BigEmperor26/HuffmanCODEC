@@ -12,8 +12,24 @@ clear && gcc src/serial/encode.c src/datastructures/priorityQ.c src/datastructur
 clear && gcc src/serial/decode.c src/datastructures/priorityQ.c src/datastructures/dictionary.c src/serial/huffman.c && ./a.out data/test.bin.huf
 ```
 
+```bash
+make encoder
+bin/encode.out data/test.bin
+make decoder
+bin/decode.out data/test.bin.huf
+```
+## Parallel
+### How to run
+```bash
+make parallelEncoder
+bin/parallelEncode.out data/test.bin
+make parallelDecoder
+bin/parallelDecode.out data/test.bin.huf
+```
 ### Test against valgrind
 ```bash
 gcc -g src/serial/encode.c src/datastructures/priorityQ.c src/datastructures/dictionary.c src/serial/huffman.c
 valgrind -s --leak-check=full --show-leak-kinds=all ./a.out ./data/test.bin
 ```
+
+
