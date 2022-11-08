@@ -72,6 +72,7 @@ bool fileEncoder(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[],int* 
     // locks for multithreading
     omp_lock_t lock[NUM_THREADS];
     omp_lock_t wlock[NUM_THREADS];
+    int current_chunk = 0;
     for (int j = 0;j < NUM_THREADS;j++) {
         omp_init_lock(&lock[j]);
         omp_init_lock(&wlock[j]);
@@ -96,7 +97,13 @@ bool fileEncoder(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[],int* 
                 omp_unset_lock(&lock[j]);
             }
         }
-        int thread_ID = omp_get_thread_num();
+        int thread_ID = 0;
+        //int thread_ID = omp_get_thread_num();
+        #pragma omp critical
+        {
+          thread_ID = current_chunk;
+          current_chunk = (current_chunk +1)%NUM_THREADS;
+        }
         // test lock instead
         omp_set_lock(&lock[thread_ID]);
         if (inputBufferChunkSizes[thread_ID]>0){

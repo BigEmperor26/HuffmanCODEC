@@ -105,9 +105,13 @@ bool fileDecoder(FILE* inputFile, FILE* outputFile, Node* huffmanTree, ull input
     Node * huffTrees[NUM_THREADS];
     // locks for multithreading
     omp_lock_t lock[NUM_THREADS];
+    omp_lock_t wlock[NUM_THREADS];
+    int current_chunk = 0;
     for (int j = 0;j < NUM_THREADS;j++) {
         omp_init_lock(&lock[j]);
+        omp_init_lock(&wlock[j]);
         omp_set_lock(&lock[j]);
+        omp_set_lock(&wlock[j]);
     }
     omp_set_dynamic(0); 
     omp_set_num_threads(NUM_THREADS); 
@@ -139,19 +143,27 @@ bool fileDecoder(FILE* inputFile, FILE* outputFile, Node* huffmanTree, ull input
             }
 
         }
-        int thread_ID = omp_get_thread_num();
+        //int thread_ID = omp_get_thread_num();
+        int thread_ID = 0;
+        //int thread_ID = omp_get_thread_num();
+        #pragma omp critical
+        {
+          thread_ID = current_chunk;
+          current_chunk = (current_chunk +1)%NUM_THREADS;
+        }
         omp_set_lock(&lock[thread_ID]);
         if (outputBufferChunkSizes[thread_ID] > 0) {
             chunkDecoder(inputChunk[thread_ID], outputChunk[thread_ID], huffmanTree, outputBufferChunkSizes[thread_ID],&decodedOutputBufferChunkSizes[thread_ID]);
             
         }
+        omp_unset_lock(&wlock[thread_ID]);
         omp_unset_lock(&lock[thread_ID]);
-        
-        #pragma omp barrier
+        //#pragma omp barrier
         //writer
         #pragma omp single
         {
             for (int j = 0;j < NUM_THREADS;j++) {
+                omp_set_lock(&wlock[j]);
                 if (outputBufferChunkSizes[j] > 0) {
                     fwrite(outputChunk[j], sizeof(unsigned char), decodedOutputBufferChunkSizes[j], outputFile);
                 }

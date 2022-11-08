@@ -35,6 +35,7 @@ ull parallel_get_frequencies(FILE* file,Dictionary *d){
     }
     omp_lock_t lock[NUM_THREADS];
     omp_lock_t wlock[NUM_THREADS];
+    int current_chunk = 0;
     for (int j = 0;j < NUM_THREADS;j++) {
         omp_init_lock(&lock[j]);
         omp_init_lock(&wlock[j]);
@@ -55,7 +56,14 @@ ull parallel_get_frequencies(FILE* file,Dictionary *d){
             }
         }
         //#pragma omp barrier
-        int thread_id = omp_get_thread_num();
+        //int thread_id = omp_get_thread_num();
+        int thread_id = 0;
+        //int thread_ID = omp_get_thread_num();
+        #pragma omp critical
+        {
+          thread_id = current_chunk;
+          current_chunk = (current_chunk +1)%NUM_THREADS;
+        }
         //  count the chunks
         omp_set_lock(&lock[thread_id]);
         if (read[thread_id]>0)
