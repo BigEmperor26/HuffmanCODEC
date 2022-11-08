@@ -145,7 +145,6 @@ int main(int argc, char ** argv){
     FILE* inputFile = fopen(inputFileName, "r");
     if (!inputFile) {
         perror(inputFileName);
-        MPI_Finalize(); 
         exit(1);
     }
     Dictionary* dict = createDictionary(MAX_HEAP_SIZE);
@@ -164,12 +163,10 @@ int main(int argc, char ** argv){
     FILE* outputFile = fopen(outputFileName, "w");
     if (!inputFile) {
         perror(inputFileName);
-        MPI_Finalize(); 
         exit(1);
     }
     if (!outputFile) {
         perror(outputFileName);
-        MPI_Finalize(); 
         exit(1);
     }
 

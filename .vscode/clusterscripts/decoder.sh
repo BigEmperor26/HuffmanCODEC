@@ -8,4 +8,4 @@
 #PBS -e errro_test.out 
 module load mpich-3.2 
 module load openmpi-4.0.4
-mpiexec -n 1 /home/michele.yin/HuffmanCODEC/bin/decode.out  /home/michele.yin/HuffmanCODEC/data/lorem.bin.huf /home/michele.yin/HuffmanCODEC/data/lorem.bin.dec
+mpiexec -n 1 /home/michele.yin/HuffmanCODEC/bin/decode.out  /home/michele.yin/HuffmanCODEC/data/test.bin.huf /home/michele.yin/HuffmanCODEC/data/test.bin.dec
