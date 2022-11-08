@@ -216,6 +216,9 @@ int main(int argc, char* argv[]) {
     freeDictionary(dict);
     dict = NULL;
 
+    free(chunkOffsets);
+    free(inputChunkSizes);
+
     MPI_Finalize();
     return  0;
 }

@@ -161,5 +161,7 @@ int main(int argc, char* argv[]) {
     free(outputFileName);
     outputFileName = NULL;
 
+    free(chunkOffsets);
+    free(inputChunkSizes);
     return isDecodingSuccessful ? 0 : 1;
 }
