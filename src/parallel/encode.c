@@ -84,8 +84,12 @@ bool fileEncoder(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[],int* 
         #pragma omp single
         {
             for(int j=0;j<NUM_THREADS;j++){
-                inputBufferChunkSizes[j] = fread(inputChunk[j],sizeof(unsigned char),chunkSize,inputFile);
-                inputChunkSizes[i*NUM_THREADS+j] = inputBufferChunkSizes[j];
+                if (i*NUM_THREADS + j < numOfChunks){
+                    inputBufferChunkSizes[j] = fread(inputChunk[j],sizeof(unsigned char),chunkSize,inputFile);
+                    inputChunkSizes[i*NUM_THREADS+j] = inputBufferChunkSizes[j];
+                }else{
+                    inputBufferChunkSizes[j] = 0;
+                }
                 omp_unset_lock(&lock[j]);
             }
         }
@@ -95,10 +99,12 @@ bool fileEncoder(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[],int* 
         if (inputBufferChunkSizes[thread_ID]>0){
             // Huffman compression of NUM_THREAD chunks
             isEncodingSuccessful = chunkEncoder(inputChunk[thread_ID],outputChunk[thread_ID],huffmanAlphabet,inputBufferChunkSizes[thread_ID],&outputBufferChunkSizes[thread_ID]) && isEncodingSuccessful;
-            outputChunkSizes[i*NUM_THREADS+thread_ID] = outputBufferChunkSizes[thread_ID];
+            if (i*NUM_THREADS + thread_ID < numOfChunks)
+                outputChunkSizes[i*NUM_THREADS+thread_ID] = outputBufferChunkSizes[thread_ID];
         }else{
             outputBufferChunkSizes[thread_ID] = 0;
-            outputChunkSizes[i*NUM_THREADS+thread_ID]=0;
+            if (i*NUM_THREADS + thread_ID < numOfChunks)
+                outputChunkSizes[i*NUM_THREADS+thread_ID]=0;
         }
         omp_unset_lock(&lock[thread_ID]);
         #pragma omp barrier
