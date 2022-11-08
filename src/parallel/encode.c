@@ -71,9 +71,12 @@ bool fileEncoder(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[],int* 
     }   
     // locks for multithreading
     omp_lock_t lock[NUM_THREADS];
+    omp_lock_t wlock[NUM_THREADS];
     for (int j = 0;j < NUM_THREADS;j++) {
         omp_init_lock(&lock[j]);
+        omp_init_lock(&wlock[j]);
         omp_set_lock(&lock[j]);
+        omp_set_lock(&wlock[j]);
     }
     // set the parallel encoder
     omp_set_dynamic(0); 
@@ -106,12 +109,14 @@ bool fileEncoder(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[],int* 
             if (i*NUM_THREADS + thread_ID < numOfChunks)
                 outputChunkSizes[i*NUM_THREADS+thread_ID]=0;
         }
+        omp_unset_lock(&wlock[thread_ID]);
         omp_unset_lock(&lock[thread_ID]);
-        #pragma omp barrier
+        //#pragma omp barrier
         // writer
         #pragma omp single
         {
             for(int j=0;j<NUM_THREADS;j++){
+                omp_set_lock(&wlock[j]);
                 if (inputBufferChunkSizes[j]>0){
                     fwrite(outputChunk[j],sizeof(unsigned char),outputBufferChunkSizes[j],outputFile);
                     *outputFileSize +=outputBufferChunkSizes[j];

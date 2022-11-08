@@ -34,9 +34,12 @@ ull parallel_get_frequencies(FILE* file,Dictionary *d){
         chunk_iterations++;
     }
     omp_lock_t lock[NUM_THREADS];
+    omp_lock_t wlock[NUM_THREADS];
     for (int j = 0;j < NUM_THREADS;j++) {
         omp_init_lock(&lock[j]);
+        omp_init_lock(&wlock[j]);
         omp_set_lock(&lock[j]);
+        omp_unset_lock(&wlock[j]);
     }
     omp_set_dynamic(0); 
     omp_set_num_threads(NUM_THREADS); 
@@ -46,6 +49,7 @@ ull parallel_get_frequencies(FILE* file,Dictionary *d){
         #pragma omp single
         {
             for(int j=0;j<NUM_THREADS;j++){
+                omp_set_lock(&wlock[j]);
                 read[j] = fread(chunk[j],sizeof(unsigned char),chunk_size,file);
                 omp_unset_lock(&lock[j]);
             }
@@ -56,8 +60,9 @@ ull parallel_get_frequencies(FILE* file,Dictionary *d){
         omp_set_lock(&lock[thread_id]);
         if (read[thread_id]>0)
             countChunk(chunk[thread_id],read[thread_id],d);
+        omp_unset_lock(&wlock[thread_id]);
         omp_unset_lock(&lock[thread_id]);
-        #pragma omp barrier
+        //#pragma omp barrier
         //omp_set_lock(&lock[thread_id]);
     }
     return file_size;
