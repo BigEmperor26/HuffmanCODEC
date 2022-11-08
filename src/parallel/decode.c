@@ -11,18 +11,6 @@
 #include "../datastructures/priorityQ.h"
 #include "../datastructures/dictionary.h"
 
-Node * copyHuffmanTree(Node * tree){
-    if (tree == NULL)
-        return NULL;
-    Node * copy = createNode(tree->value,tree->priority,NULL,NULL);
-    copy->left = copyHuffmanTree(tree->left);
-    copy->right = copyHuffmanTree(tree->right);
-    return copy;
-}
-
-void copyChunk(char *chunk,char *processed_chunk){
-    strncpy((char*)processed_chunk,(char*)chunk,MAX_DECODED_BUFFER_SIZE);
-}
 
 unsigned char getCharFromHuffmanEncodedBitStream(unsigned char buffer[], int* nbytes, int* nbits, Node* node) {
 
@@ -87,7 +75,6 @@ bool chunkDecoder(unsigned char inputChunk[], unsigned char outputChunk[], Node*
     int nbits = 0;
     ull outputCharCounter = 0;
     bool isDecodingSuccessful = true;
-    printf("nbytes %d at %x, nbits %d at %x, outputCharCounter %llu at %x, isDecodingSuccessful %d at %x \n",nbytes,&nbytes,nbits,&nbits,outputCharCounter,&outputCharCounter,isDecodingSuccessful,&isDecodingSuccessful);
     // decode the chunk
     while (outputCharCounter <= inputChunkSize) {
         outputChunk[outputCharCounter] = getCharFromHuffmanEncodedBitStream(inputChunk, &nbytes, &nbits, huffmanTree);
@@ -95,7 +82,6 @@ bool chunkDecoder(unsigned char inputChunk[], unsigned char outputChunk[], Node*
         outputCharCounter++;
     }
     *outputChunkSize = outputCharCounter-1;
-    printf("After process nbytes %d at %x, nbits %d at %x, outputCharCounter %llu at %x, isDecodingSuccessful %d at %x \n",nbytes,&nbytes,nbits,&nbits,outputCharCounter,&outputCharCounter,isDecodingSuccessful,&isDecodingSuccessful);
     return isDecodingSuccessful;
 }
 
@@ -218,15 +204,6 @@ int main(int argc, char* argv[]) {
 
     // decode
     bool isDecodingSuccessful = fileDecoder(inputFile, outputFile, huffmanTree, chunkOffsets, inputChunkSizes, numChunks);
-
-
-    // int outputFileSize;
-    // int numOfChunks = (originalFileSize / MAX_DECODED_BUFFER_SIZE) + 1;
-    // ull* chunkSizes = (ull*)malloc(sizeof(ull) * numOfChunks);
-    // bool isEncodingSuccessful = encodeOutputFile(inputFile, outputFile, huffmanAlphabet, &outputFileSize, chunkSizes);
-
-    // printf("%s is %0.2f%% of %s\n", outputFileName, (float)outputFileSize / (float)originalFileSize, inputFileName);
-
 
     // free resources
     fclose(inputFile);
