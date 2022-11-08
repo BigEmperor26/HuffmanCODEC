@@ -91,6 +91,7 @@ bool chunkDecoder(unsigned char inputChunk[], unsigned char outputChunk[], Node*
 bool fileDecoder(FILE* inputFile, FILE* outputFile, Node* huffmanTree, ull inputChunkOffsets[], ull inputChunkSizes[], int numOfChunks) {
     // chunks
     unsigned char inputChunk[NUM_THREADS][MAX_ENCODED_BUFFER_SIZE];
+    // +1 to avoid overflow
     unsigned char outputChunk[NUM_THREADS][MAX_DECODED_BUFFER_SIZE+1];
     bool isDecodingSuccessful = true;
     ull inputBufferChunkSizes[NUM_THREADS];
