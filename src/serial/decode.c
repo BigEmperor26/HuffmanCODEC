@@ -36,7 +36,7 @@ unsigned char getCharFromHuffmanEncodedBitStream(unsigned char buffer[], int* nb
 */
 bool decodeFile(FILE* inputFile, FILE* outputFile, Node* huffmanTree, ull chunkOffsets[], ull inputChunkSizes[], int numChunks) {
     unsigned char inputBuffer[MAX_ENCODED_BUFFER_SIZE];
-    unsigned char outputBuffer[MAX_DECODED_BUFFER_SIZE];
+    unsigned char outputBuffer[MAX_DECODED_BUFFER_SIZE+1];
 
     int nbytes, nbits, chunkSize, outputCharCounter;
 
@@ -44,26 +44,23 @@ bool decodeFile(FILE* inputFile, FILE* outputFile, Node* huffmanTree, ull chunkO
 
     for (int indexChunk = 0; indexChunk < numChunks; indexChunk++) {
         // get chunk of bytes from encoded file
+
         chunkSize = chunkOffsets[indexChunk + 1] - chunkOffsets[indexChunk];
         fseek(inputFile, chunkOffsets[indexChunk], SEEK_SET);
         int inputBufferSize = fread(inputBuffer, 1, chunkSize, inputFile);
 
-        // printf("decoding at %llu for %d\n", chunkOffsets[indexChunk], chunkSize);
-
         if (inputBufferSize != chunkSize) {
             isDecodingSuccessful = false;
         }
-
         nbytes = 0;
         nbits = 0;
         outputCharCounter = 0;
 
-        // dencode the chunk
+        // decode the chunk
         while (outputCharCounter <= inputChunkSizes[indexChunk]) {
             outputBuffer[outputCharCounter] = getCharFromHuffmanEncodedBitStream(inputBuffer, &nbytes, &nbits, huffmanTree);
             outputCharCounter++;
         }
-        printf("Written chunk of %d bytes \n", outputCharCounter - 1);
         // flush the buffer for the output chunk
         fwrite(outputBuffer, 1, outputCharCounter - 1, outputFile);
     }
@@ -124,7 +121,7 @@ int main(int argc, char* argv[]) {
     char* outputFileName = getOutputFileName(inputFileName);
 
     // get byte frequencies in the input file
-    FILE* inputFile = fopen(inputFileName, "r");
+    FILE* inputFile = fopen(inputFileName, "rb");
     if (!inputFile) {
         perror(inputFileName);
         exit(1);
@@ -142,7 +139,7 @@ int main(int argc, char* argv[]) {
 
     // prepare input and output files for encoding
     fseek(inputFile, 0, SEEK_SET);
-    FILE* outputFile = fopen(outputFileName, "w");
+    FILE* outputFile = fopen(outputFileName, "wb");
     if (!outputFile) {
         perror(outputFileName);
         exit(1);
@@ -150,15 +147,6 @@ int main(int argc, char* argv[]) {
 
     // decode
     bool isDecodingSuccessful = decodeFile(inputFile, outputFile, huffmanTree, chunkOffsets, inputChunkSizes, numChunks);
-
-
-    // int outputFileSize;
-    // int numOfChunks = (originalFileSize / MAX_DECODED_BUFFER_SIZE) + 1;
-    // ull* chunkSizes = (ull*)malloc(sizeof(ull) * numOfChunks);
-    // bool isEncodingSuccessful = encodeOutputFile(inputFile, outputFile, huffmanAlphabet, &outputFileSize, chunkSizes);
-
-    // printf("%s is %0.2f%% of %s\n", outputFileName, (float)outputFileSize / (float)originalFileSize, inputFileName);
-
 
     // free resources
     fclose(inputFile);

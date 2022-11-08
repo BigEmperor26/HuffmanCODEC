@@ -41,63 +41,6 @@ bool chunkEncoder( unsigned char* inputChunk,  unsigned char * outputChunk,char 
     return isEncodingSuccessful;
 }
 
-// /*
-// ** Function to encode a file to an outputfile according huffmanAlphabet
-// */
-// bool fileEncoder(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[],int* outputFileSize,ull inputChunkSizes[], ull outputChunkSizes[]){
-//     fseek(inputFile, 0, SEEK_END); // seek to end of file
-//     int inputFileSize = ftell(inputFile); // get current file pointer
-//     fseek(inputFile, 0, SEEK_SET); // seek to start of file
-//     *outputFileSize = 0;
-//     // chunks
-//     unsigned char inputChunk[NUM_THREADS][MAX_DECODED_BUFFER_SIZE];
-//     unsigned char outputChunk[NUM_THREADS][MAX_ENCODED_BUFFER_SIZE];
-//     // input
-//     ull chunkSize = MAX_DECODED_BUFFER_SIZE;
-//     // output variable length
-//     ull inputBufferChunkSizes[NUM_THREADS];
-//     // output variable length
-//     ull outputBufferChunkSizes[NUM_THREADS];
-//     int numOfChunks = 0;
-//     // error detection
-//     bool isEncodingSuccessful = true;
-//     numOfChunks = inputFileSize/chunkSize;
-//     if (inputFileSize%chunkSize != 0){
-//         numOfChunks++;
-//     }
-//     for(int i = 0; i < numOfChunks; i+=NUM_THREADS){
-//         // reader
-//         for(int j=0;j<NUM_THREADS;j++){
-//             inputBufferChunkSizes[j] = fread(inputChunk[j],sizeof(unsigned char),chunkSize,inputFile);
-//             inputChunkSizes[i+j] = inputBufferChunkSizes[j];
-//         }
-//         // set the parallel encoder
-//         omp_set_dynamic(0); 
-//         omp_set_num_threads(NUM_THREADS); 
-//         #pragma omp parallel for
-//         for(int j=0;j<NUM_THREADS;j++){
-//             int thread_ID = omp_get_thread_num();
-//             if (inputBufferChunkSizes[thread_ID]>0){
-//                 // Huffman compression of NUM_THREAD chunks
-//                 isEncodingSuccessful = chunkEncoder((unsigned char*) inputChunk[thread_ID],(unsigned char*) outputChunk[thread_ID],huffmanAlphabet,inputBufferChunkSizes[thread_ID],&outputBufferChunkSizes[thread_ID]) && isEncodingSuccessful;
-//                 outputChunkSizes[i+thread_ID] = outputBufferChunkSizes[thread_ID];
-//             }else{
-//                 outputBufferChunkSizes[j] = 0;
-//             }
-//         }
-//         // writer
-//         for(int j=0;j<NUM_THREADS;j++){
-//             if (outputBufferChunkSizes[j]>0){
-//                 fwrite((unsigned char*) outputChunk+j*MAX_ENCODED_BUFFER_SIZE,sizeof(unsigned char),outputBufferChunkSizes[j],outputFile);
-//                 *outputFileSize +=outputBufferChunkSizes[j];
-//             }
-//         }
-
-//     }
-   
-//     return isEncodingSuccessful;
-// }
-
 /*
 ** Function to encode a file to an outputfile according huffmanAlphabet
 */
@@ -125,6 +68,12 @@ bool fileEncoder(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[],int* 
     int chunkIterations = numOfChunks/NUM_THREADS;
     if (numOfChunks%NUM_THREADS != 0){
         chunkIterations++;
+    }   
+    // locks for multithreading
+    omp_lock_t lock[NUM_THREADS];
+    for (int j = 0;j < NUM_THREADS;j++) {
+        omp_init_lock(&lock[j]);
+        omp_set_lock(&lock[j]);
     }
     // set the parallel encoder
     omp_set_dynamic(0); 
@@ -137,30 +86,34 @@ bool fileEncoder(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[],int* 
             for(int j=0;j<NUM_THREADS;j++){
                 inputBufferChunkSizes[j] = fread(inputChunk[j],sizeof(unsigned char),chunkSize,inputFile);
                 inputChunkSizes[i*NUM_THREADS+j] = inputBufferChunkSizes[j];
+                omp_unset_lock(&lock[j]);
             }
         }
         int thread_ID = omp_get_thread_num();
-        printf("Thread %d inputChunk[%d] %llu\n",thread_ID,thread_ID,inputBufferChunkSizes[thread_ID]);
+        // test lock instead
+        omp_set_lock(&lock[thread_ID]);
         if (inputBufferChunkSizes[thread_ID]>0){
             // Huffman compression of NUM_THREAD chunks
-            isEncodingSuccessful = chunkEncoder((unsigned char*) inputChunk[thread_ID],(unsigned char*) outputChunk[thread_ID],huffmanAlphabet,inputBufferChunkSizes[thread_ID],&outputBufferChunkSizes[thread_ID]) && isEncodingSuccessful;
+            isEncodingSuccessful = chunkEncoder(inputChunk[thread_ID],outputChunk[thread_ID],huffmanAlphabet,inputBufferChunkSizes[thread_ID],&outputBufferChunkSizes[thread_ID]) && isEncodingSuccessful;
             outputChunkSizes[i*NUM_THREADS+thread_ID] = outputBufferChunkSizes[thread_ID];
         }else{
             outputBufferChunkSizes[thread_ID] = 0;
             outputChunkSizes[i*NUM_THREADS+thread_ID]=0;
         }
-        
+        omp_unset_lock(&lock[thread_ID]);
         #pragma omp barrier
         // writer
         #pragma omp single
         {
             for(int j=0;j<NUM_THREADS;j++){
-                if (outputBufferChunkSizes[j]>0){
-                    fwrite((unsigned char*) outputChunk[j],sizeof(unsigned char),outputBufferChunkSizes[j],outputFile);
+                if (inputBufferChunkSizes[j]>0){
+                    fwrite(outputChunk[j],sizeof(unsigned char),outputBufferChunkSizes[j],outputFile);
                     *outputFileSize +=outputBufferChunkSizes[j];
                 }
+                omp_set_lock(&lock[j]);
             }
         }
+        //#pragma omp barrier
     }
    
     return isEncodingSuccessful;
@@ -186,10 +139,11 @@ int main(int argc, char ** argv){
     FILE* inputFile = fopen(inputFileName, "r");
     if (!inputFile) {
         perror(inputFileName);
+        MPI_Finalize(); 
         exit(1);
     }
     Dictionary* dict = createDictionary(MAX_HEAP_SIZE);
-    ull originalFileSize = get_frequencies(inputFile, dict);
+    ull originalFileSize = parallel_get_frequencies(inputFile, dict);
     fclose(inputFile);
     inputFile = NULL;
     
@@ -204,10 +158,12 @@ int main(int argc, char ** argv){
     FILE* outputFile = fopen(outputFileName, "w");
     if (!inputFile) {
         perror(inputFileName);
+        MPI_Finalize(); 
         exit(1);
     }
     if (!outputFile) {
         perror(outputFileName);
+        MPI_Finalize(); 
         exit(1);
     }
 
