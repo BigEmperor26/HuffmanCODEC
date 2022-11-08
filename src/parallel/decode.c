@@ -155,7 +155,7 @@ bool fileDecoder(FILE* inputFile, FILE* outputFile, Node* huffmanTree, ull input
                 if (outputBufferChunkSizes[j] > 0) {
                     fwrite(outputChunk[j], sizeof(unsigned char), decodedOutputBufferChunkSizes[j], outputFile);
                 }
-                omp_unset_lock(&lock[j]);
+                //omp_unset_lock(&lock[j]);
             }
         }
     }

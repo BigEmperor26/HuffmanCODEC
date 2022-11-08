@@ -110,7 +110,7 @@ bool fileEncoder(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[],int* 
                     fwrite(outputChunk[j],sizeof(unsigned char),outputBufferChunkSizes[j],outputFile);
                     *outputFileSize +=outputBufferChunkSizes[j];
                 }
-                omp_set_lock(&lock[j]);
+                //omp_set_lock(&lock[j]);
             }
         }
         //#pragma omp barrier

@@ -58,7 +58,7 @@ ull parallel_get_frequencies(FILE* file,Dictionary *d){
             countChunk(chunk[thread_id],read[thread_id],d);
         omp_unset_lock(&lock[thread_id]);
         #pragma omp barrier
-        omp_set_lock(&lock[thread_id]);
+        //omp_set_lock(&lock[thread_id]);
     }
     return file_size;
 }
