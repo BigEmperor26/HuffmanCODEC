@@ -33,26 +33,26 @@ ull parallel_get_frequencies(FILE* file,Dictionary *d){
     if (chunk_count%NUM_THREADS != 0){
         chunk_iterations++;
     }
-    omp_lock_t lock[NUM_THREADS];
-    omp_lock_t wlock[NUM_THREADS];
+    omp_lock_t readlock[NUM_THREADS];
+    omp_lock_t processlock[NUM_THREADS];
     int current_chunk = 0;
     for (int j = 0;j < NUM_THREADS;j++) {
-        omp_init_lock(&lock[j]);
-        omp_init_lock(&wlock[j]);
-        omp_set_lock(&lock[j]);
-        omp_unset_lock(&wlock[j]);
+        omp_init_lock(&readlock[j]);
+        omp_init_lock(&processlock[j]);
+        omp_unset_lock(&readlock[j]);
+        omp_set_lock(&processlock[j]);
     }
     omp_set_dynamic(0); 
     omp_set_num_threads(NUM_THREADS); 
     #pragma omp parallel
     for(int i = 0; i < chunk_iterations; i++){
         // sequential read of NUM_THREADS chunks
-        #pragma omp single
+        #pragma omp single nowait
         {
             for(int j=0;j<NUM_THREADS;j++){
-                omp_set_lock(&wlock[j]);
+                omp_set_lock(&readlock[j]);
                 read[j] = fread(chunk[j],sizeof(unsigned char),chunk_size,file);
-                omp_unset_lock(&lock[j]);
+                omp_unset_lock(&processlock[j]);
             }
         }
         //#pragma omp barrier
@@ -65,13 +65,15 @@ ull parallel_get_frequencies(FILE* file,Dictionary *d){
           current_chunk = (current_chunk +1)%NUM_THREADS;
         }
         //  count the chunks
-        omp_set_lock(&lock[thread_id]);
+        omp_set_lock(&processlock[thread_id]);
         if (read[thread_id]>0)
             countChunk(chunk[thread_id],read[thread_id],d);
-        omp_unset_lock(&wlock[thread_id]);
-        omp_unset_lock(&lock[thread_id]);
-        //#pragma omp barrier
-        //omp_set_lock(&lock[thread_id]);
+        omp_unset_lock(&readlock[thread_id]);
+        #pragma omp barrier
+    }
+    for (int j = 0;j < NUM_THREADS;j++) {
+        omp_destroy_lock(&readlock[j]);
+        omp_destroy_lock(&processlock[j]);
     }
     return file_size;
 }
