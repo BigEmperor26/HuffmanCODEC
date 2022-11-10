@@ -164,7 +164,7 @@ int main(int argc, char** argv) {
     void *processingFunction = NULL;
     // input processing
     char option = '0';
-    while ((option = getopt(argc, argv, "edrhi")) != -1) {
+    while ((option = getopt(argc, argv, "edrh")) != -1) {
         switch (option) {
             case 'e':
                 processingFunction = fileEncoderFull;
