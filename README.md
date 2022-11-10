@@ -35,6 +35,7 @@ bin/main.out -d data/test.bin data/test.bin.huf
 ```bash
 -e to encode
 -d to decode
+-p to set the number of threads to work on each file
 -r process a folder
 -h help text
 ```

@@ -10,6 +10,7 @@
 - [X] Create binary code for tree nodes ( single process ? )
 - [X] Use binary code to encode ( multi process )
 - [ ] Better thread parallelism with simultaneus read
+- [ ] Divide number of files according to the size of each
 - [X] Add to main an option the N_THREADS required instead of ricompiling
 - [ ] Test serial version vs parallel with N_THREADS=1 for overhead
 - [ ] Test over all possibilities ( parallelism, data size, alphabet size, file type, etc)
