@@ -42,7 +42,7 @@ int directoryProcesser(int rank,int size,char *inputname, char * outputname ,int
             slashFolder((char*)outputname);
             countFiles(inputname, &files_count);
         }else{
-            printf("input %s is not a or directory\n",inputname);
+            printf("input %s is not a directory\n",inputname);
             MPI_Finalize();
             exit(1);
         }
@@ -129,7 +129,7 @@ int fileProcesser(int rank,char *inputname, char * outputname,int num_threads, v
         // check if input is a file and exists
         inputFile = regularFile((const char*)inputname) && fileExists((const char*)inputname);
         if(!inputFile){
-            printf("input %s is not a or file\n",inputname);
+            printf("input %s is not a file\n",inputname);
             MPI_Finalize();
             exit(1);
         }
