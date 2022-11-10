@@ -31,7 +31,7 @@
 /*
 **  Function to process a directory recursively, splitting the files to a number of processes according to their raink
 */
-int directoryProcesser(int rank,int size,char *inputname, char * outputname ,void (*processing)(char* arg1,char*arg2)){
+int directoryProcesser(int rank,int size,char *inputname, char * outputname ,int num_threads,void (*processing)(char* arg1,char*arg2, int num_threads)){
     bool inputdirectory = false;
     int files_count = 0;
     if (rank == 0) {
@@ -111,7 +111,7 @@ int directoryProcesser(int rank,int size,char *inputname, char * outputname ,voi
         // processsing the file
         printf("processing file %s\n",process_input_files[i]);
         printf("saving as file %s\n",process_output_files[i]);
-        (*processing)((char *)process_input_files[i],(char *)process_output_files[i]);
+        (*processing)((char *)process_input_files[i],(char *)process_output_files[i],num_threads);
     }
     MPI_Barrier(MPI_COMM_WORLD);
     return 0;
@@ -122,7 +122,7 @@ int directoryProcesser(int rank,int size,char *inputname, char * outputname ,voi
 **  Function to process a file. Only rank 0 wil execute
 */
 
-int fileProcesser(int rank,char *inputname, char * outputname, void (*processing)(char* arg1,char*arg2)){
+int fileProcesser(int rank,char *inputname, char * outputname,int num_threads, void (*processing)(char* arg1,char*arg2,int num_threads)){
      bool inputFile = false;
      int files_count = 1;
      if (rank == 0) {
@@ -144,7 +144,7 @@ int fileProcesser(int rank,char *inputname, char * outputname, void (*processing
         // processsing the file
         printf("processing file %s\n",inputname);
         printf("saving as file %s\n",outputfile);
-        (*processing)((char *)inputname,(char *)outputname);
+        (*processing)((char *)inputname,(char *)outputname,num_threads);
     }
 }
 
@@ -162,9 +162,10 @@ int main(int argc, char** argv) {
     int files_count = 0;
     bool inputfile = true;
     void *processingFunction = NULL;
+    int num_threads = 4;
     // input processing
     char option = '0';
-    while ((option = getopt(argc, argv, "edrh")) != -1) {
+    while ((option = getopt(argc, argv, "edrp:h")) != -1) {
         switch (option) {
             case 'e':
                 processingFunction = fileEncoderFull;
@@ -175,15 +176,20 @@ int main(int argc, char** argv) {
             case 'r':
                 inputfile = false;
                 break;
+            case 'p':
+                num_threads = atoi(optarg);
+                break;
             case 'h':
                 printf("-e to encode\n");
                 printf("-d to decode\n");
                 printf("-r to recursively process a whole directory\n");
+                printf("-p to set the number of threads for each process. Defaults to 4 otherwise\n");
                 printf("Examples of usage\n");
                 printf("%s -e input.txt output.txt\n",argv[0]);
                 printf("%s -d input.txt output.txt\n",argv[0]);
                 printf("%s -r -e /inputfolder /outputfolder\n",argv[0]);
                 printf("%s -r -d /inputfolder /outputfolder\n",argv[0]);
+                printf("%s -r -d -p 10 /inputfolder /outputfolder\n",argv[0]);
                 MPI_Finalize();
                 exit(1);
         }
@@ -197,12 +203,11 @@ int main(int argc, char** argv) {
         exit(1);
     }
 
-    if (optind<argc)
-    
+    printf("Running on num_threads %d\n",num_threads);
     if (inputfile){
-        fileProcesser(rank,inputname,outputname,processingFunction);
+        fileProcesser(rank,inputname,outputname,num_threads,processingFunction);
     }else{
-        directoryProcesser(rank,size,inputname,outputname,processingFunction);
+        directoryProcesser(rank,size,inputname,outputname,num_threads,processingFunction);
     }
 
     MPI_Finalize();

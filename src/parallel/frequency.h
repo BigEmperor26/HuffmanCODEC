@@ -12,6 +12,6 @@ void countChunk(unsigned char *chunk,int size,Dictionary *d);
 /* 
 ** function that reads chunks from readfile, applies processChunk to each chunk, and writes the result in writefile 
 */
-ull parallel_get_frequencies(FILE* file,Dictionary *d);
+ull parallel_get_frequencies(FILE* file,Dictionary *d, int num_threads);
 
 #endif

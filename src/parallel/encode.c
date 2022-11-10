@@ -44,20 +44,20 @@ bool chunkEncoder( unsigned char* inputChunk,  unsigned char * outputChunk,char 
 /*
 ** Function to encode a file to an outputfile according huffmanAlphabet
 */
-bool fileEncoder(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[],int* outputFileSize,ull inputChunkSizes[], ull outputChunkSizes[]){
+bool fileEncoder(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[],int* outputFileSize,ull inputChunkSizes[], ull outputChunkSizes[], int num_threads){
     fseek(inputFile, 0, SEEK_END); // seek to end of file
     int inputFileSize = ftell(inputFile); // get current file pointer
     fseek(inputFile, 0, SEEK_SET); // seek to start of file
     *outputFileSize = 0;
     // chunks
-    unsigned char inputChunk[NUM_THREADS][MAX_DECODED_BUFFER_SIZE];
-    unsigned char outputChunk[NUM_THREADS][MAX_ENCODED_BUFFER_SIZE];
+    unsigned char inputChunk[num_threads][MAX_DECODED_BUFFER_SIZE];
+    unsigned char outputChunk[num_threads][MAX_ENCODED_BUFFER_SIZE];
     // input
     ull chunkSize = MAX_DECODED_BUFFER_SIZE;
     // output variable length
-    ull inputBufferChunkSizes[NUM_THREADS];
+    ull inputBufferChunkSizes[num_threads];
     // output variable length
-    ull outputBufferChunkSizes[NUM_THREADS];
+    ull outputBufferChunkSizes[num_threads];
     int numOfChunks = 0;
     // error detection
     bool isEncodingSuccessful = true;
@@ -65,16 +65,16 @@ bool fileEncoder(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[],int* 
     if (inputFileSize%chunkSize != 0){
         numOfChunks++;
     }
-    int chunkIterations = numOfChunks/NUM_THREADS;
-    if (numOfChunks%NUM_THREADS != 0){
+    int chunkIterations = numOfChunks/num_threads;
+    if (numOfChunks%num_threads != 0){
         chunkIterations++;
     }   
     // locks for multithreading
-    omp_lock_t readlock[NUM_THREADS];
-    omp_lock_t processlock[NUM_THREADS];
-    omp_lock_t writelock[NUM_THREADS];
+    omp_lock_t readlock[num_threads];
+    omp_lock_t processlock[num_threads];
+    omp_lock_t writelock[num_threads];
     int current_chunk = 0;
-    for (int j = 0;j < NUM_THREADS;j++) {
+    for (int j = 0;j < num_threads;j++) {
         omp_init_lock(&readlock[j]);
         omp_init_lock(&processlock[j]);
         omp_init_lock(&writelock[j]);
@@ -84,58 +84,58 @@ bool fileEncoder(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[],int* 
     }
     // set the parallel encoder
     omp_set_dynamic(0); 
-    omp_set_num_threads(NUM_THREADS+2); 
+    omp_set_num_threads(num_threads+2); 
     #pragma omp parallel 
     for(int i = 0; i < chunkIterations; i++){
         int thread_ID = omp_get_thread_num();
         // single master thread as reader
         if(thread_ID ==0){
-            for(int j=0;j<NUM_THREADS;j++){
+            for(int j=0;j<num_threads;j++){
                 omp_set_lock(&readlock[j]);
-                if (i*NUM_THREADS + j < numOfChunks){
+                if (i*num_threads + j < numOfChunks){
                     inputBufferChunkSizes[j] = fread(inputChunk[j],sizeof(unsigned char),chunkSize,inputFile);
-                    inputChunkSizes[i*NUM_THREADS+j] = inputBufferChunkSizes[j];
+                    inputChunkSizes[i*num_threads+j] = inputBufferChunkSizes[j];
                 }else{
                     inputBufferChunkSizes[j] = 0;
                 }
                 omp_unset_lock(&processlock[j]);
             }
         // single last thread as writer
-        }else if(thread_ID==NUM_THREADS+1){
-            for(int j=0;j<NUM_THREADS;j++){
+        }else if(thread_ID==num_threads+1){
+            for(int j=0;j<num_threads;j++){
                 omp_set_lock(&writelock[j]);
                 if (inputBufferChunkSizes[j]>0){
                     fwrite(outputChunk[j],sizeof(unsigned char),outputBufferChunkSizes[j],outputFile);
                     *outputFileSize +=outputBufferChunkSizes[j];
-                    outputChunkSizes[i*NUM_THREADS+j] = outputBufferChunkSizes[j];
+                    outputChunkSizes[i*num_threads+j] = outputBufferChunkSizes[j];
                 }
                 omp_unset_lock(&readlock[j]);
             }
-        // all other NUM_THREADS on processing
+        // all other num_threads on processing
         }else{
             int work_ID = 0;
             //int work_ID = omp_get_thread_num();
             #pragma omp critical
             {
                 work_ID = current_chunk;
-                current_chunk = (current_chunk +1)%NUM_THREADS;
+                current_chunk = (current_chunk +1)%num_threads;
             }
             // test lock instead
             omp_set_lock(&processlock[work_ID]);
             if (inputBufferChunkSizes[work_ID]>0){
                 // Huffman compression of NUM_THREAD chunks
                 isEncodingSuccessful = chunkEncoder(inputChunk[work_ID],outputChunk[work_ID],huffmanAlphabet,inputBufferChunkSizes[work_ID],&outputBufferChunkSizes[work_ID]) && isEncodingSuccessful;
-                // if (i*NUM_THREADS + work_ID < numOfChunks)
-                //     outputChunkSizes[i*NUM_THREADS+work_ID] = outputBufferChunkSizes[work_ID];
+                // if (i*num_threads + work_ID < numOfChunks)
+                //     outputChunkSizes[i*num_threads+work_ID] = outputBufferChunkSizes[work_ID];
             }else{
                 outputBufferChunkSizes[work_ID] = 0;
-                // if (i*NUM_THREADS + work_ID < numOfChunks)
-                //     outputChunkSizes[i*NUM_THREADS+work_ID] = 0;
+                // if (i*num_threads + work_ID < numOfChunks)
+                //     outputChunkSizes[i*num_threads+work_ID] = 0;
             }
             omp_unset_lock(&writelock[work_ID]);
         }
     }
-    for (int j = 0;j < NUM_THREADS;j++) {
+    for (int j = 0;j < num_threads;j++) {
         omp_destroy_lock(&readlock[j]);
         omp_destroy_lock(&processlock[j]);
         omp_destroy_lock(&writelock[j]);
@@ -143,7 +143,7 @@ bool fileEncoder(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[],int* 
     return isEncodingSuccessful;
 }
 
-bool fileEncoderFull( char* inputFileName, char* outputFileName){
+bool fileEncoderFull( char* inputFileName, char* outputFileName, int num_threads){
     // get byte frequencies in the input file
     FILE* inputFile = fopen(inputFileName, "r");
     if (!inputFile) {
@@ -151,7 +151,7 @@ bool fileEncoderFull( char* inputFileName, char* outputFileName){
         exit(1);
     }
     Dictionary* dict = createDictionary(MAX_HEAP_SIZE);
-    ull originalFileSize = parallel_get_frequencies(inputFile, dict);
+    ull originalFileSize = parallel_get_frequencies(inputFile, dict,num_threads);
     fclose(inputFile);
     inputFile = NULL;
     
@@ -178,7 +178,7 @@ bool fileEncoderFull( char* inputFileName, char* outputFileName){
     int numOfChunks = (originalFileSize / MAX_DECODED_BUFFER_SIZE) + 1;
     ull* inputChunkSizes = (ull*)malloc(sizeof(ull) * numOfChunks);
     ull* outputChunkSizes = (ull*)malloc(sizeof(ull) * numOfChunks);
-    bool isEncodingSuccessful = fileEncoder(inputFile,outputFile,huffmanAlphabet,&outputFileSize,inputChunkSizes,outputChunkSizes);
+    bool isEncodingSuccessful = fileEncoder(inputFile,outputFile,huffmanAlphabet,&outputFileSize,inputChunkSizes,outputChunkSizes, num_threads);
     printf("%s is %0.2f%% of %s\n", outputFileName, (float)outputFileSize / (float)originalFileSize, inputFileName);
 
     // write encoded file header footer:

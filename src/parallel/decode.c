@@ -89,27 +89,27 @@ bool chunkDecoder(unsigned char inputChunk[], unsigned char outputChunk[], Node*
 /*
 ** Function to decode a file to an outputfile according huffmanAlphabet
 */
-bool fileDecoder(FILE* inputFile, FILE* outputFile, Node* huffmanTree, ull inputChunkOffsets[], ull inputChunkSizes[], int numOfChunks) {
+bool fileDecoder(FILE* inputFile, FILE* outputFile, Node* huffmanTree, ull inputChunkOffsets[], ull inputChunkSizes[], int numOfChunks, int num_threads) {
     // chunks
-    unsigned char inputChunk[NUM_THREADS][MAX_ENCODED_BUFFER_SIZE];
+    unsigned char inputChunk[num_threads][MAX_ENCODED_BUFFER_SIZE];
     // +1 to avoid overflow
-    unsigned char outputChunk[NUM_THREADS][MAX_DECODED_BUFFER_SIZE + 1];
+    unsigned char outputChunk[num_threads][MAX_DECODED_BUFFER_SIZE + 1];
     bool isDecodingSuccessful = true;
-    ull inputBufferChunkSizes[NUM_THREADS];
-    ull outputBufferChunkSizes[NUM_THREADS];
-    ull decodedOutputBufferChunkSizes[NUM_THREADS];
-    ull inputBufferChunkOffsets[NUM_THREADS];
-    int chunkIterations = numOfChunks / NUM_THREADS;
-    if (numOfChunks % NUM_THREADS != 0) {
+    ull inputBufferChunkSizes[num_threads];
+    ull outputBufferChunkSizes[num_threads];
+    ull decodedOutputBufferChunkSizes[num_threads];
+    ull inputBufferChunkOffsets[num_threads];
+    int chunkIterations = numOfChunks / num_threads;
+    if (numOfChunks % num_threads != 0) {
         chunkIterations++;
     }
-    Node* huffTrees[NUM_THREADS];
+    Node* huffTrees[num_threads];
     // locks for multithreading
-    omp_lock_t readlock[NUM_THREADS];
-    omp_lock_t processlock[NUM_THREADS];
-    omp_lock_t writelock[NUM_THREADS];
+    omp_lock_t readlock[num_threads];
+    omp_lock_t processlock[num_threads];
+    omp_lock_t writelock[num_threads];
     int current_chunk = 0;
-    for (int j = 0;j < NUM_THREADS;j++) {
+    for (int j = 0;j < num_threads;j++) {
         omp_init_lock(&readlock[j]);
         omp_init_lock(&processlock[j]);
         omp_init_lock(&writelock[j]);
@@ -118,19 +118,19 @@ bool fileDecoder(FILE* inputFile, FILE* outputFile, Node* huffmanTree, ull input
         omp_set_lock(&writelock[j]);
     }
     omp_set_dynamic(0);
-    omp_set_num_threads(NUM_THREADS+2); 
+    omp_set_num_threads(num_threads+2); 
     #pragma omp parallel
     for (int i = 0; i < chunkIterations; i++) {
         int thread_ID = omp_get_thread_num();
         // single master thread as reader
         if(thread_ID ==0){
             ull readSize = 0;
-            for (int j = 0;j < NUM_THREADS;j++) {
+            for (int j = 0;j < num_threads;j++) {
                 omp_set_lock(&readlock[j]);
-                if (i * NUM_THREADS + j < numOfChunks) {
-                    inputBufferChunkSizes[j] = inputChunkOffsets[j + i * NUM_THREADS + 1] - inputChunkOffsets[j + i * NUM_THREADS];
-                    outputBufferChunkSizes[j] = inputChunkSizes[j + i * NUM_THREADS];
-                    inputBufferChunkOffsets[j] = inputChunkOffsets[j + i * NUM_THREADS];
+                if (i * num_threads + j < numOfChunks) {
+                    inputBufferChunkSizes[j] = inputChunkOffsets[j + i * num_threads + 1] - inputChunkOffsets[j + i * num_threads];
+                    outputBufferChunkSizes[j] = inputChunkSizes[j + i * num_threads];
+                    inputBufferChunkOffsets[j] = inputChunkOffsets[j + i * num_threads];
                 }
                 else {
                     inputBufferChunkSizes[j] = 0;
@@ -147,9 +147,9 @@ bool fileDecoder(FILE* inputFile, FILE* outputFile, Node* huffmanTree, ull input
                 omp_unset_lock(&processlock[j]);
             }
         // single last thread as writer
-        }else if(thread_ID==NUM_THREADS+1){
+        }else if(thread_ID==num_threads+1){
             // writer
-            for (int j = 0;j < NUM_THREADS;j++) {
+            for (int j = 0;j < num_threads;j++) {
                 omp_set_lock(&writelock[j]);
                 if (outputBufferChunkSizes[j] > 0) {
                     fwrite(outputChunk[j], sizeof(unsigned char), decodedOutputBufferChunkSizes[j], outputFile);
@@ -157,13 +157,13 @@ bool fileDecoder(FILE* inputFile, FILE* outputFile, Node* huffmanTree, ull input
                 omp_unset_lock(&readlock[j]);
             }
         }
-        // all other NUM_THREADS on processing
+        // all other num_threads on processing
         else{
             int work_ID = 0;
             #pragma omp critical
             {
                 work_ID = current_chunk;
-                current_chunk = (current_chunk + 1) % NUM_THREADS;
+                current_chunk = (current_chunk + 1) % num_threads;
             }
             omp_set_lock(&processlock[work_ID]);
             if (outputBufferChunkSizes[work_ID] > 0) {
@@ -175,7 +175,7 @@ bool fileDecoder(FILE* inputFile, FILE* outputFile, Node* huffmanTree, ull input
         
     
     }
-    for (int j = 0;j < NUM_THREADS;j++) {
+    for (int j = 0;j < num_threads;j++) {
         omp_destroy_lock(&readlock[j]);
         omp_destroy_lock(&processlock[j]);
         omp_destroy_lock(&writelock[j]);
@@ -183,7 +183,7 @@ bool fileDecoder(FILE* inputFile, FILE* outputFile, Node* huffmanTree, ull input
     return isDecodingSuccessful;
 }
 
-bool fileDecoderFull( char* inputFileName, char* outputFileName){
+bool fileDecoderFull( char* inputFileName, char* outputFileName, int num_threads){
     // get byte frequencies in the input file
     FILE* inputFile = fopen(inputFileName, "r");
     if (!inputFile) {
@@ -210,7 +210,7 @@ bool fileDecoderFull( char* inputFileName, char* outputFileName){
     }
 
     // decode
-    bool isDecodingSuccessful = fileDecoder(inputFile, outputFile, huffmanTree, chunkOffsets, inputChunkSizes, numChunks);
+    bool isDecodingSuccessful = fileDecoder(inputFile, outputFile, huffmanTree, chunkOffsets, inputChunkSizes, numChunks, num_threads);
 
     // free resources
     fclose(inputFile);
