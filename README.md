@@ -19,12 +19,24 @@ make decoder
 bin/decode.out data/test.bin.huf
 ```
 ## Parallel
-### How to run
+### Make
 ```bash
-make parallelEncoder
-bin/parallelEncode.out data/test.bin data/test.bin.huf
-make parallelDecoder
-bin/parallelDecode.out data/test.bin.huf data/test.bin.huf.dec
+make build
+```
+### How to encode
+```bash
+bin/main.out -e data/test.bin data/test.bin.huf
+```
+### How to decode
+```bash
+bin/main.out -d data/test.bin data/test.bin.huf
+```
+### Options
+```bash
+-e to encode
+-d to decode
+-r process a folder
+-h help text
 ```
 ### Test against valgrind
 ```bash

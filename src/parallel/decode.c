@@ -2,12 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include <unistd.h>
-#include <mpi.h>
+
 #include <omp.h>
 
 #include "huffman.h"
 #include "frequency.h"
+#include "decode.h"
 #include "../datastructures/priorityQ.h"
 #include "../datastructures/dictionary.h"
 
@@ -84,111 +84,6 @@ bool chunkDecoder(unsigned char inputChunk[], unsigned char outputChunk[], Node*
     *outputChunkSize = outputCharCounter - 1;
     return isDecodingSuccessful;
 }
-
-// /*
-// ** Function to decode a file to an outputfile according huffmanAlphabet
-// */
-// bool fileDecoder(FILE* inputFile, FILE* outputFile, Node* huffmanTree, ull inputChunkOffsets[], ull inputChunkSizes[], int numOfChunks) {
-//     // chunks
-//     unsigned char inputChunk[NUM_THREADS][MAX_ENCODED_BUFFER_SIZE];
-//     // +1 to avoid overflow
-//     unsigned char outputChunk[NUM_THREADS][MAX_DECODED_BUFFER_SIZE+1];
-//     bool isDecodingSuccessful = true;
-//     ull inputBufferChunkSizes[NUM_THREADS];
-//     ull outputBufferChunkSizes[NUM_THREADS];
-//     ull decodedOutputBufferChunkSizes[NUM_THREADS];
-//     ull inputBufferChunkOffsets[NUM_THREADS];
-//     int chunkIterations = numOfChunks/NUM_THREADS;
-//     if (numOfChunks%NUM_THREADS != 0){
-//         chunkIterations++;
-//     }
-//     Node * huffTrees[NUM_THREADS];
-//     // locks for multithreading
-//     omp_lock_t readlock[NUM_THREADS];
-//     omp_lock_t processlock[NUM_THREADS];
-//     omp_lock_t writelock[NUM_THREADS];
-//     int current_chunk = 0;
-//     for (int j = 0;j < NUM_THREADS;j++) {
-//         omp_init_lock(&readlock[j]);
-//         omp_init_lock(&processlock[j]);
-//         omp_init_lock(&writelock[j]);
-//         omp_unset_lock(&readlock[j]);
-//         omp_set_lock(&processlock[j]);
-//         omp_set_lock(&writelock[j]);
-//     }
-//     omp_set_dynamic(0); 
-//     omp_set_num_threads(NUM_THREADS); 
-//     #pragma omp parallel
-//     for (int i = 0; i < chunkIterations; i++) {
-//         // single thread as reader
-//         #pragma omp single nowait
-//         {
-//             ull readSize = 0;
-//             for (int j = 0;j < NUM_THREADS;j++) {
-//                 omp_set_lock(&readlock[j]);
-//                 printf("set readlock[%d]\n",j);
-//                 if (i*NUM_THREADS + j < numOfChunks) {
-//                     inputBufferChunkSizes[j] = inputChunkOffsets[j + i*NUM_THREADS + 1] - inputChunkOffsets[j + i*NUM_THREADS];
-//                     outputBufferChunkSizes[j] = inputChunkSizes[j + i*NUM_THREADS];
-//                     inputBufferChunkOffsets[j] = inputChunkOffsets[j + i*NUM_THREADS];
-//                 }
-//                 else{
-//                     inputBufferChunkSizes[j] = 0;
-//                     outputBufferChunkSizes[j] = 0;
-//                     inputBufferChunkOffsets[j] = 0;
-//                 }
-//                 if (inputBufferChunkSizes[j] > 0) {
-//                     fseek(inputFile, inputBufferChunkOffsets[j], SEEK_SET);
-//                     readSize = fread(inputChunk[j], sizeof(unsigned char), inputBufferChunkSizes[j], inputFile);
-//                     if (readSize != inputBufferChunkSizes[j]) {
-//                         isDecodingSuccessful = false;
-//                     }
-//                 }
-//                 omp_unset_lock(&processlock[j]);
-//                 printf("unset processlock[%d]\n",j);
-//             }
-
-//         }
-//         //int thread_ID = omp_get_thread_num();
-//         int thread_ID = 0;
-//         #pragma omp critical
-//         {
-//             thread_ID = current_chunk;
-//             current_chunk = (current_chunk+1)%NUM_THREADS;
-//         }
-//         omp_set_lock(&processlock[thread_ID]);
-//         printf("set processlock[%d]\n",thread_ID);
-//         if (outputBufferChunkSizes[thread_ID] > 0) {
-//             chunkDecoder(inputChunk[thread_ID], outputChunk[thread_ID], huffmanTree, outputBufferChunkSizes[thread_ID],&decodedOutputBufferChunkSizes[thread_ID]);
-//         }
-//         //omp_unset_lock(&readlock[thread_ID]);
-//         omp_unset_lock(&writelock[thread_ID]);
-//         printf("unset writelock[%d]\n",thread_ID);
-//         //#pragma omp barrier
-
-//         //writer
-//         #pragma omp single
-//         {
-//             for (int j = 0;j < NUM_THREADS;j++) {
-//                 omp_set_lock(&writelock[j]);
-//                 printf("set writelock[%d]\n",j);
-//                 if (outputBufferChunkSizes[j] > 0) {
-//                     fwrite(outputChunk[j], sizeof(unsigned char), decodedOutputBufferChunkSizes[j], outputFile);
-//                 }
-//                 omp_unset_lock(&readlock[j]);
-//                 printf("unset readlock[%d]\n",j);
-//             }
-//         }
-//     }
-//     for (int j = 0;j < NUM_THREADS;j++) {
-//         omp_destroy_lock(&readlock[j]);
-//         omp_destroy_lock(&processlock[j]);
-//         omp_destroy_lock(&writelock[j]);
-//     }
-//     return isDecodingSuccessful;
-// }
-
-
 
 
 /*
@@ -288,21 +183,7 @@ bool fileDecoder(FILE* inputFile, FILE* outputFile, Node* huffmanTree, ull input
     return isDecodingSuccessful;
 }
 
-int main(int argc, char* argv[]) {
-
-    // initialize MPI
-    int provided;
-    MPI_Init_thread(&argc, &argv, MPI_THREAD_FUNNELED, &provided);
-    // get the rank of the process
-    int rank;
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    // get the number of processes
-    int size;
-    MPI_Comm_size(MPI_COMM_WORLD, &size);
-    // get input and output filenames
-    char* inputFileName = argv[1];
-    char* outputFileName = argv[2];
-
+bool fileDecoderFull( char* inputFileName, char* outputFileName){
     // get byte frequencies in the input file
     FILE* inputFile = fopen(inputFileName, "r");
     if (!inputFile) {
@@ -344,6 +225,5 @@ int main(int argc, char* argv[]) {
     free(chunkOffsets);
     free(inputChunkSizes);
 
-    MPI_Finalize();
-    return  0;
+    return  isDecodingSuccessful;
 }

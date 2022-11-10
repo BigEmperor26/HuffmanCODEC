@@ -1,9 +1,6 @@
 #ifndef __HUFFMAN__
 #define __HUFFMAN__
 
-#include <string.h>
-#include <stdio.h>
-#include <stdbool.h>
 #include "../commons/commons.h"
 #include "../datastructures/dictionary.h"
 #include "../datastructures/priorityQ.h"

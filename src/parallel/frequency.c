@@ -1,3 +1,8 @@
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
 #include <omp.h>
 #include "frequency.h"
 
@@ -10,73 +15,6 @@ void countChunk(unsigned char *chunk,int size,Dictionary *d){
         d->frequencies[chunk[i]]++;
     }
 }
-
-// /* 
-// ** function that reads chunks from readfile, applies processChunk to each chunk, and writes the result in writefile 
-// */
-// ull parallel_get_frequencies(FILE* file,Dictionary *d){
-
-//     fseek(file, 0, SEEK_END); // seek to end of file
-//     int file_size = ftell(file); // get current file pointer
-//     fseek(file, 0, SEEK_SET); // seek to end of file
-//     // chunks
-//     unsigned char chunk [NUM_THREADS][MAX_DECODED_BUFFER_SIZE];
-//     int chunk_size = MAX_DECODED_BUFFER_SIZE;
-//     int chunk_count = 0;
-//     int read[NUM_THREADS];
-
-//     chunk_count = file_size/chunk_size;
-//     if (file_size%chunk_size != 0){
-//         chunk_count++;
-//     }
-//     int chunk_iterations = chunk_count/NUM_THREADS;
-//     if (chunk_count%NUM_THREADS != 0){
-//         chunk_iterations++;
-//     }
-//     omp_lock_t readlock[NUM_THREADS];
-//     omp_lock_t processlock[NUM_THREADS];
-//     int current_chunk = 0;
-//     for (int j = 0;j < NUM_THREADS;j++) {
-//         omp_init_lock(&readlock[j]);
-//         omp_init_lock(&processlock[j]);
-//         omp_unset_lock(&readlock[j]);
-//         omp_set_lock(&processlock[j]);
-//     }
-//     omp_set_dynamic(0); 
-//     omp_set_num_threads(NUM_THREADS); 
-//     #pragma omp parallel
-//     for(int i = 0; i < chunk_iterations; i++){
-//         // sequential read of NUM_THREADS chunks
-//         #pragma omp single nowait
-//         {
-//             for(int j=0;j<NUM_THREADS;j++){
-//                 omp_set_lock(&readlock[j]);
-//                 read[j] = fread(chunk[j],sizeof(unsigned char),chunk_size,file);
-//                 omp_unset_lock(&processlock[j]);
-//             }
-//         }
-//         //#pragma omp barrier
-//         //int thread_id = omp_get_thread_num();
-//         int thread_id = 0;
-//         //int thread_ID = omp_get_thread_num();
-//         #pragma omp critical
-//         {
-//           thread_id = current_chunk;
-//           current_chunk = (current_chunk +1)%NUM_THREADS;
-//         }
-//         //  count the chunks
-//         omp_set_lock(&processlock[thread_id]);
-//         if (read[thread_id]>0)
-//             countChunk(chunk[thread_id],read[thread_id],d);
-//         omp_unset_lock(&readlock[thread_id]);
-//         #pragma omp barrier
-//     }
-//     for (int j = 0;j < NUM_THREADS;j++) {
-//         omp_destroy_lock(&readlock[j]);
-//         omp_destroy_lock(&processlock[j]);
-//     }
-//     return file_size;
-// }
 
 /* 
 ** function that reads chunks from readfile, applies processChunk to each chunk, and writes the result in writefile 
