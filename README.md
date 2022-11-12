@@ -29,13 +29,12 @@ bin/main.out -e data/test.bin data/test.bin.huf
 ```
 ### How to decode
 ```bash
-bin/main.out -d data/test.bin data/test.bin.huf
+bin/main.out -d data/test.bin.huf data/test.bin
 ```
 ### Options
 ```bash
 -e to encode
 -d to decode
--p to set the number of threads to work on each file
 -r process a folder
 -h help text
 ```

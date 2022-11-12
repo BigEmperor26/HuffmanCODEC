@@ -16,7 +16,9 @@
 #include <time.h>
 
 #include <mpi.h>
-#include <omp.h>
+#ifdef _OPENMP 
+# include <omp.h> 
+#endif
 
 #include "../commons/commons.h"
 #include "../datastructures/priorityQ.h"
@@ -154,10 +156,10 @@ int fileProcesser(int rank,char *inputname, char * outputname,int num_threads, v
         printf("processing file %s\n",inputname);
         printf("saving as file %s\n",outputname);
         clock_t start_cpu = clock();
-        double start_wall = omp_get_wtime();
+        double start_wall = MPI_Wtime();
         (*processing)((char *)inputname,(char *)outputname,num_threads);
         clock_t end_cpu = clock();
-        double end_wall =  omp_get_wtime();
+        double end_wall =  MPI_Wtime();
         double cpu_time_used = ((double)(end_cpu - start_cpu)) / CLOCKS_PER_SEC;
         double wall_time = (double) (end_wall-start_wall);
         printf("CPU Time required to read %f\n", cpu_time_used);
@@ -179,10 +181,13 @@ int main(int argc, char** argv) {
     int files_count = 0;
     bool inputfile = true;
     void *processingFunction = NULL;
-    int num_threads = 4;
+    int num_threads = 1;
+    #ifdef _OPENMP 
+        num_threads = omp_get_max_threads();
+    #endif
     // input processing
     char option = '0';
-    while ((option = getopt(argc, argv, "edrp:h")) != -1) {
+    while ((option = getopt(argc, argv, "edrh")) != -1) {
         switch (option) {
             case 'e':
                 processingFunction = fileEncoderFull;
@@ -193,20 +198,16 @@ int main(int argc, char** argv) {
             case 'r':
                 inputfile = false;
                 break;
-            case 'p':
-                num_threads = atoi(optarg);
-                break;
             case 'h':
                 printf("-e to encode\n");
                 printf("-d to decode\n");
                 printf("-r to recursively process a whole directory\n");
-                printf("-p to set the number of threads for each process. Defaults to 4 otherwise\n");
                 printf("Examples of usage\n");
                 printf("%s -e input.txt output.txt\n",argv[0]);
                 printf("%s -d input.txt output.txt\n",argv[0]);
                 printf("%s -r -e /inputfolder /outputfolder\n",argv[0]);
                 printf("%s -r -d /inputfolder /outputfolder\n",argv[0]);
-                printf("%s -r -d -p 10 /inputfolder /outputfolder\n",argv[0]);
+                printf("%s -r -d /inputfolder /outputfolder\n",argv[0]);
                 MPI_Finalize();
                 exit(1);
         }
@@ -219,7 +220,6 @@ int main(int argc, char** argv) {
         MPI_Finalize();
         exit(1);
     }
-
     printf("Running on num_threads %d\n",num_threads);
     if (inputfile){
         fileProcesser(rank,inputname,outputname,num_threads,processingFunction);
