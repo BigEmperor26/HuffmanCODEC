@@ -11,8 +11,9 @@
 */ 
 void countChunk(unsigned char *chunk,int size,Dictionary *d){
     for(int i = 0; i < size; i++){
-        #pragma omp atomic
-        d->frequencies[chunk[i]]++;
+        int value = chunk[i];
+        #pragma omp atomic update
+        d->frequencies[value]++;
     }
 }
 

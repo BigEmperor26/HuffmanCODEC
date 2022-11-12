@@ -55,3 +55,5 @@ dkms.conf
 # huffman results files
 *.huf
 *.dec
+
+data/linux/*

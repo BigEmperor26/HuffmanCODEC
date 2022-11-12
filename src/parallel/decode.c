@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-
+#include <time.h>
 #include <omp.h>
 
 #include "huffman.h"
@@ -159,17 +159,23 @@ bool fileDecoder(FILE* inputFile, FILE* outputFile, Node* huffmanTree, ull input
         }
         // all other num_threads on processing
         else{
-            int work_ID = 0;
-            #pragma omp critical
-            {
-                work_ID = current_chunk;
-                current_chunk = (current_chunk + 1) % num_threads;
-            }
+            double start_lock = omp_get_wtime();
+            int work_ID = omp_get_thread_num()-1;
+            // #pragma omp critical
+            // {
+            //     work_ID = current_chunk;
+            //     current_chunk = (current_chunk + 1) % num_threads;
+            // }
             omp_set_lock(&processlock[work_ID]);
+            double start = omp_get_wtime();
             if (outputBufferChunkSizes[work_ID] > 0) {
                 //sleep(1);
                 chunkDecoder(inputChunk[work_ID], outputChunk[work_ID], huffmanTree, outputBufferChunkSizes[work_ID], &decodedOutputBufferChunkSizes[work_ID]);
             }
+            double end = omp_get_wtime();
+            printf("Time required to process chunk %d for thread %d\n",i*num_threads+work_ID,thread_ID);
+            printf("Time since chunk acquired %f %d\n",end-start_lock,thread_ID);
+            printf("Time to process %f %d\n",end-start,thread_ID);
             omp_unset_lock(&writelock[work_ID]);
         }
         
@@ -210,7 +216,11 @@ bool fileDecoderFull( char* inputFileName, char* outputFileName, int num_threads
     }
 
     // decode
+    clock_t start = clock();
     bool isDecodingSuccessful = fileDecoder(inputFile, outputFile, huffmanTree, chunkOffsets, inputChunkSizes, numChunks, num_threads);
+    clock_t end = clock();
+    double cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
+    printf("Time required to only decode %f\n", cpu_time_used);
 
     // free resources
     fclose(inputFile);

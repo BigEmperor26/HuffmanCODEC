@@ -13,6 +13,7 @@
 #include <sys/stat.h>
 #include <errno.h>
 #include <unistd.h>
+#include <time.h>
 
 #include <mpi.h>
 #include <omp.h>
@@ -111,7 +112,15 @@ int directoryProcesser(int rank,int size,char *inputname, char * outputname ,int
         // processsing the file
         printf("processing file %s\n",process_input_files[i]);
         printf("saving as file %s\n",process_output_files[i]);
+        clock_t start_cpu = clock();
+        double start_wall = MPI_Wtime();
         (*processing)((char *)process_input_files[i],(char *)process_output_files[i],num_threads);
+        clock_t end_cpu = clock();
+        double end_wall =  MPI_Wtime();
+        double cpu_time_used = ((double)(end_cpu - start_cpu)) / CLOCKS_PER_SEC;
+        double wall_time = (double) (end_wall-start_wall);
+        printf("CPU Time required to read %f\n", cpu_time_used);
+        printf("Wall Time required to read %f\n", wall_time);
     }
     MPI_Barrier(MPI_COMM_WORLD);
     return 0;
@@ -143,8 +152,16 @@ int fileProcesser(int rank,char *inputname, char * outputname,int num_threads, v
         printf("Number of files: %d\n", files_count);
         // processsing the file
         printf("processing file %s\n",inputname);
-        printf("saving as file %s\n",outputfile);
+        printf("saving as file %s\n",outputname);
+        clock_t start_cpu = clock();
+        double start_wall = omp_get_wtime();
         (*processing)((char *)inputname,(char *)outputname,num_threads);
+        clock_t end_cpu = clock();
+        double end_wall =  omp_get_wtime();
+        double cpu_time_used = ((double)(end_cpu - start_cpu)) / CLOCKS_PER_SEC;
+        double wall_time = (double) (end_wall-start_wall);
+        printf("CPU Time required to read %f\n", cpu_time_used);
+        printf("Wall Time required to read %f\n", wall_time);
     }
 }
 
