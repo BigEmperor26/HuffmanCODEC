@@ -121,8 +121,8 @@ int directoryProcesser(int rank,int size,char *inputname, char * outputname ,int
         double end_wall =  MPI_Wtime();
         double cpu_time_used = ((double)(end_cpu - start_cpu)) / CLOCKS_PER_SEC;
         double wall_time = (double) (end_wall-start_wall);
-        printf("CPU Time required to read %f\n", cpu_time_used);
-        printf("Wall Time required to read %f\n", wall_time);
+        printf("CPU Time required to process %f\n", cpu_time_used);
+        printf("Wall Time required to process %f\n", wall_time);
     }
     MPI_Barrier(MPI_COMM_WORLD);
     return 0;
@@ -162,8 +162,8 @@ int fileProcesser(int rank,char *inputname, char * outputname,int num_threads, v
         double end_wall =  MPI_Wtime();
         double cpu_time_used = ((double)(end_cpu - start_cpu)) / CLOCKS_PER_SEC;
         double wall_time = (double) (end_wall-start_wall);
-        printf("CPU Time required to read %f\n", cpu_time_used);
-        printf("Wall Time required to read %f\n", wall_time);
+        printf("CPU Time required to process %f\n", cpu_time_used);
+        printf("Wall Time required to process %f\n", wall_time);
     }
 }
 
