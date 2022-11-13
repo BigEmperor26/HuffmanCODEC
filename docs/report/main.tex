@@ -1,0 +1,66 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage[hidelinks]{hyperref}
+\usepackage[noabbrev,capitalize]{cleveref}
+\usepackage{array, booktabs, makecell}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{caption}
+\usepackage{subcaption}
+\newcommand\norm[1]{\left\lVert#1\right\rVert}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\graphicspath{../}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=black,      
+    citecolor=black,
+    urlcolor=blue,
+    pdfpagemode=FullScreen,
+    }
+
+\begin{document}
+
+\title{Parallel Huffman Coding}
+
+\author{\IEEEauthorblockN{Francesco Bozzo}
+    \IEEEauthorblockA{\textit{DISI, University of Trento} \\
+        Trento, Italy\\
+        francesco.bozzo@studenti.unitn.it\\
+        229312}
+    \and
+    \IEEEauthorblockN{Michele Yin}
+    \IEEEauthorblockA{\textit{DISI, University of Trento} \\
+        Trento, Italy\\
+        michele.yin@studenti.unitn.it\\
+        229359}
+}
+
+\maketitle
+
+% add page number
+\thispagestyle{plain}
+\pagestyle{plain}
+
+\begin{abstract}
+    This report aims to explain the design of a parallel encoding and decoding Huffman algorithm. The application is developed with the C99 programming language, using MPI for multiprocessing and OpenMP for multithreading to scale horizontally with increasing hardware resources. \cite{mapnet}
+\end{abstract}
+
+\begin{IEEEkeywords}
+    Huffman, MPI, OpenMP, High Performance Computing
+\end{IEEEkeywords}
+
+\input{sections/introduction}
+\input{sections/conclusion}
+
+\bibliography{bibliography.bib}{}
+\bibliographystyle{IEEEtran}
+
+\end{document}
