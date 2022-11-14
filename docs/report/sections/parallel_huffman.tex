@@ -1,2 +1,6 @@
 \section{Parallel Huffman Implementation}
-To conclude.
+The application is developed with the C99 programming language, using MPI for multiprocessing and OpenMP for multithreading to scale horizontally with increasing hardware resources. We choose to use:
+\begin{itemize}
+    \item multiple processes to process groups of file and folders separately;
+    \item multiple threads to process different chunk of the same file in parallel.
+\end{itemize}
