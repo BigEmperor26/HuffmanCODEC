@@ -151,45 +151,6 @@ int directoryProcesser(int rank,int size,char *inputname, char * outputname ,int
 }
 
 
-
-/*
-**  Function to process a file. Only rank 0 wil execute
-*/
-
-int fileProcesser(int rank,char *inputname, char * outputname,int num_threads, void (*processing)(char* arg1,char*arg2,int num_threads)){
-     bool inputFile = false;
-     int files_count = 1;
-     if (rank == 0) {
-        // check if input is a file and exists
-        inputFile = regularFile((const char*)inputname) && fileExists((const char*)inputname);
-        if(!inputFile){
-            printf("input %s is not a file\n",inputname);
-            MPI_Finalize();
-            exit(1);
-        }
-        // check if output file already exists to prevent override
-        bool outputfile = fileExists((const char*)outputname);
-        if (outputfile){
-            printf("%s output already exists\n",outputname);
-            MPI_Finalize();
-            exit(1); 
-        }
-        printf("Number of files: %d\n", files_count);
-        // processsing the file
-        printf("processing file %s\n",inputname);
-        printf("saving as file %s\n",outputname);
-        clock_t start_cpu = clock();
-        double start_wall = MPI_Wtime();
-        (*processing)((char *)inputname,(char *)outputname,num_threads);
-        clock_t end_cpu = clock();
-        double end_wall =  MPI_Wtime();
-        double cpu_time_used = ((double)(end_cpu - start_cpu)) / CLOCKS_PER_SEC;
-        double wall_time = (double) (end_wall-start_wall);
-        printf("CPU Time required to process %f\n", cpu_time_used);
-        printf("Wall Time required to process %f\n", wall_time);
-    }
-}
-
 int main(int argc, char** argv) {
     // initialize MPI
     int provided;
@@ -205,50 +166,10 @@ int main(int argc, char** argv) {
     bool inputfile = true;
     void *processingFunction = NULL;
     int num_threads = 1;
-    #ifdef _OPENMP 
-        num_threads = omp_get_max_threads();
-    #endif
-    // input processing
-    char option = '0';
-    while ((option = getopt(argc, argv, "edrh")) != -1) {
-        switch (option) {
-            case 'e':
-                processingFunction = fileEncoderFull;
-                break;
-            case 'd':
-                processingFunction = fileDecoderFull;
-                break;
-            case 'r':
-                inputfile = false;
-                break;
-            case 'h':
-                printf("-e to encode\n");
-                printf("-d to decode\n");
-                printf("-r to recursively process a whole directory\n");
-                printf("Examples of usage\n");
-                printf("%s -e input.txt output.txt\n",argv[0]);
-                printf("%s -d input.txt output.txt\n",argv[0]);
-                printf("%s -r -e /inputfolder /outputfolder\n",argv[0]);
-                printf("%s -r -d /inputfolder /outputfolder\n",argv[0]);
-                printf("%s -r -d /inputfolder /outputfolder\n",argv[0]);
-                MPI_Finalize();
-                exit(1);
-        }
-    }
-    if (optind+1<argc){
-        strcpy(inputname,argv[optind]);
-        strcpy(outputname,argv[optind+1]);
-    }else{
-        printf("Missing input and/or output files\n");
-        MPI_Finalize();
-        exit(1);
-    }
-    printf("Running on num_threads %d\n",num_threads);
-    if (inputfile){
-        fileProcesser(rank,inputname,outputname,num_threads,processingFunction);
-    }else{
-        directoryProcesser(rank,size,inputname,outputname,num_threads,processingFunction);
-    }
+
+    strcpy(inputname,argv[1]);
+    strcpy(outputname,argv[2]);
+    directoryProcesser(rank,size,inputname,outputname,num_threads,processingFunction);
 
     MPI_Finalize();
     return 0;

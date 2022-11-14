@@ -71,8 +71,10 @@ bool fileEncoderBarrier(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[
         chunkIterations++;
     }   
     // set the parallel encoder
+    // #ifdef _OPENMP  
     // omp_set_dynamic(0); 
     // omp_set_num_threads(num_threads); 
+    // #endif
     #pragma omp parallel 
     for(int i = 0; i < chunkIterations; i++){
         //double start = omp_get_wtime();

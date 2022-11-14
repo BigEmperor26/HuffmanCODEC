@@ -1,10 +1,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <linux/limits.h>
 #include <mpi.h>
 #include "processDistributer.h"
-
+#include "../datastructures/priorityQ.h"
 /* function to distribute files_count files to size processes
 ** filenames is expectted to be a contiguous array of size files_count*PATH_MAX
 ** TO DO optimize the size of the output buffer
@@ -42,9 +43,9 @@ void fileDistributer(char** filenames, int files_count, int rank, int size, char
 /*
 ** function to count the size of files in filenames, and return the size in file_sizes for each process
 */
-void fileSizeCounter(char** filenames, int files_count, int rank, int* file_sizes) {
+void fileSizeCounter(char** filenames, int files_count, int rank, ull* file_sizes) {
     // file size, offset of each process, size to readof each process
-    int file_size = 0;
+    ull file_size = 0;
     FILE* ptr;
     for (int i = 0;i < files_count;i++) {
         ptr = fopen(filenames[i], "rb");
@@ -60,3 +61,57 @@ void fileSizeCounter(char** filenames, int files_count, int rank, int* file_size
     }
 }
 
+
+/* function to distribute the files according to the sizes of the files, using a priorityQ with priority the size of each file
+** filenames is expectted to be a contiguous array of size files_count*PATH_MAX
+*/
+void fileSorterSize(char** filenames,ull * file_sizes, int files_count, int size,char ** outputfilenames, int * indexes, int * file_per_process_counts) {
+    // if file size < number of processes, then only file size processes are needed
+    int active_processes = size;
+    if (files_count < size) {
+        active_processes = files_count;
+    }
+    PriorityQ* pq = createPriorityQ();
+    for (int i = 0;i < active_processes;i++) {
+        Node * node = createNode(i,0,NULL,NULL);
+        pushPriorityQ(pq, node);
+    }
+    char process_files[active_processes][files_count][PATH_MAX];
+    int indexes_per_process[active_processes];
+    for (int i = 0;i < active_processes;i++) {
+        indexes_per_process[i] = 0;
+    }
+    for (int i = 0;i < files_count;i++) {
+        Node* node;
+        popPriorityQ(pq, &node);
+        // assign next file to the process with the smallest size already assignes
+        node->priority += file_sizes[i];
+        int process = node->value;
+        strcpy((char*)process_files[process][indexes_per_process[process]], (char*)filenames[i]);
+        indexes_per_process[process]++;
+        pushPriorityQ(pq, node);
+    }
+    int counter = 0;
+    for (int i = 0;i < active_processes;i++) {
+        indexes[i] = counter;
+        file_per_process_counts[i] = indexes_per_process[i];
+        for(int j=0;j<indexes_per_process[i];j++){
+            strcpy((char*)outputfilenames[counter], process_files[i][j]);
+            counter++;
+        }
+    }   
+}
+
+void fileDistributerSize(char** filenames,int * process_indexes,int *file_per_process, int files_count, int rank, int size, char** files_to_process, int * files_to_process_count) {
+    
+    int displacements[size];
+    int files_per_process_count[size];
+    if(rank==0){
+        for (int i = 0;i < size;i++) {
+            displacements[i] = process_indexes[i]*PATH_MAX;
+            files_per_process_count[i] = file_per_process[i]*PATH_MAX;
+        }
+    }
+    MPI_Scatterv(filenames, files_per_process_count, displacements, MPI_CHAR, files_to_process, PATH_MAX * files_count, MPI_CHAR, 0, MPI_COMM_WORLD);
+    MPI_Scatter(file_per_process, 1, MPI_INT, files_to_process_count, 1, MPI_INT, 0, MPI_COMM_WORLD);
+}

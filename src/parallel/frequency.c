@@ -39,8 +39,10 @@ ull parallel_get_frequencies(FILE* file,Dictionary *d, int num_threads){
     if (chunk_count%num_threads != 0){
         chunk_iterations++;
     }
+    // #ifdef _OPENMP 
     // omp_set_dynamic(0); 
-    // omp_set_num_threads(num_threads+1); 
+    // omp_set_num_threads(num_threads); 
+    // #endif
     #pragma omp parallel
     for(int i = 0; i < chunk_iterations; i++){
 
