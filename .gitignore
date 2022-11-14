@@ -51,6 +51,8 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
+# Mac weird files
+*.DS_Store
 
 # huffman results files
 *.huf
