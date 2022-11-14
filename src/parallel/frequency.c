@@ -60,12 +60,12 @@ ull parallel_get_frequencies(FILE* file,Dictionary *d, int num_threads){
         #pragma omp single
         {
             for(int j=0;j<num_threads;j++){
-                read[j] = fread(chunk[j],sizeof(unsigned char),chunk_size,file);
+                read[j] = fread(chunk+j*MAX_DECODED_BUFFER_SIZE,sizeof(unsigned char),chunk_size,file);
             }
         }
         //  count the chunks
         if (read[thread_ID]>0)
-            countChunk(chunk[thread_ID],read[thread_ID],d);
+            countChunk(chunk+thread_ID*MAX_DECODED_BUFFER_SIZE,read[thread_ID],d);
         
     }
     free(chunk);
