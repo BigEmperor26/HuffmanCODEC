@@ -54,14 +54,14 @@ bool fileEncoderBarrier(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[
     fseek(inputFile, 0, SEEK_SET); // seek to start of file
     *outputFileSize = 0;
     // chunks
-    unsigned char inputChunk[num_threads][MAX_DECODED_BUFFER_SIZE];
-    unsigned char outputChunk[num_threads][MAX_ENCODED_BUFFER_SIZE];
+    unsigned char * inputChunk = (unsigned char*)malloc(sizeof(unsigned char)*num_threads*MAX_DECODED_BUFFER_SIZE);
+    unsigned char * outputChunk = (unsigned char*)malloc(sizeof(unsigned char)*num_threads*(MAX_ENCODED_BUFFER_SIZE));
     // input
     ull chunkSize = MAX_DECODED_BUFFER_SIZE;
     // output variable length
-    ull inputBufferChunkSizes[num_threads];
+    ull* inputBufferChunkSizes = malloc(sizeof(ull)*num_threads); //ull inputBufferChunkSizes[num_threads];
     // output variable length
-    ull outputBufferChunkSizes[num_threads];
+    ull *outputBufferChunkSizes =  malloc(sizeof(ull)*num_threads); //ull outputBufferChunkSizes[num_threads];
     int numOfChunks = 0;
     // error detection
     bool isEncodingSuccessful = true;
@@ -86,7 +86,7 @@ bool fileEncoderBarrier(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[
         {
             for(int j=0;j<num_threads;j++){
                 if (i*num_threads + j < numOfChunks){
-                    inputBufferChunkSizes[j] = fread(inputChunk[j],sizeof(unsigned char),chunkSize,inputFile);
+                    inputBufferChunkSizes[j] = fread(inputChunk+j*MAX_DECODED_BUFFER_SIZE,sizeof(unsigned char),chunkSize,inputFile);
                     inputChunkSizes[i*num_threads+j] = inputBufferChunkSizes[j];
                 }else{
                     inputBufferChunkSizes[j] = 0;
@@ -101,7 +101,7 @@ bool fileEncoderBarrier(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[
         // test lock instead
         if (inputBufferChunkSizes[thread_ID]>0){
             // Huffman compression of NUM_THREAD chunks
-            isEncodingSuccessful = chunkEncoder(inputChunk[thread_ID],outputChunk[thread_ID],huffmanAlphabet,inputBufferChunkSizes[thread_ID],&outputBufferChunkSizes[thread_ID]) && isEncodingSuccessful;
+            isEncodingSuccessful = chunkEncoder(inputChunk+thread_ID*MAX_DECODED_BUFFER_SIZE,outputChunk+thread_ID*MAX_ENCODED_BUFFER_SIZE,huffmanAlphabet,inputBufferChunkSizes[thread_ID],&outputBufferChunkSizes[thread_ID]) && isEncodingSuccessful;
             if (i*num_threads + thread_ID < numOfChunks)
                 outputChunkSizes[i*num_threads+thread_ID] = outputBufferChunkSizes[thread_ID];
         }else{
@@ -116,7 +116,7 @@ bool fileEncoderBarrier(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[
         {
             for(int j=0;j<num_threads;j++){
                 if (inputBufferChunkSizes[j]>0){
-                    fwrite(outputChunk[j],sizeof(unsigned char),outputBufferChunkSizes[j],outputFile);
+                    fwrite(outputChunk+j*MAX_ENCODED_BUFFER_SIZE,sizeof(unsigned char),outputBufferChunkSizes[j],outputFile);
                     *outputFileSize +=outputBufferChunkSizes[j];
                 }
             }

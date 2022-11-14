@@ -1,11 +1,11 @@
 
 #!/bin/bash
 
-#PBS -l select=1:ncpus=2:mem=2gb 
-#PBS -l walltime=0:05:00
+#PBS -l select=1:ncpus=1:mem=2gb 
+#PBS -l walltime=0:10:00
 #PBS -q short_cpuQ
-#PBS -o output_test.out
-#PBS -e errro_test.out 
+#PBS -o output_s1_decode.out
+#PBS -e errro_s1_decode.out 
 module load mpich-3.2 
 module load openmpi-4.0.4
-mpiexec -n 1 /home/michele.yin/HuffmanCODEC/bin/decode.out  /home/michele.yin/HuffmanCODEC/data/test.bin.huf /home/michele.yin/HuffmanCODEC/data/test.bin.dec
+mpiexec -n 1 /home/michele.yin/HuffmanCODEC/bin/decode.out  /home/michele.yin/HuffmanCODEC/data/movie/movie.mkv.huf

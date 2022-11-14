@@ -76,8 +76,8 @@ void fileSorterSize(char** filenames,ull * file_sizes, int files_count, int size
         Node * node = createNode(i,0,NULL,NULL);
         pushPriorityQ(pq, node);
     }
-    char process_files[active_processes][files_count][PATH_MAX];
-    int indexes_per_process[active_processes];
+    char* process_files = (char*)malloc(sizeof(char)*active_processes*files_count*PATH_MAX); //char process_files[active_processes][files_count][PATH_MAX];
+    int * indexes_per_process = (int*)malloc(sizeof(int)*active_processes); //int indexes_per_process[active_processes];
     for (int i = 0;i < active_processes;i++) {
         indexes_per_process[i] = 0;
     }
@@ -87,7 +87,9 @@ void fileSorterSize(char** filenames,ull * file_sizes, int files_count, int size
         // assign next file to the process with the smallest size already assignes
         node->priority += file_sizes[i];
         int process = node->value;
-        strcpy((char*)process_files[process][indexes_per_process[process]], (char*)filenames[i]);
+        int index = indexes_per_process[process];
+        strcpy(process_files + process*files_count*PATH_MAX + index*PATH_MAX, filenames[i]);
+        //strcpy((char*)process_files[process][indexes_per_process[process]], (char*)filenames[i]);
         indexes_per_process[process]++;
         pushPriorityQ(pq, node);
     }
@@ -96,13 +98,17 @@ void fileSorterSize(char** filenames,ull * file_sizes, int files_count, int size
         indexes[i] = counter;
         file_per_process_counts[i] = indexes_per_process[i];
         for(int j=0;j<indexes_per_process[i];j++){
-            strcpy((char*)outputfilenames[counter], process_files[i][j]);
+            //strcpy(outputfilenames + counter*PATH_MAX, process_files + i*files_count*PATH_MAX + j*PATH_MAX);
+            //strcpy((char*)outputfilenames[counter], process_files[i][j]);
+            strcpy((char*)outputfilenames[counter], process_files + i*files_count*PATH_MAX + j*PATH_MAX);
             counter++;
         }
     }   
+    free(process_files);
+    free(indexes_per_process);
 }
 
-void fileDistributerSize(char** filenames,int * process_indexes,int *file_per_process, int files_count, int rank, int size, char** files_to_process, int * files_to_process_count) {
+void fileDistributerSize(char* filenames,int * process_indexes,int *file_per_process, int files_count, int rank, int size, char* files_to_process, int * files_to_process_count) {
     
     int displacements[size];
     int files_per_process_count[size];

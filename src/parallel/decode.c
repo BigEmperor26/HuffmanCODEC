@@ -93,14 +93,14 @@ bool chunkDecoder(unsigned char inputChunk[], unsigned char outputChunk[], Node*
 */
 bool fileDecoderBarrier(FILE* inputFile, FILE* outputFile, Node* huffmanTree, ull inputChunkOffsets[], ull inputChunkSizes[], int numOfChunks, int num_threads) {
     // chunks
-    unsigned char inputChunk[num_threads][MAX_ENCODED_BUFFER_SIZE];
+    unsigned char * inputChunk = (unsigned char*)malloc(sizeof(unsigned char)*num_threads*MAX_ENCODED_BUFFER_SIZE);//unsigned char inputChunk[num_threads][MAX_ENCODED_BUFFER_SIZE];
     // +1 to avoid overflow
-    unsigned char outputChunk[num_threads][MAX_DECODED_BUFFER_SIZE + 1];
+    unsigned char * outputChunk = (unsigned char*)malloc(sizeof(unsigned char)*num_threads*(MAX_DECODED_BUFFER_SIZE+1));///unsigned char outputChunk[num_threads][MAX_DECODED_BUFFER_SIZE + 1];
     bool isDecodingSuccessful = true;
-    ull inputBufferChunkSizes[num_threads];
-    ull outputBufferChunkSizes[num_threads];
-    ull decodedOutputBufferChunkSizes[num_threads];
-    ull inputBufferChunkOffsets[num_threads];
+    ull* inputBufferChunkSizes = (ull*)malloc(sizeof(ull)*num_threads);//ull inputBufferChunkSizes[num_threads];
+    ull* outputBufferChunkSizes = (ull*)malloc(sizeof(ull)*num_threads);//ull outputBufferChunkSizes[num_threads];
+    ull* decodedOutputBufferChunkSizes =(ull*) malloc(sizeof(ull)*num_threads);//ull decodedOutputBufferChunkSizes[num_threads];
+    ull* inputBufferChunkOffsets = (ull*)malloc(sizeof(ull)*num_threads);//ull inputBufferChunkOffsets[num_threads];
     int chunkIterations = numOfChunks / num_threads;
     if (numOfChunks % num_threads != 0) {
         chunkIterations++;
@@ -134,7 +134,7 @@ bool fileDecoderBarrier(FILE* inputFile, FILE* outputFile, Node* huffmanTree, ul
                 }
                 if (inputBufferChunkSizes[j] > 0) {
                     fseek(inputFile, inputBufferChunkOffsets[j], SEEK_SET);
-                    readSize = fread(inputChunk[j], sizeof(unsigned char), inputBufferChunkSizes[j], inputFile);
+                    readSize = fread(inputChunk+j*MAX_ENCODED_BUFFER_SIZE, sizeof(unsigned char), inputBufferChunkSizes[j], inputFile);
                     if (readSize != inputBufferChunkSizes[j]) {
                         isDecodingSuccessful = false;
                     }
@@ -145,7 +145,7 @@ bool fileDecoderBarrier(FILE* inputFile, FILE* outputFile, Node* huffmanTree, ul
         
         //double start = omp_get_wtime();
         if (outputBufferChunkSizes[thread_ID] > 0) {
-            chunkDecoder(inputChunk[thread_ID], outputChunk[thread_ID], huffmanTree, outputBufferChunkSizes[thread_ID], &decodedOutputBufferChunkSizes[thread_ID]);
+            chunkDecoder(inputChunk+thread_ID*MAX_ENCODED_BUFFER_SIZE, outputChunk+thread_ID*(MAX_DECODED_BUFFER_SIZE+1), huffmanTree, outputBufferChunkSizes[thread_ID], &decodedOutputBufferChunkSizes[thread_ID]);
         }
         //double end_work = omp_get_wtime();
         //printf("Time required for thread %d on chunk %d %f\n",thread_ID,i*num_threads+thread_ID,end_work-start_work);
@@ -155,7 +155,7 @@ bool fileDecoderBarrier(FILE* inputFile, FILE* outputFile, Node* huffmanTree, ul
             // writer
             for (int j = 0;j < num_threads;j++) {
                 if (outputBufferChunkSizes[j] > 0) {
-                    fwrite(outputChunk[j], sizeof(unsigned char), decodedOutputBufferChunkSizes[j], outputFile);
+                    fwrite(outputChunk+j*(MAX_DECODED_BUFFER_SIZE+1), sizeof(unsigned char), decodedOutputBufferChunkSizes[j], outputFile);
                 }
             }
         }
@@ -163,6 +163,13 @@ bool fileDecoderBarrier(FILE* inputFile, FILE* outputFile, Node* huffmanTree, ul
         //double end = omp_get_wtime();
         //printf("Time required for iteration %d %f\n",i,end-start);
     }
+    free(inputChunk);
+    free(outputChunk);
+    free(inputBufferChunkSizes);
+    free(outputBufferChunkSizes);
+    free(decodedOutputBufferChunkSizes);
+    free(inputBufferChunkOffsets);
+
     return isDecodingSuccessful;
 }
 

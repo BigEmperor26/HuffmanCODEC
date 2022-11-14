@@ -1,7 +1,7 @@
 
 #!/bin/bash
 
-#PBS -l walltime=00:20:00 
+#PBS -l walltime=01:00:00 
 #PBS -q short_cpuQ 
 #PBS -v PROCESSES,THREADS,INPUT,OUTPUTFOLDER
 #PBS -M michele.yin@studenti.unitn.it
