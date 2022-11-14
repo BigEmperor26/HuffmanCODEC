@@ -29,10 +29,13 @@ ull parallel_get_frequencies(FILE* file,Dictionary *d, int num_threads){
     int file_size = ftell(file); // get current file pointer
     fseek(file, 0, SEEK_SET); // seek to end of file
     // chunks
-    unsigned char chunk [num_threads][MAX_DECODED_BUFFER_SIZE];
+    unsigned char * chunk = (unsigned char*)malloc(sizeof(unsigned char)*num_threads*MAX_DECODED_BUFFER_SIZE);
+    
+    //unsigned char chunk [num_threads][MAX_DECODED_BUFFER_SIZE];
     int chunk_size = MAX_DECODED_BUFFER_SIZE;
     int chunk_count = 0;
-    int read[num_threads];
+    int * read = malloc(sizeof(int)*num_threads);
+    //int read[num_threads];
 
     chunk_count = file_size/chunk_size;
     if (file_size%chunk_size != 0){
@@ -65,5 +68,7 @@ ull parallel_get_frequencies(FILE* file,Dictionary *d, int num_threads){
             countChunk(chunk[thread_ID],read[thread_ID],d);
         
     }
+    free(chunk);
+    free(read);
     return file_size;
 }

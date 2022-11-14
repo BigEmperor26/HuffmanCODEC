@@ -124,6 +124,11 @@ bool fileEncoderBarrier(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[
         //double end = omp_get_wtime();
         //printf("Time required for iteration %d %f\n",i,end-start);
     }
+    free(inputChunk);
+    free(outputChunk);
+    free(inputBufferChunkSizes);
+    free(outputBufferChunkSizes);
+    
     return isEncodingSuccessful;
 }
 
