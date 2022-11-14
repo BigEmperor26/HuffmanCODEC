@@ -23,11 +23,11 @@ export OMP_PLACES=threads
 # export I_MPI_DEBUG=5
 # export I_MPI_PIN_ORDER=scatter
 # export KMP_AFFINITY=verbose,scatter
-time mpiexec --report-bindings -np 1 --map-by node:pe=${THREADS} --bind-to core ${MAIN} -${MODE} ${INPUT} ${OUTPUT} 1> ${OUTPUTFOLDER}/deconding_result_${THREADS}_threads  2> ${OUTPUTFOLDER}/deconding_result_${THREADS}_threads_err
+time mpiexec --report-bindings -np 1 -display-devel-map --map-by node:pe=${THREADS} --bind-to core ${MAIN} -${MODE} ${INPUT} ${OUTPUT} #1> ${OUTPUTFOLDER}/deconding_result_${THREADS}_threads  2> ${OUTPUTFOLDER}/deconding_result_${THREADS}_threads_err
 
 
 # How to run
 # write INPUT=path to file to encode
 # write OUTPUTFOLDER=path to specify where to save stdout and stderr
 # then copy and paste this command to submit the job
-# for THREADS in 1 2 4 6 8 10 12 16 20 24 32 48 64 96; do export THREADS; export INPUT;export OUTPUTFOLDER; qsub -N Decoder${THREADS} -l select=1:ncpus=${THREADS}:mem=4gb '/home/michele.yin/HuffmanCODEC/clusterscripts/parallelDecoderFile.sh'; done
+# for THREADS in 1 2 4 6 8 10 12 16 20 24 32 48 64 96; do export THREADS; export INPUT;export OUTPUTFOLDER; qsub -N Decoder${PROCESSES}_${THREADS} -l select=1:ncpus=${THREADS}:mem=4gb -o ${OUTPUTFOLDER}/deconding_result_${THREADS}_threads -e ${OUTPUTFOLDER}/deconding_result_${THREADS}_threads_err '/home/michele.yin/HuffmanCODEC/clusterscripts/parallelDecoderFile.sh'; done

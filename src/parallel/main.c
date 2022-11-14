@@ -138,7 +138,7 @@ int directoryProcesser(int rank,int size,char *inputname, char * outputname ,int
         printf("saving as file %s\n",process_output_files[i]);
         clock_t start_cpu = clock();
         double start_wall = MPI_Wtime();
-        //(*processing)((char *)process_input_files[i],(char *)process_output_files[i],num_threads);
+        (*processing)((char *)process_input_files[i],(char *)process_output_files[i],num_threads);
         clock_t end_cpu = clock();
         double end_wall =  MPI_Wtime();
         double cpu_time_used = ((double)(end_cpu - start_cpu)) / CLOCKS_PER_SEC;
