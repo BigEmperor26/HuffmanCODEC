@@ -3,7 +3,10 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include <omp.h>
+#ifdef _OPENMP 
+# include <omp.h> 
+#endif
+
 #include "frequency.h"
 
 /*

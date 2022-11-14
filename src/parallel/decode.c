@@ -3,7 +3,10 @@
 #include <string.h>
 #include <stdbool.h>
 #include <time.h>
-#include <omp.h>
+#ifdef _OPENMP 
+# include <omp.h> 
+#endif
+
 
 #include "huffman.h"
 #include "frequency.h"

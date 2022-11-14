@@ -67,6 +67,7 @@ int directoryProcesser(int rank,int size,char *inputname, char * outputname ,int
     char sorted_files[files_count][PATH_MAX];
     int sorted_file_indexes[files_count];
     int files_per_process[size];
+    
     if(rank ==0 ){
         char* files_ptr[files_count];
         char* sorted_files_ptr[files_count];

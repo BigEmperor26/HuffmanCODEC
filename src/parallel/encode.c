@@ -6,7 +6,10 @@
 #include <time.h>
 
 //#include <mpi.h>
-#include <omp.h>
+#ifdef _OPENMP 
+# include <omp.h> 
+#endif
+
 #include "huffman.h"
 #include "frequency.h"
 #include "encode.h"
