@@ -279,7 +279,7 @@ bool fileEncoderFull( char* inputFileName, char* outputFileName, int num_threads
     int numOfChunks = (originalFileSize / MAX_DECODED_BUFFER_SIZE) + 1;
     ull* inputChunkSizes = (ull*)malloc(sizeof(ull) * numOfChunks);
     ull* outputChunkSizes = (ull*)malloc(sizeof(ull) * numOfChunks);
-    printf("Num of chunks %d",numOfChunks);
+    //printf("Num of chunks %d",numOfChunks);
     clock_t start = clock();
     bool isEncodingSuccessful = fileEncoderBarrier(inputFile, outputFile, huffmanAlphabet, &outputFileSize, inputChunkSizes, outputChunkSizes,num_threads);
     clock_t end = clock();
