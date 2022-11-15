@@ -5,6 +5,9 @@
 #PBS -q short_cpuQ 
 #PBS -v THREADS,INPUT,OUTPUTFOLDER
 #PBS -M michele.yin@studenti.unitn.it
+
+OUTPUTFOLDER=${OUTPUTFOLDER%/}
+
 MAIN=/home/michele.yin/HuffmanCODEC/bin/main.out
 MODE=e
 OUTPUT=${INPUT}.huf${THREADS}

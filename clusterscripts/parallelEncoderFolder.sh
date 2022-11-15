@@ -6,9 +6,13 @@
 #PBS -v PROCESSES,THREADS,INPUT,OUTPUTFOLDER
 #PBS -M michele.yin@studenti.unitn.it
 
+INPUT=${INPUT%/}
+OUTPUTFOLDER=${OUTPUTFOLDER%/}
+
+
 MAIN=/home/michele.yin/HuffmanCODEC/bin/main.out
 MODE=e
-OUTPUT=${INPUT}.huf${THREADS}
+OUTPUT=${INPUT}huf_${PROCESSES}_${THREADS}
 
 TOTAL=$(($THREADS*$PROCESSES))
 echo main executable ${MAIN}
@@ -30,7 +34,8 @@ export OMP_PLACES=threads
 time mpiexec --report-bindings -np ${PROCESSES} --map-by node:pe=${THREADS} --bind-to core ${MAIN} -${MODE} -r ${INPUT} ${OUTPUT} #1> ${OUTPUTFOLDER}/enconding_result_${THREADS}_threads  2> ${OUTPUTFOLDER}/enconding_result_${THREADS}_threads_err
 
 # How to run
+# BIG IMPORTANOT NOTE. FOLDERS SHOULD NOT HAVE . in the NAME
 # write INPUT=path to folder to encode
 # write OUTPUTFOLDER=path to specify where to save stdout and stderr
 # then copy and paste this command to submit the job
-# for PROCESSES in 1 2 4; do for THREADS in 1 2 4 6 8 10 12 16 20 24; do export PROCESSES; export THREADS; export INPUT;export OUTPUTFOLDER; qsub -N Encoder${PROCESSES}_${THREADS} -l select=$1:ncpus=${TOTAL}:mem=4gb -o ${OUTPUTFOLDER}/enconding_result_${THREADS}_threads -e ${OUTPUTFOLDER}/enconding_result_${THREADS}_threads_err '/home/michele.yin/HuffmanCODEC/clusterscripts/parallelEncoderFolder.sh'; done; done;
+# for PROCESSES in 1 2 4; do for THREADS in 1 2 4 6 8 10 12 16 20 24; do export PROCESSES; export THREADS; export INPUT;export OUTPUTFOLDER; qsub -N Encoder${PROCESSES}_${THREADS} -l select=${PROCESSES}:ncpus=${THREADS}:mem=4gb -o ${OUTPUTFOLDER}/enconding_result_${PROCESSES}_${THREADS}_threads -e ${OUTPUTFOLDER}/enconding_result_${PROCESSES}_${THREADS}_threads_err '/home/michele.yin/HuffmanCODEC/clusterscripts/parallelEncoderFolder.sh'; done; done;
