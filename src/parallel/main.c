@@ -104,11 +104,12 @@ int directoryProcesser(int rank,int size,char *inputname, char * outputname ,int
      // Last process may get some more because of uneven integer division
     fileDistributerSize((char*)sorted_files, sorted_file_indexes,files_per_process, files_count, rank, size, (char*)process_input_files,&process_count);
     MPI_Barrier(MPI_COMM_WORLD);
-    // for(int i=0;i<process_count;i++){
-    //     printf("Process %d is assigned %s\n",rank,process_input_files+i*PATH_MAX);
-    // }
+    for(int i=0;i<process_count;i++){
+        printf("Process %d is assigned %s\n",rank,process_input_files+i*PATH_MAX);
+    } 
+    printf("Process %d is assigned a total of %d files",rank,process_count);
     
-    // call encoder for each process
+    call encoder for each process
     for(int i=0;i<process_count;i++){
         printf("Rank %d is processing\n",rank);
         int position = 0;
