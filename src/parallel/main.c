@@ -9,7 +9,7 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <string.h>
-#include <linux/limits.h>
+// #include <linux/limits.h>
 #include <sys/stat.h>
 #include <errno.h>
 #include <unistd.h>
@@ -197,7 +197,7 @@ int fileProcesser(int rank,char *inputname, char * outputname,int num_threads, v
     }
 }
 
-int main(int argc, char** argv) {
+int main(int argc, const char** argv) {
     // initialize MPI
     int provided;
     MPI_Init_thread(&argc, &argv, MPI_THREAD_FUNNELED, &provided);

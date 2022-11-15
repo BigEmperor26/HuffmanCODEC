@@ -15,7 +15,6 @@
 ** different values a byte can assume.
 */
 
-typedef unsigned long long ull;
 
 typedef struct Node {
     int value;  // 0-255 for data, -1 for placeholder
