@@ -8,12 +8,13 @@
 #endif
 
 #include "frequency.h"
+#include "../commons/commons.h"
 
 /*
 ** function that counts the chars in a chunk
 */ 
-void countChunk(unsigned char *chunk,int size,Dictionary *d){
-    for(int i = 0; i < size; i++){
+void countChunk(unsigned char *chunk,ull size,Dictionary *d){
+    for(ull i = 0; i < size; i++){
         int value = chunk[i];
         #pragma omp atomic update
         d->frequencies[value]++;
@@ -32,16 +33,16 @@ ull parallel_get_frequencies(FILE* file,Dictionary *d, int num_threads){
     unsigned char * chunk = (unsigned char*)malloc(sizeof(unsigned char)*num_threads*MAX_DECODED_BUFFER_SIZE);
     
     //unsigned char chunk [num_threads][MAX_DECODED_BUFFER_SIZE];
-    int chunk_size = MAX_DECODED_BUFFER_SIZE;
-    int chunk_count = 0;
-    int * read = malloc(sizeof(int)*num_threads);
+    ull chunk_size = MAX_DECODED_BUFFER_SIZE;
+    ull chunk_count = 0;
+    ull * read = malloc(sizeof(ull)*num_threads);
     //int read[num_threads];
 
     chunk_count = file_size/chunk_size;
     if (file_size%chunk_size != 0){
         chunk_count++;
     }
-    int chunk_iterations = chunk_count/num_threads;
+    ull chunk_iterations = chunk_count/num_threads;
     if (chunk_count%num_threads != 0){
         chunk_iterations++;
     }
@@ -50,7 +51,7 @@ ull parallel_get_frequencies(FILE* file,Dictionary *d, int num_threads){
     // omp_set_num_threads(num_threads); 
     // #endif
     #pragma omp parallel
-    for(int i = 0; i < chunk_iterations; i++){
+    for(ull i = 0; i < chunk_iterations; i++){
         int thread_ID = 0;
         #ifdef _OPENMP 
             thread_ID = omp_get_thread_num();

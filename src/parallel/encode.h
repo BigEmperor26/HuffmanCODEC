@@ -15,7 +15,7 @@ bool chunkEncoder( unsigned char* inputChunk,  unsigned char * outputChunk,char 
 /*
 ** Function to encode a input file to an output file according to given alphabet and chunk sizes
 */
-bool fileEncoder(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[],int* outputFileSize,ull inputChunkSizes[], ull outputChunkSizes[],int num_threads);
+bool fileEncoder(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[],ull* outputFileSize,ull inputChunkSizes[], ull outputChunkSizes[],int num_threads);
 
 
 /*

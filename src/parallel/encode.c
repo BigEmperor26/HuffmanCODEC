@@ -62,14 +62,14 @@ bool fileEncoderBarrier(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[
     ull* inputBufferChunkSizes = malloc(sizeof(ull)*num_threads); //ull inputBufferChunkSizes[num_threads];
     // output variable length
     ull *outputBufferChunkSizes =  malloc(sizeof(ull)*num_threads); //ull outputBufferChunkSizes[num_threads];
-    int numOfChunks = 0;
+    ull numOfChunks = 0;
     // error detection
     bool isEncodingSuccessful = true;
     numOfChunks = inputFileSize/chunkSize;
     if (inputFileSize%chunkSize != 0){
         numOfChunks++;
     }
-    int chunkIterations = numOfChunks/num_threads;
+    ull chunkIterations = numOfChunks/num_threads;
     if (numOfChunks%num_threads != 0){
         chunkIterations++;
     }   
@@ -79,7 +79,7 @@ bool fileEncoderBarrier(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[
     // omp_set_num_threads(num_threads); 
     // #endif
     #pragma omp parallel 
-    for(int i = 0; i < chunkIterations; i++){
+    for(ull i = 0; i < chunkIterations; i++){
         //double start = omp_get_wtime();
         // reader
         #pragma omp single
@@ -276,7 +276,7 @@ bool fileEncoderFull( char* inputFileName, char* outputFileName, int num_threads
     }
     // encode file
     ull outputFileSize = 0;
-    int numOfChunks = (originalFileSize / MAX_DECODED_BUFFER_SIZE) + 1;
+    ull numOfChunks = (originalFileSize / MAX_DECODED_BUFFER_SIZE) + 1;
     ull* inputChunkSizes = (ull*)malloc(sizeof(ull) * numOfChunks);
     ull* outputChunkSizes = (ull*)malloc(sizeof(ull) * numOfChunks);
     //printf("Num of chunks %d",numOfChunks);

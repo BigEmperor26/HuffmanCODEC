@@ -197,7 +197,7 @@ int fileProcesser(int rank,char *inputname, char * outputname,int num_threads, v
     }
 }
 
-int main(int argc, const char** argv) {
+int main(int argc, char** argv) {
     // initialize MPI
     int provided;
     MPI_Init_thread(&argc, &argv, MPI_THREAD_FUNNELED, &provided);

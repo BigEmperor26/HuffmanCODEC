@@ -15,7 +15,7 @@
 #include "../datastructures/dictionary.h"
 
 
-unsigned char getCharFromHuffmanEncodedBitStream(unsigned char buffer[], int* nbytes, int* nbits, Node* node) {
+unsigned char getCharFromHuffmanEncodedBitStream(unsigned char buffer[], ull* nbytes, int* nbits, Node* node) {
 
     if (node->left == NULL && node->right == NULL) {
         return node->value;
@@ -47,7 +47,7 @@ bool getFrequenciesFromEncodedFile(FILE* inputFile, Dictionary* dict) {
     return numFrequencies == MAX_HEAP_SIZE;
 }
 
-ull* getChunkOffsetsFromEncodedFile(FILE* inputFile, int* numChunks) {
+ull* getChunkOffsetsFromEncodedFile(FILE* inputFile, ull* numChunks) {
     fseek(inputFile, -sizeof(ull), SEEK_END);
 
     fread(numChunks, sizeof(ull), 1, inputFile);
@@ -59,7 +59,7 @@ ull* getChunkOffsetsFromEncodedFile(FILE* inputFile, int* numChunks) {
     return chunkOffsets;
 }
 
-ull* getOriginalChunkSizesFromEncodedFile(FILE* inputFile, int* numChunks) {
+ull* getOriginalChunkSizesFromEncodedFile(FILE* inputFile, ull* numChunks) {
     fseek(inputFile, -sizeof(ull), SEEK_END);
 
     fread(numChunks, sizeof(ull), 1, inputFile);
@@ -75,7 +75,7 @@ ull* getOriginalChunkSizesFromEncodedFile(FILE* inputFile, int* numChunks) {
 ** Function to decode a inputChunk to a outputChunk according to huffmanAlphabet
 */
 bool chunkDecoder(unsigned char inputChunk[], unsigned char outputChunk[], Node* huffmanTree, ull inputChunkSize, ull* outputChunkSize) {
-    int nbytes = 0;
+    ull nbytes = 0;
     int nbits = 0;
     ull outputCharCounter = 0;
     bool isDecodingSuccessful = true;
@@ -92,7 +92,7 @@ bool chunkDecoder(unsigned char inputChunk[], unsigned char outputChunk[], Node*
 /*
 ** Function to decode a file to an outputfile according huffmanAlphabet
 */
-bool fileDecoderBarrier(FILE* inputFile, FILE* outputFile, Node* huffmanTree, ull inputChunkOffsets[], ull inputChunkSizes[], int numOfChunks, int num_threads) {
+bool fileDecoderBarrier(FILE* inputFile, FILE* outputFile, Node* huffmanTree, ull inputChunkOffsets[], ull inputChunkSizes[], ull numOfChunks, int num_threads) {
     // chunks
     unsigned char * inputChunk = (unsigned char*)malloc(sizeof(unsigned char)*num_threads*MAX_ENCODED_BUFFER_SIZE);//unsigned char inputChunk[num_threads][MAX_ENCODED_BUFFER_SIZE];
     // +1 to avoid overflow
@@ -102,7 +102,7 @@ bool fileDecoderBarrier(FILE* inputFile, FILE* outputFile, Node* huffmanTree, ul
     ull* outputBufferChunkSizes = (ull*)malloc(sizeof(ull)*num_threads);//ull outputBufferChunkSizes[num_threads];
     ull* decodedOutputBufferChunkSizes =(ull*) malloc(sizeof(ull)*num_threads);//ull decodedOutputBufferChunkSizes[num_threads];
     ull* inputBufferChunkOffsets = (ull*)malloc(sizeof(ull)*num_threads);//ull inputBufferChunkOffsets[num_threads];
-    int chunkIterations = numOfChunks / num_threads;
+    ull chunkIterations = numOfChunks / num_threads;
     if (numOfChunks % num_threads != 0) {
         chunkIterations++;
     }
@@ -113,7 +113,7 @@ bool fileDecoderBarrier(FILE* inputFile, FILE* outputFile, Node* huffmanTree, ul
     // omp_set_num_threads(num_threads); 
     // #endif
     #pragma omp parallel
-    for (int i = 0; i < chunkIterations; i++) {
+    for (ull i = 0; i < chunkIterations; i++) {
         int thread_ID = 0;
         #ifdef _OPENMP 
             thread_ID = omp_get_thread_num();
@@ -292,7 +292,7 @@ bool fileDecoderFull( char* inputFileName, char* outputFileName, int num_threads
     Node* huffmanTree = getHuffmanTree(dict);
 
     // get chunk offsets
-    int numChunks;
+    ull numChunks;
     ull* chunkOffsets = getChunkOffsetsFromEncodedFile(inputFile, &numChunks);
     ull* inputChunkSizes = getOriginalChunkSizesFromEncodedFile(inputFile, &numChunks);
 
