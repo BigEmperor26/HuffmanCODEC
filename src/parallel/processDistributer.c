@@ -16,8 +16,8 @@ void fileDistributer(char** filenames, int files_count, int rank, int size, char
     if (files_count < size) {
         active_processes = files_count;
     }
-    int files_per_process_count[size];
-    int displacements[size];
+    int* files_per_process_count= (int*)malloc(sizeof(int)*size);
+    int* displacements = (int*)malloc(sizeof(int)*size);
     for (int i = 0;i < size;i++) {
         if (i < active_processes) {
             files_per_process_count[i] = (files_count / active_processes) * PATH_MAX;
@@ -37,6 +37,8 @@ void fileDistributer(char** filenames, int files_count, int rank, int size, char
             *files_to_process_count = 0;
         }
     }
+    free(files_per_process_count);
+    free(displacements);
 }
 
 
@@ -78,8 +80,10 @@ void fileSorterSize(char** filenames,ull * file_sizes, int files_count, int size
     }
     char* process_files = (char*)malloc(sizeof(char)*active_processes*files_count*PATH_MAX); //char process_files[active_processes][files_count][PATH_MAX];
     int * indexes_per_process = (int*)malloc(sizeof(int)*active_processes); //int indexes_per_process[active_processes];
-    for (int i = 0;i < active_processes;i++) {
+    for (int i = 0;i < size;i++) {
         indexes_per_process[i] = 0;
+        file_per_process_counts[i] = 0;
+        indexes[i] = 0;
     }
     for (int i = 0;i < files_count;i++) {
         Node* node;
@@ -110,8 +114,8 @@ void fileSorterSize(char** filenames,ull * file_sizes, int files_count, int size
 
 void fileDistributerSize(char* filenames,int * process_indexes,int *file_per_process, int files_count, int rank, int size, char* files_to_process, int * files_to_process_count) {
     
-    int displacements[size];
-    int files_per_process_count[size];
+    int*  displacements = (int*)malloc(sizeof(int)*size);
+    int* files_per_process_count = (int*)malloc(sizeof(int)*size);
     if(rank==0){
         for (int i = 0;i < size;i++) {
             displacements[i] = process_indexes[i]*PATH_MAX;
@@ -120,4 +124,6 @@ void fileDistributerSize(char* filenames,int * process_indexes,int *file_per_pro
     }
     MPI_Scatterv(filenames, files_per_process_count, displacements, MPI_CHAR, files_to_process, PATH_MAX * files_count, MPI_CHAR, 0, MPI_COMM_WORLD);
     MPI_Scatter(file_per_process, 1, MPI_INT, files_to_process_count, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    free(displacements);
+    free(files_per_process_count);
 }

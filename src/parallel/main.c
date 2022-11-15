@@ -105,7 +105,7 @@ int directoryProcesser(int rank,int size,char *inputname, char * outputname ,int
     fileDistributerSize((char*)sorted_files, sorted_file_indexes,files_per_process, files_count, rank, size, (char*)process_input_files,&process_count);
     MPI_Barrier(MPI_COMM_WORLD);
     // for(int i=0;i<process_count;i++){
-    //     printf("Process %d is assigned %s\n",rank,process_input_files[i]);
+    //     printf("Process %d is assigned %s\n",rank,process_input_files+i*PATH_MAX);
     // }
     
     // call encoder for each process
@@ -153,7 +153,6 @@ int directoryProcesser(int rank,int size,char *inputname, char * outputname ,int
     free(files_per_process);
     free(process_input_files);
     free(process_output_files);
-    MPI_Barrier(MPI_COMM_WORLD);
     return 0;
 }
 
@@ -204,8 +203,11 @@ int main(int argc, char** argv) {
     int rank, size;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
-    if(rank==0)
-        printf("Running on num processes %d\n",size);   
+    clock_t start_cpu = clock();
+    double start_wall = MPI_Wtime();
+    if(rank==0){
+        printf("Running on num processes %d\n",size);  
+    }
     // read and preprocess folders
     char inputname[PATH_MAX];
     char outputname[PATH_MAX];
@@ -252,13 +254,20 @@ int main(int argc, char** argv) {
         MPI_Finalize();
         exit(1);
     }
-    printf("Running on num threads %d\n",num_threads);
+    if (rank==0)
+        printf("Running on num threads %d\n",num_threads); 
+    
     if (inputfile){
         fileProcesser(rank,inputname,outputname,num_threads,processingFunction);
     }else{
         directoryProcesser(rank,size,inputname,outputname,num_threads,processingFunction);
     }
-
+    clock_t end_cpu = clock();
+    double end_wall =  MPI_Wtime();
+    double cpu_time_used = ((double)(end_cpu - start_cpu)) / CLOCKS_PER_SEC;
+    double wall_time = (double) (end_wall-start_wall);
+    printf("Overall program CPU Time required to process the input %s %f\n",inputname, cpu_time_used);
+    printf("Overall program Wall Time required to process the input %s %f\n",inputname, wall_time);
     MPI_Finalize();
     return 0;
 }
