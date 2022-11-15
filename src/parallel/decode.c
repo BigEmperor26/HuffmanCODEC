@@ -36,6 +36,7 @@ unsigned char getCharFromHuffmanEncodedBitStream(unsigned char buffer[], int* nb
     else if (node->right != NULL) {
         return getCharFromHuffmanEncodedBitStream(buffer, nbytes, nbits, node->right);
     }
+    return '\0';
 }
 
 bool getFrequenciesFromEncodedFile(FILE* inputFile, Dictionary* dict) {

@@ -48,13 +48,13 @@ int directoryProcesser(int rank,int size,char *inputname, char * outputname ,int
             MPI_Finalize();
             exit(1);
         }
-        // check if output file folder already exists to prevent override
-        bool outputdirectory = directoryExists((const char*)outputname);
-        if (outputdirectory){
-            printf("%s output already exists\n",outputname);
-            MPI_Finalize();
-            exit(1); 
-        }
+        // // check if output file folder already exists to prevent override
+        // bool outputdirectory = directoryExists((const char*)outputname);
+        // if (outputdirectory){
+        //     printf("%s output already exists\n",outputname);
+        //     MPI_Finalize();
+        //     exit(1); 
+        // }
         printf("Number of files: %d\n", files_count);
     }
     // broadcast the files count, and if input is a single file or directory to all other nodes
@@ -75,10 +75,10 @@ int directoryProcesser(int rank,int size,char *inputname, char * outputname ,int
         int current = 0;
         listFiles(inputname, &current, (char**)files_ptr);
         printf("Files:\n");
-        for (int i = 0;i < files_count;i++) {
-            printf("%s\n", files_ptr[i]);
-            printf("strlen %d\n", strlen(files_ptr[i]));
-        }
+        // for (int i = 0;i < files_count;i++) {
+        //     printf("%s\n", files_ptr[i]);
+        //     // printf("strlen %lu\n", strlen(files_ptr[i]));
+        // }
         fileSizeCounter((char **)files_ptr, files_count,0,file_sizes);
         for (int i = 0;i < files_count;i++) {
             printf("%s\n", files_ptr[i]);
@@ -109,7 +109,7 @@ int directoryProcesser(int rank,int size,char *inputname, char * outputname ,int
     } 
     printf("Process %d is assigned a total of %d files",rank,process_count);
     
-    call encoder for each process
+    //call encoder for each process
     for(int i=0;i<process_count;i++){
         printf("Rank %d is processing\n",rank);
         int position = 0;
@@ -174,13 +174,13 @@ int fileProcesser(int rank,char *inputname, char * outputname,int num_threads, v
             MPI_Finalize();
             exit(1);
         }
-        // check if output file already exists to prevent override
-        bool outputfile = fileExists((const char*)outputname);
-        if (outputfile){
-            printf("%s output already exists\n",outputname);
-            MPI_Finalize();
-            exit(1); 
-        }
+        // // check if output file already exists to prevent override
+        // bool outputfile = fileExists((const char*)outputname);
+        // if (outputfile){
+        //     printf("%s output already exists\n",outputname);
+        //     MPI_Finalize();
+        //     exit(1); 
+        // }
         printf("Number of files: %d\n", files_count);
         // processsing the file
         printf("processing file %s\n",inputname);

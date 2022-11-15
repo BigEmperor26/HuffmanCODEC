@@ -48,9 +48,9 @@ bool chunkEncoder( unsigned char* inputChunk,  unsigned char * outputChunk,char 
 /*
 ** Function to encode a file to an outputfile according huffmanAlphabet
 */
-bool fileEncoderBarrier(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[],int* outputFileSize,ull inputChunkSizes[], ull outputChunkSizes[],int num_threads){
+bool fileEncoderBarrier(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[],ull* outputFileSize,ull inputChunkSizes[], ull outputChunkSizes[],int num_threads){
     fseek(inputFile, 0, SEEK_END); // seek to end of file
-    int inputFileSize = ftell(inputFile); // get current file pointer
+    ull inputFileSize = ftell(inputFile); // get current file pointer
     fseek(inputFile, 0, SEEK_SET); // seek to start of file
     *outputFileSize = 0;
     // chunks
@@ -274,12 +274,12 @@ bool fileEncoderFull( char* inputFileName, char* outputFileName, int num_threads
         perror(outputFileName);
         exit(1);
     }
-
     // encode file
-    int outputFileSize = 0;
+    ull outputFileSize = 0;
     int numOfChunks = (originalFileSize / MAX_DECODED_BUFFER_SIZE) + 1;
     ull* inputChunkSizes = (ull*)malloc(sizeof(ull) * numOfChunks);
     ull* outputChunkSizes = (ull*)malloc(sizeof(ull) * numOfChunks);
+    printf("Num of chunks %d",numOfChunks);
     clock_t start = clock();
     bool isEncodingSuccessful = fileEncoderBarrier(inputFile, outputFile, huffmanAlphabet, &outputFileSize, inputChunkSizes, outputChunkSizes,num_threads);
     clock_t end = clock();

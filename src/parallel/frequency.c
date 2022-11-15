@@ -26,7 +26,7 @@ void countChunk(unsigned char *chunk,int size,Dictionary *d){
 ull parallel_get_frequencies(FILE* file,Dictionary *d, int num_threads){
 
     fseek(file, 0, SEEK_END); // seek to end of file
-    int file_size = ftell(file); // get current file pointer
+    ull file_size = ftell(file); // get current file pointer
     fseek(file, 0, SEEK_SET); // seek to end of file
     // chunks
     unsigned char * chunk = (unsigned char*)malloc(sizeof(unsigned char)*num_threads*MAX_DECODED_BUFFER_SIZE);
@@ -51,7 +51,6 @@ ull parallel_get_frequencies(FILE* file,Dictionary *d, int num_threads){
     // #endif
     #pragma omp parallel
     for(int i = 0; i < chunk_iterations; i++){
-
         int thread_ID = 0;
         #ifdef _OPENMP 
             thread_ID = omp_get_thread_num();
