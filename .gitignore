@@ -58,4 +58,4 @@ dkms.conf
 *.huf
 *.dec
 
-data/linux/*
+data/linux*
