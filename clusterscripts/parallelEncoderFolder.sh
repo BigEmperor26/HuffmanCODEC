@@ -12,7 +12,7 @@ OUTPUTFOLDER=${OUTPUTFOLDER%/}
 
 MAIN=/home/michele.yin/HuffmanCODEC/bin/main.out
 MODE=e
-OUTPUT=${INPUT}huf_${PROCESSES}_${THREADS}
+OUTPUT=${INPUT}_huf_${PROCESSES}_${THREADS}
 
 TOTAL=$(($THREADS*$PROCESSES))
 echo main executable ${MAIN}
