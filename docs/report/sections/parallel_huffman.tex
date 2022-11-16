@@ -1,6 +1,50 @@
 \section{Parallel Huffman Implementation}
-The application is developed with the C99 programming language, using MPI for multiprocessing and OpenMP for multithreading to scale horizontally with increasing hardware resources. We choose to use:
+To parallelize our algorithm over threads and processes, we decided to follow this structure
 \begin{itemize}
     \item multiple processes to process groups of file and folders separately;
     \item multiple threads to process different chunk of the same file in parallel.
 \end{itemize}
+
+There are a few motivations to our choice. Mainly are:
+
+\begin{itemize}
+	\item In most operating systems a file is a resource that the OS gives to a single process. We wanted to follow a similar design philosphy.
+	\item Most operating system can allow multiple processes to open the same file in reading mode, but few allow to multiple processes to open the same file in writing mode. This is because that leads to potentially concurrency and data integrity issues.
+	\item Because threads of the same process share the address space, we can avoid the expensive data transfer across processes by parallelizing a single file using threads instead of processes. 
+\end{itemize}
+
+The parallel algorithm follows the same exact procedure as a serial version.
+
+However we decided to process a file using multiple threads.
+
+That means that a single file is divided in chunks of a fixed size. 
+
+Then the program forks the number of threads we intented.
+
+One of them reads a number of chunks equal to the number of threads. When it's done reading the chunks, all threads can work on the processing.
+
+Every chunk is processed by a single thread. 
+
+When all threads are done processing their chunks, a thread writes the completed chunks to file. Because all threads share a memory space there is no need to perform data transfer.
+
+
+The procedure is the same in both encoding and decoding. Also counting occurences follow a similar architectures, but without the write operations.
+
+
+
+
+
+For multiple files, the rank 0 crawls all the files in the input directory. Then it opens all the files and reads their size. Then it creates a priorityQ where each item is a process and it inserts files in the priorityQ and updates the priority with the file size. This way we can ensure a proper almost equal work division among different processes.
+
+When all this is done, the rank 0 sends the list of files to each process and then each process starts to work indipendetly on it's own list of files.
+
+
+Implementation and detailed notes
+
+We found that a size of 4096 bytes had  the best IO times, probably due to the fact that 4096B is the size of a page in most Linux based operating systems. The last chunk may be smaller.
+
+We tried to parallelize the IO, having multiple threads that read it's own chunk. We found that the standard File Descriptor provided by C language has a lock to guarantee thread safety. However that slows down the reads significantly. Instead we tried using multiple file descriptors to circumvent this limitation. However we found no improvement over a serial read done by one thread for all the threads in it's team. This is likely because the OS schedules the IO requests and serves them one at the time, resulting in impossible truly parallel IO.
+
+We also tested a architecture where we had two dedicated threads to IO, one for reading and one for writing chunks. This way the idea was that whenever a chunk was processed, the IO thread would read and write the related chunks, without delays due to the IO, and synchronizing the IO with locks to prevent inconstenstencies. However we found that this approach was a waste  of resources, as the IO on the cluster is extremely fast (5GB+/s) and would result in the IO threads being idle most of the time.
+
+The schema is presented in Figure here
