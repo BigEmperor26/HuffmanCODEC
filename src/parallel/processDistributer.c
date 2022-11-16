@@ -67,7 +67,7 @@ void fileSizeCounter(char** filenames, int files_count, int rank, ull* file_size
 /* function to distribute the files according to the sizes of the files, using a priorityQ with priority the size of each file
 ** filenames is expectted to be a contiguous array of size files_count*PATH_MAX
 */
-void fileSorterSize(char** filenames,ull * file_sizes, int files_count, int size,char ** outputfilenames, int * indexes, int * file_per_process_counts) {
+void fileSorterSize(char** filenames,ull * file_sizes, int files_count, int size,char ** outputfilenames, int * indexes, int * file_per_process_counts, ull* file_sizes_per_process) {
     // if file size < number of processes, then only file size processes are needed
     int active_processes = size;
     if (files_count < size) {
@@ -84,12 +84,14 @@ void fileSorterSize(char** filenames,ull * file_sizes, int files_count, int size
         indexes_per_process[i] = 0;
         file_per_process_counts[i] = 0;
         indexes[i] = 0;
+        file_sizes_per_process[i] = 0;
     }
     for (int i = 0;i < files_count;i++) {
         Node* node;
         popPriorityQ(pq, &node);
         // assign next file to the process with the smallest size already assignes
         node->priority += file_sizes[i];
+        file_sizes_per_process[node->value] += file_sizes[i];
         int process = node->value;
         int index = indexes_per_process[process];
         strcpy(process_files + process*files_count*PATH_MAX + index*PATH_MAX, filenames[i]);

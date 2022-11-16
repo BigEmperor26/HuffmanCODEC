@@ -65,6 +65,9 @@ int directoryProcesser(int rank,int size,char *inputname, char * outputname ,int
     char* sorted_files = (char*)malloc(sizeof(char)*files_count*PATH_MAX);//char sorted_files[files_count][PATH_MAX];
     int * sorted_file_indexes = (int*)malloc(sizeof(int)*files_count);//int sorted_file_indexes[files_count];
     int * files_per_process =(int*) malloc(sizeof(int)*files_count);//int files_per_process[size];
+    ull* files_sizes_per_process = (ull*)malloc(sizeof(ull)*size);//ull files_sizes_per_process[size];
+
+    ull total_size_to_process = 0;
     if(rank ==0 ){
         char ** files_ptr =(char**) malloc(sizeof(char*)*files_count);//char* files_ptr[files_count];
         char** sorted_files_ptr =(char**) malloc(sizeof(char*)*files_count);//char* sorted_files_ptr[files_count];
@@ -79,36 +82,47 @@ int directoryProcesser(int rank,int size,char *inputname, char * outputname ,int
         //     printf("%s\n", files_ptr[i]);
         //     // printf("strlen %lu\n", strlen(files_ptr[i]));
         // }
+        
         fileSizeCounter((char **)files_ptr, files_count,0,file_sizes);
         for (int i = 0;i < files_count;i++) {
             printf("%s\n", files_ptr[i]);
             printf("size %llu\n", file_sizes[i]);
         }
-        fileSorterSize((char **)files_ptr, file_sizes, files_count,size,(char **)sorted_files_ptr,sorted_file_indexes,files_per_process);
-        printf("Sorted Files:\n");
-        int count =0 ;
-        for (int i = 0;i < files_count;i++) {
-            if(i==sorted_file_indexes[count]){
-                printf("Process %d is assigned these files\n",count);
-                count++;
-            }
-            printf("%s\n", sorted_files_ptr[i]);
+        fileSorterSize((char **)files_ptr, file_sizes, files_count,size,(char **)sorted_files_ptr,sorted_file_indexes,files_per_process,files_sizes_per_process);
+        // printf("Sorted Files:\n");
+        // int count =0 ;
+        // for (int i = 0;i < files_count;i++) {
+        //     if(i==sorted_file_indexes[count]){
+        //         printf("Process %d is assigned these files\n",count);
+        //         count++;
+        //     }
+        //     printf("%s\n", sorted_files_ptr[i]);
+        // }
+        // for (int i = 0;i < size;i++) {
+        //     printf("Process %d is assigned a total of %d files\n",i,files_per_process[i]);
+        // }
+        ull total = 0;
+        for(int i=0;i<files_count;i++){
+            total += file_sizes[i];
         }
+        printf("Total size of all files is %llu MB\n",total/1024/1024);
         free(files_ptr);
         free(sorted_files_ptr);
-    }
 
+    }
+    MPI_Scatter(files_sizes_per_process, 1, MPI_UNSIGNED_LONG_LONG, &total_size_to_process, 1, MPI_UNSIGNED_LONG_LONG, 0, MPI_COMM_WORLD);
     char* process_input_files = (char*)malloc(sizeof(char)*files_count*PATH_MAX);//char process_input_files[files_count][PATH_MAX];
     char* process_output_files = (char*)malloc(sizeof(char)*files_count*PATH_MAX); //char process_output_files[files_count][PATH_MAX];
     int process_count = 0;
      // Last process may get some more because of uneven integer division
     fileDistributerSize((char*)sorted_files, sorted_file_indexes,files_per_process, files_count, rank, size, (char*)process_input_files,&process_count);
     MPI_Barrier(MPI_COMM_WORLD);
-    for(int i=0;i<process_count;i++){
-        printf("Process %d is assigned %s\n",rank,process_input_files+i*PATH_MAX);
-    } 
-    printf("Process %d is assigned a total of %d files",rank,process_count);
-    
+    // for(int i=0;i<process_count;i++){
+    //     printf("Process %d is assigned %s\n",rank,process_input_files+i*PATH_MAX);
+    // } 
+    printf("Process %d is assigned a total of %d files for a size of %llu MB\n",rank,process_count,(ull)total_size_to_process/1024/1024);
+   
+    sleep(100);
     //call encoder for each process
     for(int i=0;i<process_count;i++){
         printf("Rank %d is processing\n",rank);
@@ -154,6 +168,7 @@ int directoryProcesser(int rank,int size,char *inputname, char * outputname ,int
     free(files_per_process);
     free(process_input_files);
     free(process_output_files);
+    free(files_sizes_per_process);
     return 0;
 }
 
