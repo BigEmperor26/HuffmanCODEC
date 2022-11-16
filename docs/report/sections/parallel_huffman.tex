@@ -33,7 +33,15 @@ The overall procedure is the same in both encoding and decoding, with very small
 
 We also parallelized the counting of occurences of a byte in the input file, that is required in order to create the huffman tree, with a similar architecture.  Key difference is that there is no output file to write, but only occurences to count.
 
-In figure a schema of the architecture. 
+In figure \ref{fig:threading}a schema of the architecture. 
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.8\linewidth]{../imgs/threading}
+	\caption{Simple schema of the threading paradigm.}
+	\label{fig:threading}
+\end{figure}
+
 
 \subsection{Multiprocessing}
 
