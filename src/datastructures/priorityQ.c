@@ -25,6 +25,7 @@ void freeNode(Node* node){
 
 PriorityQ* createPriorityQ() {
     PriorityQ* pq = (PriorityQ*)malloc(sizeof(PriorityQ));
+    pq->minHeap = (Node**)malloc(sizeof(Node*) * MAX_HEAP_SIZE);
     pq->size = 0;
     pq->capacity = MAX_HEAP_SIZE;
     // pq->minHeap is an array of Node* stored in the stack
@@ -36,6 +37,7 @@ void freePriorityQ(PriorityQ* pq) {
         free(pq->minHeap[i]);
         pq->minHeap[i] = NULL;
     }
+    free(pq->minHeap);
     free(pq);
     return;
 }
@@ -58,7 +60,7 @@ bool isFull(PriorityQ* pq) {
     return pq->size == pq->capacity;
 }
 
-bool swapMinHeapElements(Node* minHeap[], int index_a, int index_b) {
+bool swapMinHeapElements(Node** minHeap, int index_a, int index_b) {
     Node* temp = *(minHeap + index_a);
     *(minHeap + index_a) = *(minHeap + index_b);
     *(minHeap + index_b) = temp;

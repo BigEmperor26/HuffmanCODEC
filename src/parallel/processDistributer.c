@@ -62,8 +62,7 @@ void fileSizeCounter(char** filenames, int files_count, int rank, ull* file_size
         file_sizes[i] = file_size;
     }
 }
-
-
+ 
 /* function to distribute the files according to the sizes of the files, using a priorityQ with priority the size of each file
 ** filenames is expectted to be a contiguous array of size files_count*PATH_MAX
 */
@@ -73,7 +72,7 @@ void fileSorterSize(char** filenames,ull * file_sizes, int files_count, int size
     if (files_count < size) {
         active_processes = files_count;
     }
-    PriorityQ* pq = createPriorityQ();
+    PriorityQ* pq = createPriorityQ(size);
     for (int i = 0;i < active_processes;i++) {
         Node * node = createNode(i,0,NULL,NULL);
         pushPriorityQ(pq, node);

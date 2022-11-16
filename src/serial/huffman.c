@@ -19,7 +19,7 @@ ull get_frequencies(FILE* file, Dictionary* dict) {
 
 
 Node* getHuffmanTree(Dictionary* dict){
-    PriorityQ* pq = createPriorityQ();
+    PriorityQ* pq = createPriorityQ(MAX_HEAP_SIZE);
 
     // TODO: this operation takes O(nlogn), but it could take just O(n) with heapify
     for (int i = 0; i < dict->size; i++) {

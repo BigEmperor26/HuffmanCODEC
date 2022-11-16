@@ -88,6 +88,7 @@ int directoryProcesser(int rank,int size,char *inputname, char * outputname ,int
             printf("%s\n", files_ptr[i]);
             printf("size %llu\n", file_sizes[i]);
         }
+        
         fileSorterSize((char **)files_ptr, file_sizes, files_count,size,(char **)sorted_files_ptr,sorted_file_indexes,files_per_process,files_sizes_per_process);
         // printf("Sorted Files:\n");
         // int count =0 ;
@@ -122,6 +123,7 @@ int directoryProcesser(int rank,int size,char *inputname, char * outputname ,int
     // } 
     printf("Process %d is assigned a total of %d files for a size of %llu MB\n",rank,process_count,(ull)total_size_to_process/1024/1024);
    
+   sleep(10);
     //call encoder for each process
     for(int i=0;i<process_count;i++){
         printf("Rank %d is processing\n",rank);

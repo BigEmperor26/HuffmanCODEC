@@ -24,7 +24,7 @@ typedef struct Node {
 } Node;
 
 typedef struct PriorityQ {
-    Node* minHeap[MAX_HEAP_SIZE];
+    Node** minHeap;
     int size;
     int capacity;
 } PriorityQ;
@@ -40,7 +40,7 @@ void printPriorityQ(PriorityQ* pq);
 bool isEmpty(PriorityQ* pq);
 bool isFull(PriorityQ* pq);
 
-bool swapMinHeapElements(Node* minHeap[MAX_HEAP_SIZE], int index_a, int index_b);
+bool swapMinHeapElements(Node** minHeap, int index_a, int index_b);
 
 bool pushPriorityQ(PriorityQ* pq, Node* node);
 bool popPriorityQ(PriorityQ* pq, Node** node);
