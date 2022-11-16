@@ -305,11 +305,11 @@ bool fileDecoderFull( char* inputFileName, char* outputFileName, int num_threads
     }
 
     // decode
-    clock_t start = clock();
+    //clock_t start = clock();
     bool isDecodingSuccessful = fileDecoderBarrier(inputFile, outputFile, huffmanTree, chunkOffsets, inputChunkSizes, numChunks, num_threads);
-    clock_t end = clock();
-    double cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
-    printf("CPU Time required to only decode %f\n", cpu_time_used);
+    //clock_t end = clock();
+    //double cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
+    //printf("CPU Time required to only decode %f\n", cpu_time_used);
 
     // free resources
     fclose(inputFile);

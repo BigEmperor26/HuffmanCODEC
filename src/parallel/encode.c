@@ -282,12 +282,12 @@ bool fileEncoderFull( char* inputFileName, char* outputFileName, int num_threads
     ull* inputChunkSizes = (ull*)malloc(sizeof(ull) * numOfChunks);
     ull* outputChunkSizes = (ull*)malloc(sizeof(ull) * numOfChunks);
     //printf("Num of chunks %d",numOfChunks);
-    clock_t start = clock();
+    //clock_t start = clock();
     bool isEncodingSuccessful = fileEncoderBarrier(inputFile, outputFile, huffmanAlphabet, &outputFileSize, inputChunkSizes, outputChunkSizes,num_threads);
-    clock_t end = clock();
-    double cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
-    printf("CPU Time required to only encode %f\n", cpu_time_used);
-    printf("%s is %0.2f%% of %s\n", outputFileName, (float)outputFileSize / (float)originalFileSize, inputFileName);
+    //clock_t end = clock();
+    //double cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
+    //printf("CPU Time required to only encode %f\n", cpu_time_used);
+    //printf("%s is %0.2f%% of %s\n", outputFileName, (float)outputFileSize / (float)originalFileSize, inputFileName);
     // write encoded file header footer:
     // - output chunk offsets
     ull firstOffset = 0;

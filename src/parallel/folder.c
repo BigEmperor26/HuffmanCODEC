@@ -42,7 +42,7 @@ void countFiles(char* basePath, int* count) {
     while ((dp = readdir(dir)) != NULL) {
         if (strcmp(dp->d_name, ".") != 0 && strcmp(dp->d_name, "..") != 0) {
             // if it is a file
-            if (dp->d_type == DT_REG) {
+            if (dp->d_type == DT_REG ) {
                 (*count)++;
             }
             else {
