@@ -122,7 +122,6 @@ int directoryProcesser(int rank,int size,char *inputname, char * outputname ,int
     // } 
     printf("Process %d is assigned a total of %d files for a size of %llu MB\n",rank,process_count,(ull)total_size_to_process/1024/1024);
    
-    sleep(100);
     //call encoder for each process
     for(int i=0;i<process_count;i++){
         printf("Rank %d is processing\n",rank);
