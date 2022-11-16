@@ -84,7 +84,7 @@ void freeHuffmanAlphabet(char* huffmanAlphabet[]) {
 ** Write a single huffman encoded bit to the output file chunk buffer.
 ** Returns true in case of success, false otherwise.
 */
-bool fwriteBitInBuffer(char bit, FILE* outputFile, char buffer[], int* nbits, int* nbytes, int* outputSize) {
+bool fwriteBitInBuffer(char bit, FILE* outputFile, char buffer[], int* nbits, ull* nbytes, ull* outputSize) {
     buffer[*nbytes] <<= 1;
     if (bit == '1') buffer[*nbytes] |= 1;
 

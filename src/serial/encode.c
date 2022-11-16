@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include "huffman.h"
+#include "../commons/commons.h"
 #include "../datastructures/priorityQ.h"
 #include "../datastructures/dictionary.h"
 
@@ -11,14 +12,15 @@
 ** Encode an input file to an output file using an huffman encoding alphabet
 ** Returns true in case of success, false otherwise.
 */
-bool encodeOutputFile(FILE* inputFile, FILE* outputFile, char* huffmanAlphabet[], int* outputFileSize, ull inputChunkSizes[], ull outputChunkSizes[]) {
+bool encodeOutputFile(FILE* inputFile, FILE* outputFile, char* huffmanAlphabet[], ull* outputFileSize, ull inputChunkSizes[], ull outputChunkSizes[]) {
     unsigned char inputBuffer[MAX_DECODED_BUFFER_SIZE];
     unsigned char outputBuffer[MAX_ENCODED_BUFFER_SIZE];
 
     char* currentCharHuffmanEncoded;
     int currentCharHuffmanEncodedLength;
 
-    int nbits, nbytes;
+    int nbits;
+    ull nbytes;
     *outputFileSize = 0;
 
     bool isEncodingSuccessful = true;
@@ -37,7 +39,7 @@ bool encodeOutputFile(FILE* inputFile, FILE* outputFile, char* huffmanAlphabet[]
             currentCharHuffmanEncodedLength = strlen(currentCharHuffmanEncoded);
 
             for (int i = 0; i < currentCharHuffmanEncodedLength; i++) {
-                if (!fwriteBitInBuffer(currentCharHuffmanEncoded[i], outputFile, outputBuffer, &nbits, &nbytes, outputFileSize)) {
+                if (!fwriteBitInBuffer(currentCharHuffmanEncoded[i], outputFile, (char*)outputBuffer, &nbits, &nbytes, outputFileSize)) {
                     isEncodingSuccessful = false;
                 }
             }
@@ -45,7 +47,7 @@ bool encodeOutputFile(FILE* inputFile, FILE* outputFile, char* huffmanAlphabet[]
 
         // add padding bits for the last byte of the output chunk
         while (nbits != 0) {
-            if (!fwriteBitInBuffer('0', outputFile, outputBuffer, &nbits, &nbytes, outputFileSize)) {
+            if (!fwriteBitInBuffer('0', outputFile, (char*)outputBuffer, &nbits, &nbytes, outputFileSize)) {
                 isEncodingSuccessful = false;
             }
         }
@@ -109,8 +111,8 @@ int main(int argc, char* argv[]) {
         exit(1);
     }
 
-    int outputFileSize;
-    int numOfChunks = (originalFileSize / MAX_DECODED_BUFFER_SIZE) + 1;
+    ull outputFileSize;
+    ull numOfChunks = (originalFileSize / MAX_DECODED_BUFFER_SIZE) + 1;
     ull* inputChunkSizes = (ull*)malloc(sizeof(ull) * numOfChunks);
     ull* outputChunkSizes = (ull*)malloc(sizeof(ull) * numOfChunks);
     bool isEncodingSuccessful = encodeOutputFile(inputFile, outputFile, huffmanAlphabet, &outputFileSize, inputChunkSizes, outputChunkSizes);
@@ -119,7 +121,7 @@ int main(int argc, char* argv[]) {
     // write encoded file header footer:
     // - output chunk offsets
     ull firstOffset = 0;
-    for (int i = 1; i < numOfChunks; i++) {
+    for (ull i = 1; i < numOfChunks; i++) {
         outputChunkSizes[i] += outputChunkSizes[i-1];
     }
     fwrite(&firstOffset, sizeof(ull), 1, outputFile);

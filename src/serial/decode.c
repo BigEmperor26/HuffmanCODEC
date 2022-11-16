@@ -3,11 +3,12 @@
 #include <string.h>
 #include <stdbool.h>
 #include "huffman.h"
+#include "../commons/commons.h"
 #include "../datastructures/priorityQ.h"
 #include "../datastructures/dictionary.h"
 
 
-unsigned char getCharFromHuffmanEncodedBitStream(unsigned char buffer[], int* nbytes, int* nbits, Node* node) {
+unsigned char getCharFromHuffmanEncodedBitStream(unsigned char buffer[], ull* nbytes, int* nbits, Node* node) {
 
     if (node->left == NULL && node->right == NULL) {
         return node->value;
@@ -27,6 +28,7 @@ unsigned char getCharFromHuffmanEncodedBitStream(unsigned char buffer[], int* nb
     else if (node->right != NULL) {
         return getCharFromHuffmanEncodedBitStream(buffer, nbytes, nbits, node->right);
     }
+    return '\0';
 }
 
 
@@ -34,15 +36,16 @@ unsigned char getCharFromHuffmanEncodedBitStream(unsigned char buffer[], int* nb
 ** Encode an input file to an output file using an huffman encoding alphabet
 ** Returns true in case of success, false otherwise.
 */
-bool decodeFile(FILE* inputFile, FILE* outputFile, Node* huffmanTree, ull chunkOffsets[], ull inputChunkSizes[], int numChunks) {
+bool decodeFile(FILE* inputFile, FILE* outputFile, Node* huffmanTree, ull chunkOffsets[], ull inputChunkSizes[], ull numChunks) {
     unsigned char inputBuffer[MAX_ENCODED_BUFFER_SIZE];
     unsigned char outputBuffer[MAX_DECODED_BUFFER_SIZE+1];
 
-    int nbytes, nbits, chunkSize, outputCharCounter;
+    ull nbytes;
+    int nbits, chunkSize, outputCharCounter;
 
     bool isDecodingSuccessful = true;
 
-    for (int indexChunk = 0; indexChunk < numChunks; indexChunk++) {
+    for (ull indexChunk = 0; indexChunk < numChunks; indexChunk++) {
         // get chunk of bytes from encoded file
 
         chunkSize = chunkOffsets[indexChunk + 1] - chunkOffsets[indexChunk];
@@ -77,7 +80,7 @@ bool getFrequenciesFromEncodedFile(FILE* inputFile, Dictionary* dict) {
     return numFrequencies == MAX_HEAP_SIZE;
 }
 
-ull* getChunkOffsetsFromEncodedFile(FILE* inputFile, int* numChunks) {
+ull* getChunkOffsetsFromEncodedFile(FILE* inputFile, ull* numChunks) {
     fseek(inputFile, -sizeof(ull), SEEK_END);
 
     fread(numChunks, sizeof(ull), 1, inputFile);
@@ -89,7 +92,7 @@ ull* getChunkOffsetsFromEncodedFile(FILE* inputFile, int* numChunks) {
     return chunkOffsets;
 }
 
-ull* getOriginalChunkSizesFromEncodedFile(FILE* inputFile, int* numChunks) {
+ull* getOriginalChunkSizesFromEncodedFile(FILE* inputFile, ull* numChunks) {
     fseek(inputFile, -sizeof(ull), SEEK_END);
 
     fread(numChunks, sizeof(ull), 1, inputFile);
@@ -133,7 +136,7 @@ int main(int argc, char* argv[]) {
     Node* huffmanTree = getHuffmanTree(dict);
 
     // get chunk offsets
-    int numChunks;
+    ull numChunks;
     ull* chunkOffsets = getChunkOffsetsFromEncodedFile(inputFile, &numChunks);
     ull* inputChunkSizes = getOriginalChunkSizesFromEncodedFile(inputFile, &numChunks);
 

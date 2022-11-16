@@ -27,17 +27,17 @@ bool chunkEncoder( unsigned char* inputChunk,  unsigned char * outputChunk,char 
     bool isEncodingSuccessful = false;
     // encode the chunk
     for (ull i = 0; i < inputBufferSize; i++) {
-        currentCharHuffmanEncoded = huffmanAlphabet[inputChunk[i]];
-        currentCharHuffmanEncodedLength = strlen(currentCharHuffmanEncoded);
+        currentCharHuffmanEncoded = (unsigned char*)huffmanAlphabet[inputChunk[i]];
+        currentCharHuffmanEncodedLength = strlen((char*)currentCharHuffmanEncoded);
         for (ull j = 0; j < currentCharHuffmanEncodedLength; j++) {
-            if (!fwriteBitInBuffer(currentCharHuffmanEncoded[j], outputChunk, &nbits, &nbytes)) {
+            if (!fwriteBitInBuffer(currentCharHuffmanEncoded[j], (char*)outputChunk, &nbits, &nbytes)) {
                 isEncodingSuccessful = false;
             }
         }
     }
     // add padding bits for the last byte of the output chunk
     while (nbits != 0) {
-        if (!fwriteBitInBuffer('0', outputChunk, &nbits, &nbytes)) {
+        if (!fwriteBitInBuffer('0', (char*)outputChunk, &nbits, &nbytes)) {
             isEncodingSuccessful = false;
         }
     }

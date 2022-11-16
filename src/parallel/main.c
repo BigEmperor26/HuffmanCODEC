@@ -195,6 +195,7 @@ int fileProcesser(int rank,char *inputname, char * outputname,int num_threads, v
         printf("CPU Time required to process %f\n", cpu_time_used);
         printf("Wall Time required to process %f\n", wall_time);
     }
+    return 0;
 }
 
 int main(int argc, char** argv) {
@@ -267,8 +268,8 @@ int main(int argc, char** argv) {
     double end_wall =  MPI_Wtime();
     double cpu_time_used = ((double)(end_cpu - start_cpu)) / CLOCKS_PER_SEC;
     double wall_time = (double) (end_wall-start_wall);
-    printf("Overall program CPU Time required to process the input %s %f\n",inputname, cpu_time_used);
-    printf("Overall program Wall Time required to process the input %s %f\n",inputname, wall_time);
+    printf("Overall program CPU Time required to process the input for rank %d %s %f\n",rank,inputname, cpu_time_used);
+    printf("Overall program Wall Time required to process the inputfor rank %d %s %f\n",rank,inputname, wall_time);
     MPI_Finalize();
     return 0;
 }
