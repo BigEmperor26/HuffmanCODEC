@@ -132,15 +132,33 @@ void fileSorterSize(char** filenames,ull * file_sizes, int files_count, int size
 
 void fileDistributerSize(char* filenames,int * process_indexes,int *file_per_process, int files_count, int rank, int size, char* files_to_process, int * files_to_process_count) {
     
+    int active_processes = size;
+    if (files_count<size){
+        active_processes = files_count;
+    }
     int*  displacements = (int*)malloc(sizeof(int)*size);
     int* files_per_process_count = (int*)malloc(sizeof(int)*size);
     if(rank==0){
         for (int i = 0;i < size;i++) {
-            displacements[i] = process_indexes[i]*PATH_MAX;
-            files_per_process_count[i] = file_per_process[i]*PATH_MAX;
+            if(i<active_processes){
+                displacements[i] = process_indexes[i]*PATH_MAX;
+                files_per_process_count[i] = file_per_process[i]*PATH_MAX;
+            }else{
+                displacements[i] = 0;
+                files_per_process_count[i] = 0;
+            }
         }
     }
-    MPI_Scatterv(filenames, files_per_process_count, displacements, MPI_CHAR, files_to_process, PATH_MAX * files_count, MPI_CHAR, 0, MPI_COMM_WORLD);
+    if (rank < active_processes) {
+        printf("Filenames\n");
+        MPI_Scatterv(filenames, files_per_process_count, displacements, MPI_CHAR, files_to_process, PATH_MAX * files_count, MPI_CHAR, 0, MPI_COMM_WORLD);
+        printf("file_per_process\n");
+    
+    }else{
+        printf("Filenames\n");
+        MPI_Scatterv(filenames, 0, displacements, MPI_CHAR, files_to_process, 0, MPI_CHAR, 0, MPI_COMM_WORLD);
+        printf("file_per_process\n");
+    }
     MPI_Scatter(file_per_process, 1, MPI_INT, files_to_process_count, 1, MPI_INT, 0, MPI_COMM_WORLD);
     free(displacements);
     free(files_per_process_count);
