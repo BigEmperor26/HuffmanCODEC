@@ -63,6 +63,22 @@ void fileSizeCounter(char** filenames, int files_count, int rank, ull* file_size
     }
 }
  
+
+void filePreSorter(char **filenames,ull*file_sizes,int files_count,char**new_filenames,ull*new_file_sizes){
+    PriorityQ * files = createPriorityQ(files_count);
+    for (int i = 0;i < files_count;i++) {
+        Node * node = createNode(i,file_sizes[i],NULL,NULL);
+        pushPriorityQ(files, node);
+    }
+    for (int i = files_count-1;i >=0 ;i--) {
+        Node * node;
+        popPriorityQ(files, &node);
+        new_file_sizes[i] = node->priority;
+        strcpy(new_filenames[i], filenames[node->value]);
+        printf("File %s with size %llu\n",new_filenames[i],new_file_sizes[i]);
+    }
+    freePriorityQ(files);
+} 
 /* function to distribute the files according to the sizes of the files, using a priorityQ with priority the size of each file
 ** filenames is expectted to be a contiguous array of size files_count*PATH_MAX
 */
@@ -111,6 +127,7 @@ void fileSorterSize(char** filenames,ull * file_sizes, int files_count, int size
     }   
     free(process_files);
     free(indexes_per_process);
+    freePriorityQ(pq);
 }
 
 void fileDistributerSize(char* filenames,int * process_indexes,int *file_per_process, int files_count, int rank, int size, char* files_to_process, int * files_to_process_count) {

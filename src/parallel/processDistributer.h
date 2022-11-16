@@ -15,7 +15,7 @@ void fileDistributer(char** filenames, int files_count, int rank, int size, char
 */
 void fileSizeCounter(char** filenames, int files_count, int rank, ull* file_sizes);
 
-
+void filePreSorter(char **filenames,ull*file_sizes,int files_count,char**new_filenames,ull*new_file_sizes);
 void fileSorterSize(char** filenames,ull * file_sizes, int files_count, int size,char ** outputfilenames, int * indexes, int* files_per_process_count,ull * files_sizes_per_process);
 
 
