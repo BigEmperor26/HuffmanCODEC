@@ -112,7 +112,9 @@ int main(int argc, char* argv[]) {
     }
 
     ull outputFileSize;
-    ull numOfChunks = (originalFileSize / MAX_DECODED_BUFFER_SIZE) + 1;
+    ull numOfChunks = (originalFileSize / MAX_DECODED_BUFFER_SIZE);
+    if(originalFileSize % MAX_DECODED_BUFFER_SIZE != 0) 
+       numOfChunks  += 1;
     ull* inputChunkSizes = (ull*)malloc(sizeof(ull) * numOfChunks);
     ull* outputChunkSizes = (ull*)malloc(sizeof(ull) * numOfChunks);
     bool isEncodingSuccessful = encodeOutputFile(inputFile, outputFile, huffmanAlphabet, &outputFileSize, inputChunkSizes, outputChunkSizes);

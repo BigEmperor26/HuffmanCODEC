@@ -24,7 +24,7 @@ bool chunkEncoder( unsigned char* inputChunk,  unsigned char * outputChunk,char 
     ull nbytes=0;
     unsigned char* currentCharHuffmanEncoded;
     ull currentCharHuffmanEncodedLength = 0;
-    bool isEncodingSuccessful = false;
+    bool isEncodingSuccessful = true;
     // encode the chunk
     for (ull i = 0; i < inputBufferSize; i++) {
         currentCharHuffmanEncoded = (unsigned char*)huffmanAlphabet[inputChunk[i]];
@@ -276,7 +276,9 @@ bool fileEncoderFull( char* inputFileName, char* outputFileName, int num_threads
     }
     // encode file
     ull outputFileSize = 0;
-    ull numOfChunks = (originalFileSize / MAX_DECODED_BUFFER_SIZE) + 1;
+    ull numOfChunks = (originalFileSize / MAX_DECODED_BUFFER_SIZE);
+    if(originalFileSize % MAX_DECODED_BUFFER_SIZE != 0) 
+       numOfChunks  += 1;
     ull* inputChunkSizes = (ull*)malloc(sizeof(ull) * numOfChunks);
     ull* outputChunkSizes = (ull*)malloc(sizeof(ull) * numOfChunks);
     //printf("Num of chunks %d",numOfChunks);

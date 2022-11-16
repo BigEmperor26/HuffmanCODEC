@@ -33,7 +33,7 @@
 /*
 **  Function to process a directory recursively, splitting the files to a number of processes according to their raink
 */
-int directoryProcesser(int rank,int size,char *inputname, char * outputname ,int num_threads,void (*processing)(char* arg1,char*arg2, int num_threads)){
+int directoryProcesser(int rank,int size,char *inputname, char * outputname ,int num_threads,bool (*processing)(char* arg1,char*arg2, int num_threads)){
     bool inputdirectory = false;
     int files_count = 0;
     if (rank == 0) {
@@ -77,18 +77,7 @@ int directoryProcesser(int rank,int size,char *inputname, char * outputname ,int
         }
         int current = 0;
         listFiles(inputname, &current, (char**)files_ptr);
-        // for(int i=0;i<files_count;i++){
-        //     if (!strcmp(files+i*PATH_MAX,"../linux/tools/testing/selftests/powerpc/vphn/vphn.c")){
-        //         printf("skipping file %s\n",files+i*PATH_MAX);
-        //         exit(1);
-        //     }
-        // }
         printf("Files:\n");
-        // for (int i = 0;i < files_count;i++) {
-        //     printf("%s\n", files_ptr[i]);
-        //     // printf("strlen %lu\n", strlen(files_ptr[i]));
-        // }
-        
         fileSizeCounter((char **)files_ptr, files_count,0,file_sizes);
         for (int i = 0;i < files_count;i++) {
             printf("%s\n", files_ptr[i]);
@@ -101,6 +90,10 @@ int directoryProcesser(int rank,int size,char *inputname, char * outputname ,int
         //     pre_sorted_files_ptr[i] = pre_sorted_files+i*PATH_MAX;
         // }
         // filePreSorter((char **)files_ptr, file_sizes,files_count,pre_sorted_files_ptr,pre_sorted_file_sizes);
+        // for (int i = 0;i < files_count;i++) {
+        //      printf("%s\n", pre_sorted_files_ptr[i]);
+        // }
+        // sleep(10);
         fileSorterSize((char **)files_ptr, file_sizes, files_count,size,(char **)sorted_files_ptr,sorted_file_indexes,files_per_process,files_sizes_per_process);
         // printf("Sorted Files:\n");
         // int count =0 ;
@@ -111,9 +104,9 @@ int directoryProcesser(int rank,int size,char *inputname, char * outputname ,int
         //     }
         //     printf("%s\n", sorted_files_ptr[i]);
         // }
-        // for (int i = 0;i < size;i++) {
-        //     printf("Process %d is assigned a total of %d files\n",i,files_per_process[i]);
-        // }
+        for (int i = 0;i < size;i++) {
+            printf("Process %d is assigned a total of %d files\n",i,files_per_process[i]);
+        }
         ull total = 0;
         for(int i=0;i<files_count;i++){
             total += file_sizes[i];
@@ -133,12 +126,9 @@ int directoryProcesser(int rank,int size,char *inputname, char * outputname ,int
      // Last process may get some more because of uneven integer division
     fileDistributerSize((char*)sorted_files, sorted_file_indexes,files_per_process, files_count, rank, size, (char*)process_input_files,&process_count);
     MPI_Barrier(MPI_COMM_WORLD);
-    // for(int i=0;i<process_count;i++){
-    //     printf("Process %d is assigned %s\n",rank,process_input_files+i*PATH_MAX);
-    // } 
     printf("Process %d is assigned a total of %d files for a size of %llu MB\n",rank,process_count,(ull)total_size_to_process/(1024*1024));
    
-   sleep(10);
+    //sleep(10);
     //call encoder for each process
     for(int i=0;i<process_count;i++){
         printf("Rank %d is processing\n",rank);
@@ -166,14 +156,14 @@ int directoryProcesser(int rank,int size,char *inputname, char * outputname ,int
         }
         // processsing the file
         printf("processing file %s\n",process_input_files+i*PATH_MAX);
-        // if (!strcmp(process_input_files+i*PATH_MAX,"../linux/tools/testing/selftests/powerpc/vphn/vphn.c")){
-        //     printf("skipping file %s\n",process_input_files+i*PATH_MAX);
-        //     exit(1);
-        // }
         printf("saving as file %s\n",process_output_files+i*PATH_MAX);
         clock_t start_cpu = clock();
         double start_wall = MPI_Wtime();
-        (*processing)(process_input_files+i*PATH_MAX,process_output_files+i*PATH_MAX,num_threads);
+        bool completed = (*processing)(process_input_files+i*PATH_MAX,process_output_files+i*PATH_MAX,num_threads);
+        if(!completed){
+            printf("Error on file %s\n",process_output_files+i*PATH_MAX);
+            exit(1);
+        }
         clock_t end_cpu = clock();
         double end_wall =  MPI_Wtime();
         double cpu_time_used = ((double)(end_cpu - start_cpu)) / CLOCKS_PER_SEC;
