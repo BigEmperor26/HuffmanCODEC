@@ -50,11 +50,11 @@ For multiple files we wanted to exploit multiprocessing.
 To do this we devised a simple algorithm to distribuite files across multiple processes, so that each process can work on its own list of files, indipendently to others. This way we can minimize communcation and therefore latency and other slowdowns.
 
 
-First of all the process with rank 0 crawls all the files present in the input directory recursively. Then it opens all the files and reads their size. 
+First of all the process with rank 0 crawls all the files present in the input directory recursively. Then it opens all the files and reads their size.
 
-Once all files and their respective sizes are known, the process creates a min priority queue where each item represents a process and its priority is the  size of files that have been assigned to it.
+Once all files and their respective sizes are known, the process 0 are sorts the files by size. Then creates a min priority queue where each item represents a process and its priority is the  size of files that have been assigned to it.
 
-Process 0 can iteratively insert files in the priority queue and updates the priority of each process with the cumulative file size. This way we can ensure an almost equal work division among different processes. 
+Process 0 can iteratively insert files in the priority queue and updates the priority of each process with the cumulative file size. It always starts with the biggest file and proceeds by assigning files by decreasing size. This greedy process to files assignment algorithm is inspired by knapsack and the main idea is that we can ensure an equal work division among different processes. 
 
 When all this is done, process 0 sends the list of files to each process and then each starts to work indipendetly on its own list of files.
 
