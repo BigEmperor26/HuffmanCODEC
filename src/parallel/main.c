@@ -82,18 +82,18 @@ int directoryProcesser(int rank,int size,char *inputname, char * outputname ,int
         for (int i = 0;i < files_count;i++) {
             printf("%s\n", files_ptr[i]);
         }
-        ull * pre_sorted_file_sizes = (ull*)malloc(sizeof(ull)*files_count);
-        char* pre_sorted_files = (char*)malloc(sizeof(char)*files_count*PATH_MAX);
-        char ** pre_sorted_files_ptr = (char**)malloc(sizeof(char*)*files_count);
-        for (int i = 0;i < files_count;i++) {
-            pre_sorted_files_ptr[i] = pre_sorted_files+i*PATH_MAX;
-        }
-        filePreSorter((char **)files_ptr, file_sizes,files_count,pre_sorted_files_ptr,pre_sorted_file_sizes);
+        // ull * pre_sorted_file_sizes = (ull*)malloc(sizeof(ull)*files_count);
+        // char* pre_sorted_files = (char*)malloc(sizeof(char)*files_count*PATH_MAX);
+        // char ** pre_sorted_files_ptr = (char**)malloc(sizeof(char*)*files_count);
+        // for (int i = 0;i < files_count;i++) {
+        //     pre_sorted_files_ptr[i] = pre_sorted_files+i*PATH_MAX;
+        // }
+        //filePreSorter((char **)files_ptr, file_sizes,files_count,pre_sorted_files_ptr,pre_sorted_file_sizes);
         // for (int i = 0;i < files_count;i++) {
         //      printf("%s  size %llu\n", pre_sorted_files_ptr[i],pre_sorted_file_sizes[i]);
         // }
-        fileSorterSize((char **)pre_sorted_files_ptr, pre_sorted_file_sizes, files_count,size,(char **)sorted_files_ptr,sorted_file_indexes,files_per_process,files_sizes_per_process);
-        //fileSorterSize((char **)files_ptr,file_sizes, files_count,size,(char **)sorted_files_ptr,sorted_file_indexes,files_per_process,files_sizes_per_process);
+        //fileSorterSize((char **)pre_sorted_files_ptr, pre_sorted_file_sizes, files_count,size,(char **)sorted_files_ptr,sorted_file_indexes,files_per_process,files_sizes_per_process);
+        fileSorterSize((char **)files_ptr,file_sizes, files_count,size,(char **)sorted_files_ptr,sorted_file_indexes,files_per_process,files_sizes_per_process);
         ull total = 0;
         for(int i=0;i<files_count;i++){
             total += file_sizes[i];
@@ -101,9 +101,9 @@ int directoryProcesser(int rank,int size,char *inputname, char * outputname ,int
         printf("Total size of all files is %llu MiB\n",total/(1024*1024));
         free(files_ptr);
         free(sorted_files_ptr);
-        free(pre_sorted_file_sizes);
-        free(pre_sorted_files);
-        free(pre_sorted_files_ptr);
+        // free(pre_sorted_file_sizes);
+        // free(pre_sorted_files);
+        // free(pre_sorted_files_ptr);
 
     }
     MPI_Scatter(files_sizes_per_process, 1, MPI_UNSIGNED_LONG_LONG, &total_size_to_process, 1, MPI_UNSIGNED_LONG_LONG, 0, MPI_COMM_WORLD);
