@@ -52,9 +52,9 @@ To do this we devised a simple algorithm to distribuite files across multiple pr
 
 First of all the process with rank 0 crawls all the files present in the input directory recursively. Then it opens all the files and reads their size.
 
-Once all files and their respective sizes are known, the process 0 are sorts the files by size. Then creates a min priority queue where each item represents a process and its priority is the  size of files that have been assigned to it.
+Once all files and their respective sizes are known, process 0 creates  a min priority queue where each item represents a process and its priority is the  size of files that have been assigned to it.
 
-Process 0 can iteratively insert files in the priority queue and updates the priority of each process with the cumulative file size. It always starts with the biggest file and proceeds by assigning files by decreasing size. This greedy process to files assignment algorithm is inspired by knapsack and the main idea is that we can ensure an equal work division among different processes. 
+Process 0 can iteratively insert files in the priority queue and updates the priority of each process with the cumulative file size. The main idea is that we can ensure an equal work division among different processes. 
 
 When all this is done, process 0 sends the list of files to each process and then each starts to work indipendetly on its own list of files.
 
