@@ -75,7 +75,6 @@ void filePreSorter(char **filenames,ull*file_sizes,int files_count,char**new_fil
         popPriorityQ(files, &node);
         new_file_sizes[i] = node->priority;
         strcpy(new_filenames[i], filenames[node->value]);
-        printf("File %s with size %llu\n",new_filenames[i],new_file_sizes[i]);
     }
     freePriorityQ(files);
 } 
@@ -110,7 +109,6 @@ void fileSorterSize(char** filenames,ull * file_sizes, int files_count, int size
         int process = node->value;
         int index = indexes_per_process[process];
         strcpy(process_files + process*files_count*PATH_MAX + index*PATH_MAX, filenames[i]);
-        //strcpy((char*)process_files[process][indexes_per_process[process]], (char*)filenames[i]);
         indexes_per_process[process]++;
         pushPriorityQ(pq, node);
     }
@@ -119,8 +117,6 @@ void fileSorterSize(char** filenames,ull * file_sizes, int files_count, int size
         indexes[i] = counter;
         file_per_process_counts[i] = indexes_per_process[i];
         for(int j=0;j<indexes_per_process[i];j++){
-            //strcpy(outputfilenames + counter*PATH_MAX, process_files + i*files_count*PATH_MAX + j*PATH_MAX);
-            //strcpy((char*)outputfilenames[counter], process_files[i][j]);
             strcpy((char*)outputfilenames[counter], process_files + i*files_count*PATH_MAX + j*PATH_MAX);
             counter++;
         }
@@ -150,14 +146,9 @@ void fileDistributerSize(char* filenames,int * process_indexes,int *file_per_pro
         }
     }
     if (rank < active_processes) {
-        printf("Filenames\n");
         MPI_Scatterv(filenames, files_per_process_count, displacements, MPI_CHAR, files_to_process, PATH_MAX * files_count, MPI_CHAR, 0, MPI_COMM_WORLD);
-        printf("file_per_process\n");
-    
     }else{
-        printf("Filenames\n");
         MPI_Scatterv(filenames, 0, displacements, MPI_CHAR, files_to_process, 0, MPI_CHAR, 0, MPI_COMM_WORLD);
-        printf("file_per_process\n");
     }
     MPI_Scatter(file_per_process, 1, MPI_INT, files_to_process_count, 1, MPI_INT, 0, MPI_COMM_WORLD);
     free(displacements);

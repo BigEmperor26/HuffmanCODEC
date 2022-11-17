@@ -60,17 +60,17 @@ int directoryProcesser(int rank,int size,char *inputname, char * outputname ,int
     // broadcast the files count, and if input is a single file or directory to all other nodes
     MPI_Bcast(&files_count, 1, MPI_INT, 0, MPI_COMM_WORLD);
     // gather all files in the input directory and count the size of each file
-    char* files =(char*) malloc(sizeof(char)*files_count*PATH_MAX);//[files_count][PATH_MAX];
-    ull * file_sizes = (ull*)malloc(sizeof(ull)*files_count);//ull file_sizes[files_count];
-    char* sorted_files = (char*)malloc(sizeof(char)*files_count*PATH_MAX);//char sorted_files[files_count][PATH_MAX];
-    int * sorted_file_indexes = (int*)malloc(sizeof(int)*files_count);//int sorted_file_indexes[files_count];
-    int * files_per_process =(int*) malloc(sizeof(int)*files_count);//int files_per_process[size];
-    ull* files_sizes_per_process = (ull*)malloc(sizeof(ull)*size);//ull files_sizes_per_process[size];
+    char* files =(char*) malloc(sizeof(char)*files_count*PATH_MAX);
+    ull * file_sizes = (ull*)malloc(sizeof(ull)*files_count);
+    char* sorted_files = (char*)malloc(sizeof(char)*files_count*PATH_MAX);
+    int * sorted_file_indexes = (int*)malloc(sizeof(int)*files_count);
+    int * files_per_process =(int*) malloc(sizeof(int)*files_count);
+    ull* files_sizes_per_process = (ull*)malloc(sizeof(ull)*size);
 
     ull total_size_to_process = 0;
     if(rank ==0 ){
-        char ** files_ptr =(char**) malloc(sizeof(char*)*files_count);//char* files_ptr[files_count];
-        char** sorted_files_ptr =(char**) malloc(sizeof(char*)*files_count);//char* sorted_files_ptr[files_count];
+        char ** files_ptr =(char**) malloc(sizeof(char*)*files_count);
+        char** sorted_files_ptr =(char**) malloc(sizeof(char*)*files_count);
         for (int i = 0;i < files_count;i++) {
             files_ptr[i] = files+i*PATH_MAX;
             sorted_files_ptr[i] = sorted_files+i*PATH_MAX;
@@ -81,32 +81,19 @@ int directoryProcesser(int rank,int size,char *inputname, char * outputname ,int
         fileSizeCounter((char **)files_ptr, files_count,0,file_sizes);
         for (int i = 0;i < files_count;i++) {
             printf("%s\n", files_ptr[i]);
-            // printf("size %llu\n", file_sizes[i]);
         }
-        // ull * pre_sorted_file_sizes = (ull*)malloc(sizeof(ull)*files_count);//ull file_sizes[files_count];
-        // char* pre_sorted_files = (char*)malloc(sizeof(char)*files_count*PATH_MAX);//char sorted_files[files_count][PATH_MAX];
-        // char ** pre_sorted_files_ptr = (char**)malloc(sizeof(char*)*files_count);//char* sorted_files_ptr[files_count];
+        ull * pre_sorted_file_sizes = (ull*)malloc(sizeof(ull)*files_count);
+        char* pre_sorted_files = (char*)malloc(sizeof(char)*files_count*PATH_MAX);
+        char ** pre_sorted_files_ptr = (char**)malloc(sizeof(char*)*files_count);
+        for (int i = 0;i < files_count;i++) {
+            pre_sorted_files_ptr[i] = pre_sorted_files+i*PATH_MAX;
+        }
+        filePreSorter((char **)files_ptr, file_sizes,files_count,pre_sorted_files_ptr,pre_sorted_file_sizes);
         // for (int i = 0;i < files_count;i++) {
-        //     pre_sorted_files_ptr[i] = pre_sorted_files+i*PATH_MAX;
+        //      printf("%s  size %llu\n", pre_sorted_files_ptr[i],pre_sorted_file_sizes[i]);
         // }
-        // filePreSorter((char **)files_ptr, file_sizes,files_count,pre_sorted_files_ptr,pre_sorted_file_sizes);
-        // for (int i = 0;i < files_count;i++) {
-        //      printf("%s\n", pre_sorted_files_ptr[i]);
-        // }
-        // sleep(10);
-        fileSorterSize((char **)files_ptr, file_sizes, files_count,size,(char **)sorted_files_ptr,sorted_file_indexes,files_per_process,files_sizes_per_process);
-        // printf("Sorted Files:\n");
-        // int count =0 ;
-        // for (int i = 0;i < files_count;i++) {
-        //     if(i==sorted_file_indexes[count]){
-        //         printf("Process %d is assigned these files\n",count);
-        //         count++;
-        //     }
-        //     printf("%s\n", sorted_files_ptr[i]);
-        // }
-        // for (int i = 0;i < size;i++) {
-        //     printf("Process %d is assigned a total of %d files\n",i,files_per_process[i]);
-        // }
+        fileSorterSize((char **)pre_sorted_files_ptr, pre_sorted_file_sizes, files_count,size,(char **)sorted_files_ptr,sorted_file_indexes,files_per_process,files_sizes_per_process);
+        //fileSorterSize((char **)files_ptr,file_sizes, files_count,size,(char **)sorted_files_ptr,sorted_file_indexes,files_per_process,files_sizes_per_process);
         ull total = 0;
         for(int i=0;i<files_count;i++){
             total += file_sizes[i];
@@ -114,9 +101,9 @@ int directoryProcesser(int rank,int size,char *inputname, char * outputname ,int
         printf("Total size of all files is %llu MiB\n",total/(1024*1024));
         free(files_ptr);
         free(sorted_files_ptr);
-        // free(pre_sorted_file_sizes);
-        // free(pre_sorted_files);
-        // free(pre_sorted_files_ptr);
+        free(pre_sorted_file_sizes);
+        free(pre_sorted_files);
+        free(pre_sorted_files_ptr);
 
     }
     MPI_Scatter(files_sizes_per_process, 1, MPI_UNSIGNED_LONG_LONG, &total_size_to_process, 1, MPI_UNSIGNED_LONG_LONG, 0, MPI_COMM_WORLD);
@@ -127,6 +114,7 @@ int directoryProcesser(int rank,int size,char *inputname, char * outputname ,int
     fileDistributerSize((char*)sorted_files, sorted_file_indexes,files_per_process, files_count, rank, size, (char*)process_input_files,&process_count);
     MPI_Barrier(MPI_COMM_WORLD);
     printf("Process %d is assigned a total of %d files for a size of %llu MiB\n",rank,process_count,(ull)total_size_to_process/(1024*1024));
+    //printf("Process %d is assigned a total of %d files for a size of %llu MiB\n",rank,process_count,(ull)total_size_to_process);
   
     //call encoder for each process
     for(int i=0;i<process_count;i++){
@@ -136,7 +124,6 @@ int directoryProcesser(int rank,int size,char *inputname, char * outputname ,int
         strcpy(process_output_files+i*PATH_MAX,outputname);
         position = matchingCount(process_input_files+i*PATH_MAX,inputname);
         strcat(process_output_files+i*PATH_MAX,process_input_files+i*PATH_MAX+position);
-        //strcat((char*)process_output_files[i],".huf");
         // making all sub directories recursively
         char sav;
         bool changed = false;
@@ -146,9 +133,7 @@ int directoryProcesser(int rank,int size,char *inputname, char * outputname ,int
             changed = true;
             *pos = '\0';
         }
-        //printf("making directory %s\n",process_output_files+i*PATH_MAX);
         recursivemkdir(process_output_files+i*PATH_MAX);
-        //printf("done with directory %s\n",process_output_files+i*PATH_MAX);
         if(changed){
             *pos = sav;
             changed = false;

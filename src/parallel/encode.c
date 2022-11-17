@@ -59,9 +59,9 @@ bool fileEncoderBarrier(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[
     // input
     ull chunkSize = MAX_DECODED_BUFFER_SIZE;
     // output variable length
-    ull* inputBufferChunkSizes = malloc(sizeof(ull)*num_threads); //ull inputBufferChunkSizes[num_threads];
+    ull* inputBufferChunkSizes = malloc(sizeof(ull)*num_threads);
     // output variable length
-    ull *outputBufferChunkSizes =  malloc(sizeof(ull)*num_threads); //ull outputBufferChunkSizes[num_threads];
+    ull *outputBufferChunkSizes =  malloc(sizeof(ull)*num_threads); 
     ull numOfChunks = 0;
     // error detection
     bool isEncodingSuccessful = true;
@@ -73,14 +73,8 @@ bool fileEncoderBarrier(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[
     if (numOfChunks%num_threads != 0){
         chunkIterations++;
     }   
-    // set the parallel encoder
-    // #ifdef _OPENMP  
-    // omp_set_dynamic(0); 
-    // omp_set_num_threads(num_threads); 
-    // #endif
     #pragma omp parallel 
     for(ull i = 0; i < chunkIterations; i++){
-        //double start = omp_get_wtime();
         // reader
         #pragma omp single
         {
@@ -93,12 +87,10 @@ bool fileEncoderBarrier(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[
                 }
             }
         }
-        //double start_work = omp_get_wtime();
         int thread_ID = 0;
         #ifdef _OPENMP 
             thread_ID = omp_get_thread_num();
         #endif
-        // test lock instead
         if (inputBufferChunkSizes[thread_ID]>0){
             // Huffman compression of NUM_THREAD chunks
             isEncodingSuccessful = chunkEncoder(inputChunk+thread_ID*MAX_DECODED_BUFFER_SIZE,outputChunk+thread_ID*MAX_ENCODED_BUFFER_SIZE,huffmanAlphabet,inputBufferChunkSizes[thread_ID],&outputBufferChunkSizes[thread_ID]) && isEncodingSuccessful;
@@ -109,8 +101,6 @@ bool fileEncoderBarrier(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[
             if (i*num_threads + thread_ID < numOfChunks)
                 outputChunkSizes[i*num_threads+thread_ID]=0;
         }
-        //double end_work = omp_get_wtime();
-        //printf("Time required for thread %d on chunk %d %f\n",thread_ID,i*num_threads+thread_ID,end_work-start_work);
         #pragma omp barrier
         #pragma omp single
         {
@@ -121,8 +111,6 @@ bool fileEncoderBarrier(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[
                 }
             }
         }
-        //double end = omp_get_wtime();
-        //printf("Time required for iteration %d %f\n",i,end-start);
     }
     free(inputChunk);
     free(outputChunk);

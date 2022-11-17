@@ -32,11 +32,9 @@ ull parallel_get_frequencies(FILE* file,Dictionary *d, int num_threads){
     // chunks
     unsigned char * chunk = (unsigned char*)malloc(sizeof(unsigned char)*num_threads*MAX_DECODED_BUFFER_SIZE);
     
-    //unsigned char chunk [num_threads][MAX_DECODED_BUFFER_SIZE];
     ull chunk_size = MAX_DECODED_BUFFER_SIZE;
     ull chunk_count = 0;
     ull * read = malloc(sizeof(ull)*num_threads);
-    //int read[num_threads];
 
     chunk_count = file_size/chunk_size;
     if (file_size%chunk_size != 0){
@@ -46,10 +44,6 @@ ull parallel_get_frequencies(FILE* file,Dictionary *d, int num_threads){
     if (chunk_count%num_threads != 0){
         chunk_iterations++;
     }
-    // #ifdef _OPENMP 
-    // omp_set_dynamic(0); 
-    // omp_set_num_threads(num_threads); 
-    // #endif
     #pragma omp parallel
     for(ull i = 0; i < chunk_iterations; i++){
         int thread_ID = 0;
