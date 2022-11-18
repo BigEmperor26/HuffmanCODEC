@@ -13,6 +13,7 @@ MODE=d
 OUTPUT=${INPUT}_dec_${PROCESSES}_${THREADS}
 
 TOTAL=$(($THREADS*$PROCESSES))
+echo $(date)
 echo main executable ${MAIN}
 echo mode ${MODE}
 echo input folder ${INPUT}
@@ -36,4 +37,4 @@ time mpiexec --report-bindings -np ${PROCESSES} --map-by node:pe=${THREADS} --bi
 # write INPUT=path to folder to encode
 # write OUTPUTFOLDER=path to specify where to save stdout and stderr
 # then copy and paste this command to submit the job
-# for PROCESSES in 1 2 4; do for THREADS in 1 2 4 6 8 10 12 16 20 24; do export PROCESSES; export THREADS; export INPUT;export OUTPUTFOLDER; qsub -N Decoder${THREADS} -l select=${PROCESSES}:ncpus=${THREADS}:mem=4gb -o ${OUTPUTFOLDER}/deconding_result_${PROCESSES}_${THREADS}_threads -e ${OUTPUTFOLDER}/deconding_result_${PROCESSES}_${THREADS}_threads_err '/home/michele.yin/HuffmanCODEC/clusterscripts/parallelDecoderFolder.sh'; done; done
+# nohup $(for RUN in $(seq 1 3);do for PROCESSES in 1 2 4; do for THREADS in 1 2 4 6 8 10 12 16 20 24; do export PROCESSES; export THREADS; export INPUT;export OUTPUTFOLDER; qsub -Wblock=true -N Deccoder_run${RUN}_processes${PROCESSES}_threads_${THREADS} -l select=${PROCESSES}:ncpus=${THREADS}:mem=4gb -o ${OUTPUTFOLDER}/deconding_result_${PROCESSES}_${THREADS}_threads -e ${OUTPUTFOLDER}/deconding_result_${PROCESSES}_${THREADS}_threads_err '/home/michele.yin/HuffmanCODEC/clusterscripts/parallelDecoderFolder.sh'; done; done;done)
