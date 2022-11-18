@@ -44,7 +44,7 @@ Once having computed the frequencies for each one of the 256 different bytes in 
     \Return{Q.deleteMin()}\;
 \end{algorithm}
 
-Once built the Huffman tree, it is possible to generate the Huffman alphabet visiting the tree using a DFS algorithm, assigning 0 to each left-child traverse and 0 for the right one as presented in \cref{alg:encode}. Finally, it is possible to compress the file by creating a stream of bits corresponding to its content using the Huffman alphabet.
+Once built the Huffman tree, it is possible to generate the Huffman alphabet visiting the tree using a DFS algorithm, assigning 0 to each left-child traverse and 1 for the right one as presented in \cref{alg:encode}. Finally, it is possible to compress the file by creating a stream of bits corresponding to its content using the Huffman alphabet.
 
 \begin{algorithm}
     \caption{Encode using Huffman tree}\label{alg:encode}
@@ -94,7 +94,7 @@ Once built the Huffman tree, it is possible to generate the Huffman alphabet vis
                 }
             ;
         \end{tikzpicture}
-        \caption{An example of Huffman tree}
+        \caption{An example of Huffman tree.}
         \label{fig:tree}
     \end{figure}
 
