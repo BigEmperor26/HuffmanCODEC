@@ -320,9 +320,7 @@ bool fileDecoderFull( char* inputFileName, char* outputFileName, int num_threads
     printf("CPU Time required to only decode %f\n", cpu_time_used);
     printf("Wall Time required to only decode %f\n", wall_time_used);
 
-    // free resources
-    fclose(inputFile);
-    fclose(outputFile);
+    
 
     freeNode(huffmanTree);
     huffmanTree = NULL;
@@ -333,5 +331,17 @@ bool fileDecoderFull( char* inputFileName, char* outputFileName, int num_threads
     free(chunkOffsets);
     free(inputChunkSizes);
 
+    clock_t start_cpu_flush = clock();
+    double start_wall_flush = MPI_Wtime();
+    // free resources
+    fclose(inputFile);
+    fclose(outputFile);
+
+    clock_t end_cpu_flush = clock();
+    double end_wall_flush = MPI_Wtime();
+    double cpu_time_used_flush = ((double)(end_cpu_flush - start_cpu_flush)) / CLOCKS_PER_SEC;
+    double wall_time_used_flush = end_wall_flush - start_wall_flush;
+    printf("CPU Time required to only write flush %f\n", cpu_time_used_flush);
+    printf("Wall Time required to only write flush %f\n", wall_time_used_flush);
     return  isDecodingSuccessful;
 }
