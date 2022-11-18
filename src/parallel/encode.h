@@ -15,12 +15,13 @@ bool chunkEncoder( unsigned char* inputChunk,  unsigned char * outputChunk,char 
 /*
 ** Function to encode a input file to an output file according to given alphabet and chunk sizes
 */
-bool fileEncoder(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[],ull* outputFileSize,ull inputChunkSizes[], ull outputChunkSizes[],int num_threads);
+bool fileEncoderBarrier(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[],ull* outputFileSize,ull inputChunkSizes[], ull outputChunkSizes[],int num_threads);
 
+bool fileEncoderLocks(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[],ull* outputFileSize,ull inputChunkSizes[], ull outputChunkSizes[],int num_threads);
 
 /*
 ** Function to perform end to end Huffman file encoding
 */
-bool fileEncoderFull( char* inputFileName, char* outputFileName,int num_threads);
+bool fileEncoderFull( char* inputFileName, char* outputFileName,int num_threads, int mode);
 
 #endif

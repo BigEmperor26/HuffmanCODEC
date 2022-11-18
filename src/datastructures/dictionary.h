@@ -18,4 +18,5 @@ void freeDictionary(Dictionary* d);
 
 void printDictionary(Dictionary* d);
 
+void mergeDictionaries(Dictionary* d, Dictionary** dictionaries, int num_threads);
 #endif

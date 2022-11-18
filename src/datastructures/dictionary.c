@@ -26,3 +26,11 @@ void printDictionary(Dictionary* d) {
     printf("\nSize: %d\n", d->size);
     return;
 }
+
+void mergeDictionaries(Dictionary* d, Dictionary** dictionaries, int num_threads) {
+    for (int i = 0; i < num_threads; i++) {
+        for (int j = 0; j < d->size; j++) {
+            d->frequencies[j] += dictionaries[i]->frequencies[j];
+        }
+    }
+}

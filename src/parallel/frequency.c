@@ -16,7 +16,7 @@
 void countChunk(unsigned char *chunk,ull size,Dictionary *d){
     for(ull i = 0; i < size; i++){
         int value = chunk[i];
-        #pragma omp atomic update
+        //#pragma omp atomic update
         d->frequencies[value]++;
     }
 }
@@ -26,6 +26,10 @@ void countChunk(unsigned char *chunk,ull size,Dictionary *d){
 */
 ull parallel_get_frequencies(FILE* file,Dictionary *d, int num_threads){
 
+    Dictionary **dictionaries = (Dictionary**)malloc(num_threads*sizeof(Dictionary*));
+    for(int i = 0; i < num_threads; i++){
+        dictionaries[i] = createDictionary(MAX_HEAP_SIZE);
+    }
     fseek(file, 0, SEEK_END); // seek to end of file
     ull file_size = ftell(file); // get current file pointer
     fseek(file, 0, SEEK_SET); // seek to end of file
@@ -59,9 +63,12 @@ ull parallel_get_frequencies(FILE* file,Dictionary *d, int num_threads){
         }
         //  count the chunks
         if (read[thread_ID]>0)
-            countChunk(chunk+thread_ID*MAX_DECODED_BUFFER_SIZE,read[thread_ID],d);
+            countChunk(chunk+thread_ID*MAX_DECODED_BUFFER_SIZE,read[thread_ID],dictionaries[thread_ID]);
         
     }
+    // merge dictionaries
+    mergeDictionaries(d,dictionaries,num_threads);
+    
     free(chunk);
     free(read);
     return file_size;

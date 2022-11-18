@@ -25,11 +25,12 @@ bool chunkDecoder(unsigned char inputChunk[], unsigned char outputChunk[], Node*
 /*
 ** Function to decode a input file to an output file according to given alphabet and chunk sizes
 */
-bool fileDecoder(FILE* inputFile, FILE* outputFile, Node* huffmanTree, ull inputChunkOffsets[], ull inputChunkSizes[], ull numOfChunks, int num_threads) ;
+bool fileDecoderBarrier(FILE* inputFile, FILE* outputFile, Node* huffmanTree, ull inputChunkOffsets[], ull inputChunkSizes[], ull numOfChunks, int num_threads) ;
 
+bool fileDecoderLocks(FILE* inputFile, FILE* outputFile, Node* huffmanTree, ull inputChunkOffsets[], ull inputChunkSizes[], ull numOfChunks, int num_threads) ;
 /*
 ** Function to perform end to end Huffman file decoding
 */
-bool fileDecoderFull( char* inputFileName, char* outputFileName,int num_threads);
+bool fileDecoderFull( char* inputFileName, char* outputFileName,int num_threads, int mode);
 
 #endif

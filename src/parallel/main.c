@@ -33,7 +33,7 @@
 /*
 **  Function to process a directory recursively, splitting the files to a number of processes according to their raink
 */
-int directoryProcesser(int rank,int size,char *inputname, char * outputname ,int num_threads,bool (*processing)(char* arg1,char*arg2, int num_threads)){
+int directoryProcesser(int rank,int size,char *inputname, char * outputname ,int num_threads,bool (*processing)(char* arg1,char*arg2, int num_threads,int mode),int mode){
     bool inputdirectory = false;
     int files_count = 0;
     if (rank == 0) {
@@ -143,7 +143,7 @@ int directoryProcesser(int rank,int size,char *inputname, char * outputname ,int
         printf("saving as file %s\n",process_output_files+i*PATH_MAX);
         clock_t start_cpu = clock();
         double start_wall = MPI_Wtime();
-        bool completed = (*processing)(process_input_files+i*PATH_MAX,process_output_files+i*PATH_MAX,num_threads);
+        bool completed = (*processing)(process_input_files+i*PATH_MAX,process_output_files+i*PATH_MAX,num_threads,mode);
         if(!completed){
             printf("Error on file %s\n",process_output_files+i*PATH_MAX);
             exit(1);
@@ -172,7 +172,7 @@ int directoryProcesser(int rank,int size,char *inputname, char * outputname ,int
 **  Function to process a file. Only rank 0 wil execute
 */
 
-int fileProcesser(int rank,char *inputname, char * outputname,int num_threads, bool (*processing)(char* arg1,char*arg2,int num_threads)){
+int fileProcesser(int rank,char *inputname, char * outputname,int num_threads, bool (*processing)(char* arg1,char*arg2,int num_threads,int mode),int mode){
      bool inputFile = false;
      int files_count = 1;
      if (rank == 0) {
@@ -196,7 +196,7 @@ int fileProcesser(int rank,char *inputname, char * outputname,int num_threads, b
         printf("saving as file %s\n",outputname);
         clock_t start_cpu = clock();
         double start_wall = MPI_Wtime();
-        bool  completed = (*processing)((char *)inputname,(char *)outputname,num_threads);
+        bool  completed = (*processing)((char *)inputname,(char *)outputname,num_threads,mode);
         if(!completed){
             printf("Error on file %s\n",outputname);
             exit(1);
@@ -226,17 +226,16 @@ int main(int argc, char** argv) {
     // read and preprocess folders
     char inputname[PATH_MAX];
     char outputname[PATH_MAX];
-    int files_count = 0;
     bool inputfile = true;
     void *processingFunction = NULL;
     int num_threads = 1;
     #ifdef _OPENMP 
         num_threads = omp_get_max_threads();
     #endif
-
+    int mode = 0; // 0 for barrier, 1 for locks
     // input processing
     char option = '0';
-    while ((option = getopt(argc, argv, "edrh")) != -1) {
+    while ((option = getopt(argc, argv, "edrhbl")) != -1) {
         switch (option) {
             case 'e':
                 processingFunction = fileEncoderFull;
@@ -247,15 +246,22 @@ int main(int argc, char** argv) {
             case 'r':
                 inputfile = false;
                 break;
+            case 'b':
+                mode = 0;
+                break;
+            case 'l':
+                mode = 1;
+                break;
             case 'h':
                 printf("-e to encode\n");
                 printf("-d to decode\n");
                 printf("-r to recursively process a whole directory\n");
+                printf("-b to use barrier parallelism\n");
+                printf("-l to use locks parallelism\n");
                 printf("Examples of usage\n");
                 printf("%s -e input.txt output.txt\n",argv[0]);
                 printf("%s -d input.txt output.txt\n",argv[0]);
                 printf("%s -r -e /inputfolder /outputfolder\n",argv[0]);
-                printf("%s -r -d /inputfolder /outputfolder\n",argv[0]);
                 printf("%s -r -d /inputfolder /outputfolder\n",argv[0]);
                 MPI_Finalize();
                 exit(1);
@@ -273,9 +279,9 @@ int main(int argc, char** argv) {
         printf("Running on num threads %d\n",num_threads); 
     
     if (inputfile){
-        fileProcesser(rank,inputname,outputname,num_threads,processingFunction);
+        fileProcesser(rank,inputname,outputname,num_threads,processingFunction,mode);
     }else{
-        directoryProcesser(rank,size,inputname,outputname,num_threads,processingFunction);
+        directoryProcesser(rank,size,inputname,outputname,num_threads,processingFunction,mode);
     }
     clock_t end_cpu = clock();
     double end_wall =  MPI_Wtime();
