@@ -295,6 +295,10 @@ bool fileEncoderFull( char* inputFileName, char* outputFileName, int num_threads
     printf("%s is %0.2f%% of %s\n", outputFileName, (float)outputFileSize / (float)originalFileSize, inputFileName);
     // write encoded file header footer:
     // - output chunk offsets
+    
+    clock_t start_cpu_footer = clock();
+    double start_wall_footer = MPI_Wtime();
+
     ull firstOffset = 0;
     for (int i = 1; i < numOfChunks; i++) {
         outputChunkSizes[i] += outputChunkSizes[i-1];
@@ -326,6 +330,12 @@ bool fileEncoderFull( char* inputFileName, char* outputFileName, int num_threads
     free(inputChunkSizes);
     free(outputChunkSizes);
 
+    clock_t end_cpu_footer = clock();
+    double end_wall_footer = MPI_Wtime();
+    double cpu_time_used_footer = ((double)(end_cpu_footer - start_cpu_footer)) / CLOCKS_PER_SEC;
+    double wall_time_used_footer = end_wall_footer - start_wall_footer;
+    printf("CPU Time required to only write footer %f\n", cpu_time_used_footer);
+    printf("Wall Time required to only write footer %f\n", wall_time_used_footer);
     return isEncodingSuccessful;
     
 }

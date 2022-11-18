@@ -21,6 +21,7 @@ void countChunk(unsigned char *chunk,ull size,Dictionary *d){
     }
 }
 
+
 /* 
 ** function that reads chunks from readfile, applies processChunk to each chunk, and writes the result in writefile 
 */
