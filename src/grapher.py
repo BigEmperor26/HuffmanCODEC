@@ -16,7 +16,7 @@ file_folders = [join(path,f) for f in listdir(path) if isdir(join(path, f))]
 sorted_files = sorted(file_folders, key=lambda x: int(re.findall(r'\d+',x)[0]) if 'mb' in x else int(re.findall(r'\d+',x)[0])*1024)
 print(sorted_files)
 results_matrix_overall_Wall = []
-for file_folder in file_folders:
+for file_folder in sorted_files:
     json_file = [join(file_folder,f) for f in listdir(file_folder) if isfile(join(file_folder, f)) and f.endswith('json')]
     thread_data = json.load(open(json_file[0]))
     temp_list = []
@@ -29,3 +29,4 @@ for file_folder in file_folders:
 for i in range(len(results_matrix_overall_Wall)):
     plt.plot(results_matrix_overall_Wall[i], label='File size '+str(i+1))
 # plt.plot(results_matrix_overall_Wall)
+
