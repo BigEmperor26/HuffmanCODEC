@@ -31,6 +31,6 @@ bool fileDecoderLocks(FILE* inputFile, FILE* outputFile, Node* huffmanTree, ull 
 /*
 ** Function to perform end to end Huffman file decoding
 */
-bool fileDecoderFull( char* inputFileName, char* outputFileName,int num_threads, int mode);
+bool fileDecoderFull( char* inputFileName, char* outputFileName,int num_threads, int mode,int rank);
 
 #endif

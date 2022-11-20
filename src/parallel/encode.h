@@ -22,6 +22,6 @@ bool fileEncoderLocks(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[],
 /*
 ** Function to perform end to end Huffman file encoding
 */
-bool fileEncoderFull( char* inputFileName, char* outputFileName,int num_threads, int mode);
+bool fileEncoderFull( char* inputFileName, char* outputFileName,int num_threads, int mode,int rank);
 
 #endif

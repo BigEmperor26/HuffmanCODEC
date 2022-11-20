@@ -149,9 +149,18 @@ bool fileEncoderLocks(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[],
         chunkIterations++;
     }   
     // locks for multithreading
-    omp_lock_t readlock[num_threads];
-    omp_lock_t processlock[num_threads];
-    omp_lock_t writelock[num_threads];
+    // omp_lock_t readlock[num_threads];
+    // omp_lock_t processlock[num_threads];
+    // omp_lock_t writelock[num_threads];
+    omp_lock_t * readlock = malloc(sizeof(omp_lock_t)*num_threads);
+    omp_lock_t * processlock = malloc(sizeof(omp_lock_t)*num_threads);
+    omp_lock_t * writelock = malloc(sizeof(omp_lock_t)*num_threads);
+    for(int i=0;i<num_threads;i++){
+        omp_lock_t r_lock, p_lock, w_lock;
+        readlock[i] = r_lock;
+        processlock[i] = p_lock;
+        writelock[i] = w_lock;
+    }
     int current_chunk = 0;
     for (int j = 0;j < num_threads;j++) {
         omp_init_lock(&readlock[j]);
@@ -228,12 +237,14 @@ bool fileEncoderLocks(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[],
     free(outputChunk);
     free(inputBufferChunkSizes);
     free(outputBufferChunkSizes);
-
+    free(readlock);
+    free(processlock);
+    free(writelock);
     return isEncodingSuccessful;
 }
 
 
-bool fileEncoderFull( char* inputFileName, char* outputFileName, int num_threads, int mode){
+bool fileEncoderFull( char* inputFileName, char* outputFileName, int num_threads, int mode,int rank){
     clock_t start_freq = clock();
     double start_wall_freq = MPI_Wtime();
     // get byte frequencies in the input file
@@ -248,8 +259,8 @@ bool fileEncoderFull( char* inputFileName, char* outputFileName, int num_threads
     ull originalFileSize = parallel_get_frequencies(inputFile, dict,num_threads);
     clock_t end_freq = clock();
     double end_wall_freq = MPI_Wtime();
-    printf("CPU Time to get frequencies %f\n",((double) (end_freq - start_freq)) / CLOCKS_PER_SEC);
-    printf("Wall Time to get frequencies %f\n",end_wall_freq-start_wall_freq);
+    printf("%d CPU Time to get frequencies %f\n",rank,((double) (end_freq - start_freq)) / CLOCKS_PER_SEC);
+    printf("%d Wall Time to get frequencies %f\n",rank,end_wall_freq-start_wall_freq);
     clock_t start_tree = clock();
     double start_wall_tree = MPI_Wtime();
     // get huffman tree and alphabet
@@ -277,8 +288,8 @@ bool fileEncoderFull( char* inputFileName, char* outputFileName, int num_threads
     double end_wall_tree = MPI_Wtime();
     double cpu_time_used_tree = ((double)(end_tree - start_tree)) / CLOCKS_PER_SEC;
     double wall_time_used_tree = end_wall_tree - start_wall_tree;
-    printf("CPU Time required to only create the tree %f\n", cpu_time_used_tree);
-    printf("Wall Time required to only create the tree %f\n", wall_time_used_tree);
+    printf("%d CPU Time required to only create the tree %f\n", rank,cpu_time_used_tree);
+    printf("%d Wall Time required to only create the tree %f\n",rank, wall_time_used_tree);
     clock_t start = clock();
     double start_wall = MPI_Wtime();
     bool isEncodingSuccessful = false;
@@ -290,8 +301,8 @@ bool fileEncoderFull( char* inputFileName, char* outputFileName, int num_threads
     double end_wall = MPI_Wtime();
     double cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
     double wall_time_used = end_wall - start_wall;
-    printf("CPU Time required to only encode %f\n", cpu_time_used);
-    printf("Wall Time required to only encode %f\n", wall_time_used);
+    printf("%d CPU Time required to only encode %f\n",rank, cpu_time_used);
+    printf("%d Wall Time required to only encode %f\n",rank, wall_time_used);
     printf("%s is %0.2f%% of %s\n", outputFileName, (float)outputFileSize / (float)originalFileSize, inputFileName);
     // write encoded file header footer:
     // - output chunk offsets
@@ -333,8 +344,8 @@ bool fileEncoderFull( char* inputFileName, char* outputFileName, int num_threads
     double end_wall_flush = MPI_Wtime();
     double cpu_time_used_flush = ((double)(end_cpu_flush - start_cpu_flush)) / CLOCKS_PER_SEC;
     double wall_time_used_flush = end_wall_flush - start_wall_flush;
-    printf("CPU Time required to only write flush %f\n", cpu_time_used_flush);
-    printf("Wall Time required to only write flush %f\n", wall_time_used_flush);
+    printf("%d CPU Time required to only write flush %f\n",rank, cpu_time_used_flush);
+    printf("%d Wall Time required to only write flush %f\n", rank,wall_time_used_flush);
     return isEncodingSuccessful;
     
 }

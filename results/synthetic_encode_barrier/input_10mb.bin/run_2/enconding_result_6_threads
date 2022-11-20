@@ -1,0 +1,43 @@
+Sat Nov 19 19:44:23 CET 2022
+main executable /home/michele.yin/HuffmanCODEC/bin/main.out
+mode e
+input file input_10mb.bin
+output file /home/michele.yin/HuffmanCODEC/results/synthetic_encode/input_10mb.bin.huf
+number of threads 6
+input folder /home/michele.yin/HuffmanCODEC/syntheticdata
+results folder /home/michele.yin/HuffmanCODEC/results/synthetic_encode
+ Data for JOB [53522,1] offset 0 Total slots allocated 1
+
+ Mapper requested: NULL  Last mapper: round_robin  Mapping policy: BYNODE:NOOVERSUBSCRIBE  Ranking policy: NODE
+ Binding policy: CORE:IF-SUPPORTED  Cpu set: NULL  PPR: NULL  Cpus-per-rank: 6
+ 	Num new daemons: 0	New daemon starting vpid INVALID
+ 	Num nodes: 1
+
+ Data for node: hpc-c04-node04	State: 3	Flags: 11
+ 	Daemon: [[53522,0],0]	Daemon launched: True
+ 	Num slots: 1	Slots in use: 1	Oversubscribed: FALSE
+ 	Num slots allocated: 1	Max slots: 0
+ 	Num procs: 1	Next node_rank: 1
+ 	Data for proc: [[53522,1],0]
+ 		Pid: 0	Local rank: 0	Node rank: 0	App rank: 0
+ 		State: INITIALIZED	App_context: 0
+ 		Locale:  NODE
+ 		Binding: [B/B/B/B/B/B/./././././././././././.][./././././././././././././././././.][./././././././././././././././././.][./././././././././././././././././.]
+Running on num processes 1
+Running on num threads 6
+Number of files: 1
+processing file /home/michele.yin/HuffmanCODEC/syntheticdata/input_10mb.bin
+saving as file /home/michele.yin/HuffmanCODEC/results/synthetic_encode/input_10mb.bin.huf
+0 CPU Time to get frequencies 0.080000
+0 Wall Time to get frequencies 0.023659
+0 CPU Time required to only create the tree 0.020000
+0 Wall Time required to only create the tree 0.004123
+0 CPU Time required to only encode 0.750000
+0 Wall Time required to only encode 0.125649
+/home/michele.yin/HuffmanCODEC/results/synthetic_encode/input_10mb.bin.huf is 0.46% of /home/michele.yin/HuffmanCODEC/syntheticdata/input_10mb.bin
+0 CPU Time required to only write flush 0.020000
+0 Wall Time required to only write flush 0.049379
+CPU Time required to process 0.870000
+Wall Time required to process 0.202994
+0 Overall program CPU Time required to process the input for rank 0 /home/michele.yin/HuffmanCODEC/syntheticdata/input_10mb.bin 0.870000
+0 Overall program Wall Time required to process the inputfor rank 0 /home/michele.yin/HuffmanCODEC/syntheticdata/input_10mb.bin 0.203052

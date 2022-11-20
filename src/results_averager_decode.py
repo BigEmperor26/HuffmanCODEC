@@ -1,6 +1,5 @@
 
 # argv[1] = path to the directory containing the results
-# argv[2] = path to the directory where the averaged results will be saved
 
 import sys
 from collections import OrderedDict
@@ -34,7 +33,7 @@ for file_folder in file_folders:
                 thread_data[index[0]]=data
             with open (file, "r") as myfile:
                 for line in myfile:
-                    elif 'CPU' in line and 'tree' in line:
+                    if 'CPU' in line and 'tree' in line:
                         thread_data[thread]['Tree']['CPU'] += float(line.split(' ')[-1])
                     elif 'Wall' in line and 'tree' in line:
                         thread_data[thread]['Tree']['Wall'] += float(line.split(' ')[-1])

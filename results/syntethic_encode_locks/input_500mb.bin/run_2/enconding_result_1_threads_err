@@ -1,0 +1,14 @@
+[hpc-c11-node11.unitn.it:69702] pmix_mca_base_component_repository_open: unable to open mca_pnet_opa: libpsm2.so.2: cannot open shared object file: No such file or directory (ignored)
+[hpc-c11-node11.unitn.it:69702] MCW rank 0 bound to socket 0[core 0[hwt 0]]: [B/././././././././././././././././././././././.][./././././././././././././././././././././././.][./././././././././././././././././././././././.][./././././././././././././././././././././././.]
+[hpc-c11-node11.unitn.it:69706] mca_base_component_repository_open: unable to open mca_btl_usnic: libfabric.so.1: cannot open shared object file: No such file or directory (ignored)
+[hpc-c11-node11.unitn.it:69706] mca_base_component_repository_open: unable to open mca_btl_uct: libucp.so.0: cannot open shared object file: No such file or directory (ignored)
+[hpc-c11-node11.unitn.it:69706] mca_base_component_repository_open: unable to open mca_btl_openib: librdmacm.so.1: cannot open shared object file: No such file or directory (ignored)
+[hpc-c11-node11.unitn.it:69706] mca_base_component_repository_open: unable to open mca_pml_yalla: libmxm.so.2: cannot open shared object file: No such file or directory (ignored)
+[hpc-c11-node11.unitn.it:69706] mca_base_component_repository_open: unable to open mca_pml_ucx: libucp.so.0: cannot open shared object file: No such file or directory (ignored)
+[hpc-c11-node11.unitn.it:69706] mca_base_component_repository_open: unable to open mca_mtl_psm2: libpsm2.so.2: cannot open shared object file: No such file or directory (ignored)
+[hpc-c11-node11.unitn.it:69706] mca_base_component_repository_open: unable to open mca_mtl_ofi: libfabric.so.1: cannot open shared object file: No such file or directory (ignored)
+[hpc-c11-node11.unitn.it:69706] mca_base_component_repository_open: unable to open mca_osc_ucx: libucp.so.0: cannot open shared object file: No such file or directory (ignored)
+
+real	0m32.495s
+user	0m31.366s
+sys	0m0.775s

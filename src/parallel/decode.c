@@ -180,9 +180,18 @@ bool fileDecoderLocks(FILE* inputFile, FILE* outputFile, Node* huffmanTree, ull 
         chunkIterations++;
     }
     // locks for multithreading
-    omp_lock_t readlock[num_threads];
-    omp_lock_t processlock[num_threads];
-    omp_lock_t writelock[num_threads];
+    // omp_lock_t readlock[num_threads];
+    // omp_lock_t processlock[num_threads];
+    // omp_lock_t writelock[num_threads];
+    omp_lock_t * readlock = malloc(sizeof(omp_lock_t)*num_threads);
+    omp_lock_t * processlock = malloc(sizeof(omp_lock_t)*num_threads);
+    omp_lock_t * writelock = malloc(sizeof(omp_lock_t)*num_threads);
+    for(int i=0;i<num_threads;i++){
+        omp_lock_t r_lock, p_lock, w_lock;
+        readlock[i] = r_lock;
+        processlock[i] = p_lock;
+        writelock[i] = w_lock;
+    }
     int current_chunk = 0;
     for (int j = 0;j < num_threads;j++) {
         omp_init_lock(&readlock[j]);
@@ -267,11 +276,13 @@ bool fileDecoderLocks(FILE* inputFile, FILE* outputFile, Node* huffmanTree, ull 
     free(outputBufferChunkSizes);
     free(decodedOutputBufferChunkSizes);
     free(inputBufferChunkOffsets);
-
+    free(readlock);
+    free(processlock);
+    free(writelock);
     return isDecodingSuccessful;
 }
 
-bool fileDecoderFull( char* inputFileName, char* outputFileName, int num_threads,int mode){
+bool fileDecoderFull( char* inputFileName, char* outputFileName, int num_threads,int mode,int rank){
     clock_t start_tree = clock();
     double start_wall_tree = MPI_Wtime();
     // get byte frequencies in the input file
@@ -303,8 +314,8 @@ bool fileDecoderFull( char* inputFileName, char* outputFileName, int num_threads
     double end_wall_tree = MPI_Wtime();
     double cpu_time_used_tree = ((double)(end_tree - start_tree)) / CLOCKS_PER_SEC;
     double wall_time_used_tree = end_wall_tree - start_wall_tree;
-    printf("CPU Time required to only create the tree %f\n", cpu_time_used_tree);
-    printf("Wall Time required to only create the tree %f\n", wall_time_used_tree);
+    printf("%d CPU Time required to only create the tree %f\n",rank, cpu_time_used_tree);
+    printf("%d Wall Time required to only create the tree %f\n",rank, wall_time_used_tree);
     // decode
     clock_t start = clock();
     double start_wall = MPI_Wtime();
@@ -317,8 +328,8 @@ bool fileDecoderFull( char* inputFileName, char* outputFileName, int num_threads
     double end_wall = MPI_Wtime();
     double cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
     double wall_time_used = end_wall - start_wall;
-    printf("CPU Time required to only decode %f\n", cpu_time_used);
-    printf("Wall Time required to only decode %f\n", wall_time_used);
+    printf("%d CPU Time required to only decode %f\n",rank, cpu_time_used);
+    printf("%d Wall Time required to only decode %f\n",rank, wall_time_used);
 
     
 
@@ -341,7 +352,7 @@ bool fileDecoderFull( char* inputFileName, char* outputFileName, int num_threads
     double end_wall_flush = MPI_Wtime();
     double cpu_time_used_flush = ((double)(end_cpu_flush - start_cpu_flush)) / CLOCKS_PER_SEC;
     double wall_time_used_flush = end_wall_flush - start_wall_flush;
-    printf("CPU Time required to only write flush %f\n", cpu_time_used_flush);
-    printf("Wall Time required to only write flush %f\n", wall_time_used_flush);
+    printf("%d CPU Time required to only write flush %f\n",rank, cpu_time_used_flush);
+    printf("%d Wall Time required to only write flush %f\n",rank, wall_time_used_flush);
     return  isDecodingSuccessful;
 }

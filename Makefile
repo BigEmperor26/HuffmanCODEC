@@ -9,8 +9,8 @@ decoder:
 build:
 	mpicc -g -Wall -fopenmp -std=gnu99 -o ./bin/main.out ./src/parallel/main.c ./src/datastructures/priorityQ.c ./src/datastructures/dictionary.c ./src/parallel/huffman.c  ./src/parallel/frequency.c ./src/parallel/processDistributer.c ./src/parallel/folder.c  ./src/parallel/encode.c ./src/parallel/decode.c 
 
-test:
-	mpicc -g -Wall -fopenmp -std=gnu99 -o ./test.out ./clusterscripts/test.c 
-
 build_no_openmp:
 	mpicc -g -Wall -std=gnu99 -o ./bin/main.out ./src/parallel/main.c ./src/datastructures/priorityQ.c ./src/datastructures/dictionary.c ./src/parallel/huffman.c  ./src/parallel/frequency.c ./src/parallel/processDistributer.c ./src/parallel/folder.c  ./src/parallel/encode.c ./src/parallel/decode.c 
+
+data_generator:
+	gcc -std=c99 -o ./bin/data_generator.out ./src/data_generator/data_generator.c

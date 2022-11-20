@@ -33,7 +33,7 @@
 /*
 **  Function to process a directory recursively, splitting the files to a number of processes according to their raink
 */
-int directoryProcesser(int rank,int size,char *inputname, char * outputname ,int num_threads,bool (*processing)(char* arg1,char*arg2, int num_threads,int mode),int mode){
+int directoryProcesser(int rank,int size,char *inputname, char * outputname ,int num_threads,bool (*processing)(char* arg1,char*arg2, int num_threads,int mode,int rank),int mode){
     bool inputdirectory = false;
     int files_count = 0;
     if (rank == 0) {
@@ -57,14 +57,18 @@ int directoryProcesser(int rank,int size,char *inputname, char * outputname ,int
         // }
         printf("Number of files: %d\n", files_count);
     }
+    //printf("Rank %d Number of files: %d\n",rank, files_count);
+    MPI_Barrier(MPI_COMM_WORLD);
     // broadcast the files count, and if input is a single file or directory to all other nodes
     MPI_Bcast(&files_count, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    //printf("Rank %d Number of files: %d\n", rank, files_count);
+    MPI_Barrier(MPI_COMM_WORLD);
     // gather all files in the input directory and count the size of each file
     char* files =(char*) malloc(sizeof(char)*files_count*PATH_MAX);
     ull * file_sizes = (ull*)malloc(sizeof(ull)*files_count);
     char* sorted_files = (char*)malloc(sizeof(char)*files_count*PATH_MAX);
     int * sorted_file_indexes = (int*)malloc(sizeof(int)*files_count);
-    int * files_per_process =(int*) malloc(sizeof(int)*files_count);
+    int * files_per_process =(int*) malloc(sizeof(int)*size);
     ull* files_sizes_per_process = (ull*)malloc(sizeof(ull)*size);
 
     ull total_size_to_process = 0;
@@ -106,11 +110,14 @@ int directoryProcesser(int rank,int size,char *inputname, char * outputname ,int
         // free(pre_sorted_files_ptr);
 
     }
+    MPI_Barrier(MPI_COMM_WORLD);
     MPI_Scatter(files_sizes_per_process, 1, MPI_UNSIGNED_LONG_LONG, &total_size_to_process, 1, MPI_UNSIGNED_LONG_LONG, 0, MPI_COMM_WORLD);
+    MPI_Barrier(MPI_COMM_WORLD);
     char* process_input_files = (char*)malloc(sizeof(char)*files_count*PATH_MAX);//char process_input_files[files_count][PATH_MAX];
     char* process_output_files = (char*)malloc(sizeof(char)*files_count*PATH_MAX); //char process_output_files[files_count][PATH_MAX];
     int process_count = 0;
      // Last process may get some more because of uneven integer division
+    MPI_Barrier(MPI_COMM_WORLD);
     fileDistributerSize((char*)sorted_files, sorted_file_indexes,files_per_process, files_count, rank, size, (char*)process_input_files,&process_count);
     MPI_Barrier(MPI_COMM_WORLD);
     printf("Process %d is assigned a total of %d files for a size of %llu MiB\n",rank,process_count,(ull)total_size_to_process/(1024*1024));
@@ -118,7 +125,7 @@ int directoryProcesser(int rank,int size,char *inputname, char * outputname ,int
   
     //call encoder for each process
     for(int i=0;i<process_count;i++){
-        printf("Rank %d is processing\n",rank);
+        printf("%d Rank %d is processing\n",rank,rank);
         int position = 0;
         // create new names
         strcpy(process_output_files+i*PATH_MAX,outputname);
@@ -139,21 +146,22 @@ int directoryProcesser(int rank,int size,char *inputname, char * outputname ,int
             changed = false;
         }
         // processsing the file
-        printf("processing file %s\n",process_input_files+i*PATH_MAX);
-        printf("saving as file %s\n",process_output_files+i*PATH_MAX);
+        printf("%d processing file %s\n",rank,process_input_files+i*PATH_MAX);
+        printf("%d saving as file %s\n",rank,process_output_files+i*PATH_MAX);
         clock_t start_cpu = clock();
         double start_wall = MPI_Wtime();
-        bool completed = (*processing)(process_input_files+i*PATH_MAX,process_output_files+i*PATH_MAX,num_threads,mode);
+        // bool completed = true;
+        bool completed = (*processing)(process_input_files+i*PATH_MAX,process_output_files+i*PATH_MAX,num_threads,mode,rank);
         if(!completed){
-            printf("Error on file %s\n",process_output_files+i*PATH_MAX);
+            printf("%d Error on file %s\n",rank,process_output_files+i*PATH_MAX);
             exit(1);
         }
         clock_t end_cpu = clock();
         double end_wall =  MPI_Wtime();
         double cpu_time_used = ((double)(end_cpu - start_cpu)) / CLOCKS_PER_SEC;
         double wall_time = (double) (end_wall-start_wall);
-        printf("CPU Time required to process %f\n", cpu_time_used);
-        printf("Wall Time required to process %f\n", wall_time);
+        printf("%d CPU Time required to process %f\n", rank,cpu_time_used);
+        printf("%d Wall Time required to process %f\n", rank,wall_time);
     }
     free(files);
     free(file_sizes);
@@ -172,7 +180,7 @@ int directoryProcesser(int rank,int size,char *inputname, char * outputname ,int
 **  Function to process a file. Only rank 0 wil execute
 */
 
-int fileProcesser(int rank,char *inputname, char * outputname,int num_threads, bool (*processing)(char* arg1,char*arg2,int num_threads,int mode),int mode){
+int fileProcesser(int rank,char *inputname, char * outputname,int num_threads, bool (*processing)(char* arg1,char*arg2,int num_threads,int mode,int rank),int mode){
      bool inputFile = false;
      int files_count = 1;
      if (rank == 0) {
@@ -196,7 +204,7 @@ int fileProcesser(int rank,char *inputname, char * outputname,int num_threads, b
         printf("saving as file %s\n",outputname);
         clock_t start_cpu = clock();
         double start_wall = MPI_Wtime();
-        bool  completed = (*processing)((char *)inputname,(char *)outputname,num_threads,mode);
+        bool  completed = (*processing)((char *)inputname,(char *)outputname,num_threads,mode,rank);
         if(!completed){
             printf("Error on file %s\n",outputname);
             exit(1);
@@ -214,7 +222,8 @@ int fileProcesser(int rank,char *inputname, char * outputname,int num_threads, b
 int main(int argc, char** argv) {
     // initialize MPI
     int provided;
-    MPI_Init_thread(&argc, &argv, MPI_THREAD_FUNNELED, &provided);
+    MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
+    //MPI_Init(&argc, &argv);
     int rank, size;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
@@ -287,8 +296,8 @@ int main(int argc, char** argv) {
     double end_wall =  MPI_Wtime();
     double cpu_time_used = ((double)(end_cpu - start_cpu)) / CLOCKS_PER_SEC;
     double wall_time = (double) (end_wall-start_wall);
-    printf("Overall program CPU Time required to process the input for rank %d %s %f\n",rank,inputname, cpu_time_used);
-    printf("Overall program Wall Time required to process the inputfor rank %d %s %f\n",rank,inputname, wall_time);
+    printf("%d Overall program CPU Time required to process the input for rank %d %s %f\n",rank,rank,inputname, cpu_time_used);
+    printf("%d Overall program Wall Time required to process the inputfor rank %d %s %f\n",rank,rank,inputname, wall_time);
     MPI_Finalize();
     return 0;
 }

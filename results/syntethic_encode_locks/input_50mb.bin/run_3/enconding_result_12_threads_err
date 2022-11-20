@@ -1,0 +1,26 @@
+[hpc-c07-node13.unitn.it:36286] MCW rank 0 bound to socket 0[core 0[hwt 0]], socket 0[core 1[hwt 0]], socket 0[core 2[hwt 0]], socket 0[core 3[hwt 0]], socket 0[core 4[hwt 0]], socket 0[core 5[hwt 0]], socket 0[core 6[hwt 0]], socket 0[core 7[hwt 0]], socket 0[core 8[hwt 0]], socket 0[core 9[hwt 0]], socket 0[core 10[hwt 0]], socket 0[core 11[hwt 0]]: [B/B/B/B/B/B/B/B/B/B/B/B/./././././.][./././././././././././././././././.][./././././././././././././././././.][./././././././././././././././././.]
+[hpc-c07-node13.unitn.it:36290] mca_base_component_repository_open: unable to open mca_btl_uct: libucp.so.0: cannot open shared object file: No such file or directory (ignored)
+--------------------------------------------------------------------------
+By default, for Open MPI 4.0 and later, infiniband ports on a device
+are not used by default.  The intent is to use UCX for these devices.
+You can override this policy by setting the btl_openib_allow_ib MCA parameter
+to true.
+
+  Local host:              hpc-c07-node13
+  Local adapter:           hfi1_0
+  Local port:              1
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+WARNING: There was an error initializing an OpenFabrics device.
+
+  Local host:   hpc-c07-node13
+  Local device: hfi1_0
+--------------------------------------------------------------------------
+[hpc-c07-node13.unitn.it:36290] mca_base_component_repository_open: unable to open mca_pml_yalla: libmxm.so.2: cannot open shared object file: No such file or directory (ignored)
+[hpc-c07-node13.unitn.it:36290] mca_base_component_repository_open: unable to open mca_pml_ucx: libucp.so.0: cannot open shared object file: No such file or directory (ignored)
+[hpc-c07-node13.unitn.it:36290] mca_base_component_repository_open: unable to open mca_osc_ucx: libucp.so.0: cannot open shared object file: No such file or directory (ignored)
+
+real	0m1.470s
+user	0m4.301s
+sys	0m0.193s
