@@ -1,0 +1,14 @@
+[hpc-c04-node04.unitn.it:58548] pmix_mca_base_component_repository_open: unable to open mca_pnet_opa: libpsm2.so.2: cannot open shared object file: No such file or directory (ignored)
+[hpc-c04-node04.unitn.it:58548] MCW rank 0 bound to socket 0[core 0[hwt 0]], socket 0[core 1[hwt 0]], socket 0[core 2[hwt 0]], socket 0[core 3[hwt 0]]: [B/B/B/B/./././././././././././././.][./././././././././././././././././.][./././././././././././././././././.][./././././././././././././././././.]
+[hpc-c04-node04.unitn.it:58552] mca_base_component_repository_open: unable to open mca_btl_usnic: libfabric.so.1: cannot open shared object file: No such file or directory (ignored)
+[hpc-c04-node04.unitn.it:58552] mca_base_component_repository_open: unable to open mca_btl_uct: libucp.so.0: cannot open shared object file: No such file or directory (ignored)
+[hpc-c04-node04.unitn.it:58552] mca_base_component_repository_open: unable to open mca_btl_openib: librdmacm.so.1: cannot open shared object file: No such file or directory (ignored)
+[hpc-c04-node04.unitn.it:58552] mca_base_component_repository_open: unable to open mca_pml_yalla: libmxm.so.2: cannot open shared object file: No such file or directory (ignored)
+[hpc-c04-node04.unitn.it:58552] mca_base_component_repository_open: unable to open mca_pml_ucx: libucp.so.0: cannot open shared object file: No such file or directory (ignored)
+[hpc-c04-node04.unitn.it:58552] mca_base_component_repository_open: unable to open mca_mtl_psm2: libpsm2.so.2: cannot open shared object file: No such file or directory (ignored)
+[hpc-c04-node04.unitn.it:58552] mca_base_component_repository_open: unable to open mca_mtl_ofi: libfabric.so.1: cannot open shared object file: No such file or directory (ignored)
+[hpc-c04-node04.unitn.it:58552] mca_base_component_repository_open: unable to open mca_osc_ucx: libucp.so.0: cannot open shared object file: No such file or directory (ignored)
+
+real	0m14.786s
+user	0m37.008s
+sys	0m1.460s

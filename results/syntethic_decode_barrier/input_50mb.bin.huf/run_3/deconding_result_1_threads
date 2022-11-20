@@ -1,0 +1,40 @@
+Sun Nov 20 09:54:32 CET 2022
+main executable /home/michele.yin/HuffmanCODEC/bin/main.out
+mode d
+input file input_50mb.bin.huf
+output file /home/michele.yin/HuffmanCODEC/results/syntethic_decode_barrier/input_50mb.bin.huf.dec
+number of threads 1
+input folder /home/michele.yin/syntheticencodeddata
+results folder /home/michele.yin/HuffmanCODEC/results/syntethic_decode_barrier
+ Data for JOB [36672,1] offset 0 Total slots allocated 1
+
+ Mapper requested: NULL  Last mapper: round_robin  Mapping policy: BYNODE:NOOVERSUBSCRIBE  Ranking policy: NODE
+ Binding policy: CORE:IF-SUPPORTED  Cpu set: NULL  PPR: NULL  Cpus-per-rank: 1
+ 	Num new daemons: 0	New daemon starting vpid INVALID
+ 	Num nodes: 1
+
+ Data for node: hpc-c04-node04	State: 3	Flags: 11
+ 	Daemon: [[36672,0],0]	Daemon launched: True
+ 	Num slots: 1	Slots in use: 1	Oversubscribed: FALSE
+ 	Num slots allocated: 1	Max slots: 0
+ 	Num procs: 1	Next node_rank: 1
+ 	Data for proc: [[36672,1],0]
+ 		Pid: 0	Local rank: 0	Node rank: 0	App rank: 0
+ 		State: INITIALIZED	App_context: 0
+ 		Locale:  NODE
+ 		Binding: [B/././././././././././././././././.][./././././././././././././././././.][./././././././././././././././././.][./././././././././././././././././.]
+Running on num processes 1
+Running on num threads 1
+Number of files: 1
+processing file /home/michele.yin/syntheticencodeddata/input_50mb.bin.huf
+saving as file /home/michele.yin/HuffmanCODEC/results/syntethic_decode_barrier/input_50mb.bin.huf.dec
+0 CPU Time required to only create the tree 0.010000
+0 Wall Time required to only create the tree 0.019534
+0 CPU Time required to only decode 3.490000
+0 Wall Time required to only decode 3.499782
+0 CPU Time required to only write flush 0.020000
+0 Wall Time required to only write flush 0.514413
+CPU Time required to process 3.520000
+Wall Time required to process 4.033845
+0 Overall program CPU Time required to process the input for rank 0 /home/michele.yin/syntheticencodeddata/input_50mb.bin.huf 3.520000
+0 Overall program Wall Time required to process the inputfor rank 0 /home/michele.yin/syntheticencodeddata/input_50mb.bin.huf 4.034078
