@@ -1,2 +1,29 @@
 \section{Performance and benchmarking}
 Performance evaluation.
+
+Here we discuss the perfomance evaluation of our algorithm
+
+
+All data is resulting average of 3 runs.
+We tested on HPC2 of unitn cluster
+Each datapoint was submitted as a job to the cluster, individually. No other jobs were assigned to the cluster and and no other I/O operations was done. This is to prevent hiccups due to multiple instances of the program trying to access the same data.
+
+Dataset were pragmatically generated using a C program, creating text files with characters that follow the frequency of letters in English language.
+
+We read and wrote about 6 TiB of data for our whole benchmark analysis.
+
+We can see that our algorithm scales very well. 
+
+With small files, less than a few MiBs, the algorithm is actually slower with more threads. This is likely because the data is not large enough. The parallel procesng is not enough to offset the cost of parallezation using threads.
+
+However when the data is large, we can see that our approeach does actually perfom well. With the largest file ( 10 GiB ) our algorithm has an efficiency of 92\% when tested with 4 threads. This number steadily decreases with the number of threads, until a measily 32\% with 24 threads.
+
+It has to be noted that we are heavily limited by the I/O. We are unable to parallelize the I/O, resulting in long waiting times. As a proof of this, if we consider only the processing section of our algorithm, and ignore the time required by the flush() operation before a fclose(), we see significantly better times.
+
+Some images
+
+Other stuff
+
+
+
+We also tested on
