@@ -55,7 +55,7 @@ dkms.conf
 *.DS_Store
 
 # huffman results files
-*.huf
-*.dec
+# *.huf
+# *.dec
 
 data/linux*

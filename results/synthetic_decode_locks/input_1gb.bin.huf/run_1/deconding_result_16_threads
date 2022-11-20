@@ -1,0 +1,40 @@
+Sun Nov 20 18:27:19 CET 2022
+main executable /home/michele.yin/HuffmanCODEC/bin/main.out
+mode d
+input file input_1gb.bin.huf
+output file /home/michele.yin/HuffmanCODEC/results/syntethic_decode_locks/input_1gb.bin.huf.dec
+number of threads 16
+input folder /home/michele.yin/HuffmanCODEC/syntheticencodeddata
+results folder /home/michele.yin/HuffmanCODEC/results/syntethic_decode_locks
+ Data for JOB [42088,1] offset 0 Total slots allocated 1
+
+ Mapper requested: NULL  Last mapper: round_robin  Mapping policy: BYNODE:NOOVERSUBSCRIBE  Ranking policy: NODE
+ Binding policy: CORE:IF-SUPPORTED  Cpu set: NULL  PPR: NULL  Cpus-per-rank: 16
+ 	Num new daemons: 0	New daemon starting vpid INVALID
+ 	Num nodes: 1
+
+ Data for node: hpc-c11-node15	State: 3	Flags: 11
+ 	Daemon: [[42088,0],0]	Daemon launched: True
+ 	Num slots: 1	Slots in use: 1	Oversubscribed: FALSE
+ 	Num slots allocated: 1	Max slots: 0
+ 	Num procs: 1	Next node_rank: 1
+ 	Data for proc: [[42088,1],0]
+ 		Pid: 0	Local rank: 0	Node rank: 0	App rank: 0
+ 		State: INITIALIZED	App_context: 0
+ 		Locale:  NODE
+ 		Binding: [B/B/B/B/B/B/B/B/B/B/B/B/B/B/B/B/./././././././.][./././././././././././././././././././././././.][./././././././././././././././././././././././.][./././././././././././././././././././././././.]
+Running on num processes 1
+Running on num threads 16
+Number of files: 1
+processing file /home/michele.yin/HuffmanCODEC/syntheticencodeddata/input_1gb.bin.huf
+saving as file /home/michele.yin/HuffmanCODEC/results/syntethic_decode_locks/input_1gb.bin.huf.dec
+0 CPU Time required to only create the tree 0.170000
+0 Wall Time required to only create the tree 0.212230
+0 CPU Time required to only decode 76.690000
+0 Wall Time required to only decode 9.309899
+0 CPU Time required to only write flush 0.370000
+0 Wall Time required to only write flush 8.351264
+CPU Time required to process 77.230000
+Wall Time required to process 17.873943
+0 Overall program CPU Time required to process the input for rank 0 /home/michele.yin/HuffmanCODEC/syntheticencodeddata/input_1gb.bin.huf 77.230000
+0 Overall program Wall Time required to process the inputfor rank 0 /home/michele.yin/HuffmanCODEC/syntheticencodeddata/input_1gb.bin.huf 17.874372
