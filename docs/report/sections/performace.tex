@@ -1,38 +1,71 @@
 \section{Performance and benchmarking}
-Performance evaluation.
+Here we discuss the perfomance evaluation of our algorithm.
+We start from a evaluation of some other implementations of Huffman algorithm and then focus on the analysis of our own implementation. 
 
-Here we discuss the perfomance evaluation of our algorithm
+We include in this section some graphs and statistics but all detailed results are included in the appendix at the end this report.
+\subsection{setup}
+All data is resulting average of 3 runs to minimize the effect random variance in between runs.
+We tested everything on HPC2 cluster of University of Trento.
+We also used a single node, using the \verb|--map-by | command to map the correct number of cores to each MPI process.
+Each time we submitted as a job to the cluster individually, waiting for the previuos to finish. This is to prevent hiccups due to multiple instances of the program trying to access the same data, which we noticed greatly affect I/O times.
 
+The correctness of our algorithm was easily verified by encoding and then decoding a file, then comparing the decoded result to the original with the \verb|diff| command.
+\subsection{datasets}
+The dataset was pragmatically generated using a C program , creating text files with characters that follow the frequency of letters in English language. Although for this benchmark are only using the 26 letters of the English alphabet, our algorithm reads bytes of data and can therefore work con any type of file.
 
-All data is resulting average of 3 runs.
-We tested on HPC2 of unitn cluster.
-We tested everything on a single  node. We used the map by command to map the correct number of cores to each MPI process.
-We always requested 4GiB of memory, but in reality our program needs far less.
-We don't use much memory because at any given time, the most we only store is the size of two buffers, each is a \verb|unsigned char buffer[m][buffer_size]| and then they are emptied at each cycle.
-Each datapoint was submitted as a job to the cluster, individually. No other jobs were assigned to the cluster and and no other I/O operations was done. This is to prevent hiccups due to multiple instances of the program trying to access the same data.
+In particular we chose to analyze these file sizes 1 MiB, 5 MiB, 10 MiB , 50 MiB, 100 MiB, 500 MiB, 1 GiB, 5 GiB, 10 GiB. This should be enough range to understand different algorithms scale with increasing file sizes.
 
-Dataset were pragmatically generated using a C program, creating text files with characters that follow the frequency of letters in English language.
+Secondly, because our algorithm also works with many files at once, we used Linux kernel as benchmark for that scenario. As the time of writing, it is about 1.3 GiB of total size, with about  $\sim$ 84.000 files, which on average are each 16MiB in size.
 
-We read and wrote about $\sim$ 6 TiB of data for our whole benchmark analysis.
+Considering the dataset sizes and testing we have done, we estimate to have read or wrote about $\sim$ 6 TiB of data for our whole benchmark analysis.
+\subsection{Other works}
 
-We can see that our algorithm scales very well. 
+\subsection{Multithreading evaluation}
+In this section we evaluate our algorithm on single files, using multithreading and testing our parallelization perfomances with increasing number of threads available.
 
-With small files, less than a few MiBs, the algorithm is actually slower with more threads. This is likely because the data is not large enough. The parallel procesng is not enough to offset the cost of parallezation using threads.
+We can say that with small files, less than a few MiBs, the algorithm is actually slower with more threads. 
+This is likely because the data is not large enough to offset the cost of creating multiple threads. Considering the cost parallel processing, we highly suggest not doing parallelization for small files.
 
-However when the data is large, we can see that our approeach does actually perfom well. With the largest file ( 10 GiB ) our algorithm has an efficiency of 93\% when tested with 4 threads. This number steadily decreases with the number of threads, until a measily 32\% with 24 threads. 
+However when the data is large enough our multithreaded approach scales up.
 
-It has to be noted that we are heavily limited by the I/O. We are unable to parallelize the I/O, resulting in long waiting times, especially the writing operations. As a proof of this, if we consider only the processing section of our algorithm, and ignore the time required by the flush() operation before a fclose(), we see significantly better times. Same from 92\% at 4 threads, but we scale much better at 55\% with 24 threads. 
+With the largest file (10 GiB) our algorithm has an efficiency of 93\% when tested with 4 threads. This number steadily decreases with the number of threads and we hit 32\% with 24 threads.
 
-Some images
+It has to be noted that we are heavily limited by the I/O. As we are unable to parallelize the I/O, we are heavily limited by that. Especially writing to disk taskes a considerable amount of time.
 
-Other stuff
+As a proof of this, if we consider only the processing section of our algorithm, and ignore the time required by the \verb|fflush()| operation before a \verb|fclose()|, we see significantly better times. Although we start from similar efficiency at low threading, we achieve a 54\% efficiency with 24 threads.
 
-Folders.
+\begin{figure}
+	\centering
+	\includegraphics[width=0.8\linewidth]{"../imgs/Flush vs non Flush"}
+	\caption{Encoding times with and without the flush()}
+	\label{fig:flush-vs-non-flush}
+\end{figure}
+ 
+We also noticed worse times in decoding than encoding. This is probably due to the fact that we are reading fixed chunks of 4096 bytes in encoding, but when we decode, we read the same chunks which is now of a different size than 4096 bytes. 
 
-We also tested the ability to scale with processors. We chose as benchmark Linux kernel ( available here ). It is about 266 MiB of total size, with about 80.000 files.
+\begin{figure}
+	\centering
+	\includegraphics[width=0.8\linewidth]{"../imgs/Encoding vs Decoding"}
+	\caption{Encoding vs Decoding times}
+	\label{fig:encoding-vs-decoding}
+\end{figure}
 
+As cited in the previous section, we also tested a version with lock based synchronization instead of barrier. Although theoretically we should get better results, in practice we see worse results than a simple barrier baseed approeach.
+\begin{figure}
+	\centering
+	\includegraphics[width=0.8\linewidth]{"../imgs/Barrier vs Locks encoding"}
+	\caption{Barrier vs Lock based synchronization perfomance}
+	\label{fig:barrier-vs-locks-encoding}
+\end{figure}
 
-We also tested on
+\begin{figure}
+	\centering
+	\includegraphics[width=0.8\linewidth]{"../imgs/Encoding Barrier times"}
+	\caption{Encoding times}
+	\label{fig:encoding-barrier-times}
+\end{figure}
 
-
-The correctness of our algorithm was easily verified by encoding and then decoding a file, then comparing it to the original with the diff command.
+\subsection{Multiprocesssing}
+Here we test on Linux
+\subsection{Memory}
+Our memory requirements don't scale upwards with the size of the files we need to encode, because at any given time, the most we only store is the size of two buffers, each is a \verb|unsigned char buffer[num_threads][4096]|. These buffers are emptied at each I/O cycle, therefore leading to a high memory efficiency. Only when processing multiple files our memory requirements scale up with the number of files, as each process needs to store information about the files is assigned to process.
