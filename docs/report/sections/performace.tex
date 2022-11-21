@@ -5,7 +5,10 @@ Here we discuss the perfomance evaluation of our algorithm
 
 
 All data is resulting average of 3 runs.
-We tested on HPC2 of unitn cluster
+We tested on HPC2 of unitn cluster.
+We tested everything on a single  node. We used the map by command to map the correct number of cores to each MPI process.
+We always requested 4GiB of memory, but in reality our program needs far less.
+We don't use much memory because at any given time, the most we only store is the size of two buffers, each is a \verb|unsigned char buffer[m][buffer_size]| and then they are emptied at each cycle.
 Each datapoint was submitted as a job to the cluster, individually. No other jobs were assigned to the cluster and and no other I/O operations was done. This is to prevent hiccups due to multiple instances of the program trying to access the same data.
 
 Dataset were pragmatically generated using a C program, creating text files with characters that follow the frequency of letters in English language.
