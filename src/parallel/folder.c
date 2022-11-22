@@ -42,7 +42,7 @@ void countFiles(char* basePath, int* count) {
     while ((dp = readdir(dir)) != NULL) {
         if (strcmp(dp->d_name, ".") != 0 && strcmp(dp->d_name, "..") != 0) {
             // if it is a file
-            if (dp->d_type == DT_REG ) {
+            if (dp->d_type == DT_REG && dp->d_type != DT_LNK) {
                 (*count)++;
             }
             else {
@@ -70,7 +70,7 @@ void listFiles(char* basePath, int* current, char** files) {
     while ((dp = readdir(dir)) != NULL) {
         if (strcmp(dp->d_name, ".") != 0 && strcmp(dp->d_name, "..") != 0) {
             // if it is a file
-            if (dp->d_type == DT_REG) {
+            if (dp->d_type == DT_REG && dp->d_type != DT_LNK) {
                 sprintf(files[*current], "%s/%s", basePath, dp->d_name);
                 (*current)++;
             }

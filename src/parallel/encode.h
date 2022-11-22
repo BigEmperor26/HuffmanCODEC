@@ -17,7 +17,9 @@ bool chunkEncoder( unsigned char* inputChunk,  unsigned char * outputChunk,char 
 */
 bool fileEncoderBarrier(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[],ull* outputFileSize,ull inputChunkSizes[], ull outputChunkSizes[],int num_threads);
 
+#ifdef _OPENMP 
 bool fileEncoderLocks(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[],ull* outputFileSize,ull inputChunkSizes[], ull outputChunkSizes[],int num_threads);
+#endif
 
 /*
 ** Function to perform end to end Huffman file encoding

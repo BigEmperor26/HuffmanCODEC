@@ -27,7 +27,11 @@ bool chunkDecoder(unsigned char inputChunk[], unsigned char outputChunk[], Node*
 */
 bool fileDecoderBarrier(FILE* inputFile, FILE* outputFile, Node* huffmanTree, ull inputChunkOffsets[], ull inputChunkSizes[], ull numOfChunks, int num_threads) ;
 
+#ifdef _OPENMP 
 bool fileDecoderLocks(FILE* inputFile, FILE* outputFile, Node* huffmanTree, ull inputChunkOffsets[], ull inputChunkSizes[], ull numOfChunks, int num_threads) ;
+#endif
+
+
 /*
 ** Function to perform end to end Huffman file decoding
 */

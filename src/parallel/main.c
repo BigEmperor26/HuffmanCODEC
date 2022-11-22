@@ -284,9 +284,16 @@ int main(int argc, char** argv) {
         MPI_Finalize();
         exit(1);
     }
-    if (rank==0)
+    if (rank==0){
         printf("Running on num threads %d\n",num_threads); 
-    
+    }
+    #ifndef _OPENMP 
+        if(mode==1){
+            printf("OpenMP not detected or supported. Locks mode requires OpenMP\n");
+            MPI_Finalize();
+            exit(1);
+        }
+    #endif
     if (inputfile){
         fileProcesser(rank,inputname,outputname,num_threads,processingFunction,mode);
     }else{

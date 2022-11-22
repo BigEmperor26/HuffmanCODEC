@@ -123,6 +123,7 @@ bool fileEncoderBarrier(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[
 ** Function to encode a file to an outputfile according huffmanAlphabet
 */
 
+#ifdef _OPENMP 
 bool fileEncoderLocks(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[],ull* outputFileSize,ull inputChunkSizes[], ull outputChunkSizes[], int num_threads){
     fseek(inputFile, 0, SEEK_END); // seek to end of file
     ull inputFileSize = ftell(inputFile); // get current file pointer
@@ -242,6 +243,7 @@ bool fileEncoderLocks(FILE *inputFile,FILE* outputFile, char* huffmanAlphabet[],
     free(writelock);
     return isEncodingSuccessful;
 }
+#endif
 
 
 bool fileEncoderFull( char* inputFileName, char* outputFileName, int num_threads, int mode,int rank){
@@ -293,10 +295,15 @@ bool fileEncoderFull( char* inputFileName, char* outputFileName, int num_threads
     clock_t start = clock();
     double start_wall = MPI_Wtime();
     bool isEncodingSuccessful = false;
-    if(mode==0)
+    #ifdef _OPENMP 
+        if(mode==0)
+            isEncodingSuccessful = fileEncoderBarrier(inputFile, outputFile, huffmanAlphabet, &outputFileSize, inputChunkSizes, outputChunkSizes,num_threads);
+        else
+            isEncodingSuccessful = fileEncoderLocks(inputFile, outputFile, huffmanAlphabet, &outputFileSize, inputChunkSizes, outputChunkSizes,num_threads);
+    #endif
+    #ifndef _OPENMP
         isEncodingSuccessful = fileEncoderBarrier(inputFile, outputFile, huffmanAlphabet, &outputFileSize, inputChunkSizes, outputChunkSizes,num_threads);
-    else
-        isEncodingSuccessful = fileEncoderLocks(inputFile, outputFile, huffmanAlphabet, &outputFileSize, inputChunkSizes, outputChunkSizes,num_threads);
+    #endif
     clock_t end = clock();
     double end_wall = MPI_Wtime();
     double cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;

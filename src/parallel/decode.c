@@ -166,6 +166,7 @@ bool fileDecoderBarrier(FILE* inputFile, FILE* outputFile, Node* huffmanTree, ul
 /*
 ** Function to decode a file to an outputfile according huffmanAlphabet
 */
+#ifdef _OPENMP 
 bool fileDecoderLocks(FILE* inputFile, FILE* outputFile, Node* huffmanTree, ull inputChunkOffsets[], ull inputChunkSizes[], ull numOfChunks, int num_threads) {
     unsigned char * inputChunk = (unsigned char*)malloc(sizeof(unsigned char)*num_threads*MAX_ENCODED_BUFFER_SIZE);
     // +1 to avoid overflow
@@ -281,6 +282,7 @@ bool fileDecoderLocks(FILE* inputFile, FILE* outputFile, Node* huffmanTree, ull 
     free(writelock);
     return isDecodingSuccessful;
 }
+#endif
 
 bool fileDecoderFull( char* inputFileName, char* outputFileName, int num_threads,int mode,int rank){
     clock_t start_tree = clock();
@@ -320,10 +322,15 @@ bool fileDecoderFull( char* inputFileName, char* outputFileName, int num_threads
     clock_t start = clock();
     double start_wall = MPI_Wtime();
     bool isDecodingSuccessful=false;
-    if(mode==0)
+    #ifdef _OPENMP 
+        if(mode==0)
+            isDecodingSuccessful = fileDecoderBarrier(inputFile, outputFile, huffmanTree, chunkOffsets, inputChunkSizes, numChunks, num_threads);
+        else
+            isDecodingSuccessful = fileDecoderLocks(inputFile, outputFile, huffmanTree, chunkOffsets, inputChunkSizes, numChunks, num_threads);
+    #endif
+    #ifndef _OPENMP
         isDecodingSuccessful = fileDecoderBarrier(inputFile, outputFile, huffmanTree, chunkOffsets, inputChunkSizes, numChunks, num_threads);
-    else
-        isDecodingSuccessful = fileDecoderLocks(inputFile, outputFile, huffmanTree, chunkOffsets, inputChunkSizes, numChunks, num_threads);
+    #endif
     clock_t end = clock();
     double end_wall = MPI_Wtime();
     double cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
