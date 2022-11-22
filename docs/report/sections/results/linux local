@@ -1,0 +1,17 @@
+\subsection{Linux Local}
+\begin{table}[!h]
+	\caption{Overall encoding times for Linux Kernel on local machine}
+	\begin{tabular}{lrrr}
+		\toprule
+		\diagbox{Algorithm }{Processes} &        1 &        2 &        4 \\
+		\midrule
+		Encoding times &  85.0387 &  49.5736 &  30.6647 \\
+		\midrule
+		Encoding efficiency &  1.0 &  0.8577 &  0.6933 \\
+		\midrule
+		Decoding times&  80.3765 &  47.8856 &  29.6687 \\
+		\midrule
+		Decoding efficiency&  1.0 &  0.8393 &  0.6773 \\
+		\bottomrule
+	\end{tabular}
+\end{table}

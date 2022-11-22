@@ -40,6 +40,8 @@ As a proof of this, if we consider only the processing section of our algorithm,
 	\caption{Encoding times with and without the flush()}
 	\label{fig:flush-vs-non-flush}
 \end{figure}
+
+If we consider only CPU time, which doesn't count the time spent waiting in I/O, we get incredibile results.
  
 We also noticed worse times in decoding than encoding. This is probably due to the fact that we are reading fixed chunks of 4096 bytes in encoding, but when we decode, we read the same chunks which is now of a different size than 4096 bytes. 
 
@@ -50,7 +52,7 @@ We also noticed worse times in decoding than encoding. This is probably due to t
 	\label{fig:encoding-vs-decoding}
 \end{figure}
 
-As cited in the previous section, we also tested a version with lock based synchronization instead of barrier. Although theoretically we should get better results, in practice we see worse results than a simple barrier baseed approeach.
+As cited in the previous section, we also tested a version with lock based synchronization instead of barrier. Although theoretically we should get better results, in practice we almost equal results across the board, with only the largest file having some significant difference. This difference is greater in decoding than in encoding.
 \begin{figure}
 	\centering
 	\includegraphics[width=0.8\linewidth]{"../imgs/Barrier vs Locks encoding"}
@@ -66,6 +68,10 @@ As cited in the previous section, we also tested a version with lock based synch
 \end{figure}
 
 \subsection{Multiprocesssing}
-Here we test on Linux
-\subsection{Memory}
+We tested on Linux kernel as benchmark the parallelization perfomances of our algorithm. Theoretically our algoritm should scale very well with increasing number of processes and files, because once the main process sends the list of files to encode to each process there is no further communication between different processes. However we find that real world results are different. 
+While we don't expect much perfomances by increasing the number of threads, because the files are on average very small, we should get better results by using many processes.
+With increasing number of processes, our algorithm does not scale at all. We believe the main limitation of our algorithm is the I/O of the cluster we tested on. When tested on a local machine \footnote{MacBook A2442} with one thread and 1,2,4 processes, we find that our algorithm does indeed scale with the number of processes. 
+\subsection{Memory, storage and other considerations}
 Our memory requirements don't scale upwards with the size of the files we need to encode, because at any given time, the most we only store is the size of two buffers, each is a \verb|unsigned char buffer[num_threads][4096]|. These buffers are emptied at each I/O cycle, therefore leading to a high memory efficiency. Only when processing multiple files our memory requirements scale up with the number of files, as each process needs to store information about the files is assigned to process.
+
+We also find that we achieve on average 48\% compression rate of our synthetic data. Instead on Linux kernel, because contains more varied data which consists of mostly code, we achieve a lower 62\% compression rate. Testing on other already compressed data as \verb|.zip| or \verb|AV1| resulted in a compression rate of 100\%.

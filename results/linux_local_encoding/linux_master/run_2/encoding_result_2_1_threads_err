@@ -1,0 +1,7 @@
+Abort(865169935): Fatal error in internal_Finalize: Other MPI error, error stack:
+internal_Finalize(50)...........: MPI_Finalize failed
+MPII_Finalize(382)..............: 
+MPID_Finalize(511)..............: 
+MPIDI_OFI_mpi_finalize_hook(873): 
+flush_send_queue(823)...........: 
+(unknown)(): Other MPI error
