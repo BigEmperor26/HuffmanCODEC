@@ -1,17 +1,39 @@
-\subsection{Linux Local}
+\subsection{Local testing}
 \begin{table}[!h]
-	\caption{Overall encoding times for Linux Kernel on local machine}
-	\begin{tabular}{lrrr}
+	\caption{Overall encoding times for different folders on local machine}
+	\begin{tabular}{llrrr}
 		\toprule
-		\diagbox{Algorithm }{Processes} &        1 &        2 &        4 \\
+		\diagbox{Source }{Processes} &   &     1 &        2 &        4 \\
+		\toprule
+		Numpy source & &  & \\
+		\toprule
+		& Encoding times &  2.0731 &  1.0857 &  0.621 \\
 		\midrule
-		Encoding times &  85.0387 &  49.5736 &  30.6647 \\
+		& Encoding efficiency &  1.0 &  0.9547 &  0.8345 \\
 		\midrule
-		Encoding efficiency &  1.0 &  0.8577 &  0.6933 \\
+		& Decoding times & 1.8602 &  1.0178 &  0.5757 \\
 		\midrule
-		Decoding times&  80.3765 &  47.8856 &  29.6687 \\
+		& Decoding efficiency &  1.0 &  0.9138 &  0.8078 \\
+		\toprule
+		Pytorch source & &  & \\
+		\toprule
+		& Encoding times &  15.1102 &  7.7887 &  5.4025 \\
 		\midrule
-		Decoding efficiency&  1.0 &  0.8393 &  0.6773 \\
+		& Encoding efficiency  &  1.0 &  0.97 &  0.6992 \\
+		\midrule
+		& Decoding times  & 14.6897 &  7.7248 &  5.6166 \\
+		\midrule
+		& Decoding efficiency&  1.0 &  0.9508 &  0.6538 \\
+		\toprule
+		Linux source kernel & &  & \\
+		\toprule
+		& Encoding times &  85.0387 &  49.5736 &  30.6647 \\
+		\midrule
+		& Encoding efficiency &  1.0 &  0.8577 &  0.6933 \\
+		\midrule
+		& Decoding times&  80.3765 &  47.8856 &  29.6687 \\
+		\midrule
+		& Decoding efficiency&  1.0 &  0.8393 &  0.6773 \\
 		\bottomrule
 	\end{tabular}
 \end{table}
