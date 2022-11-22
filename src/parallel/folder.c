@@ -33,6 +33,10 @@ void recursivemkdir(const char *dir) {
 ** function to count how many files are in a folder, recusively
 */
 void countFiles(char* basePath, int* count) {
+    struct stat buf;
+    stat (basePath, &buf);
+    if (S_ISLNK(buf.st_mode))
+        return;
     char path[PATH_MAX];
     struct dirent* dp;
     DIR* dir = opendir(basePath);
@@ -42,7 +46,7 @@ void countFiles(char* basePath, int* count) {
     while ((dp = readdir(dir)) != NULL) {
         if (strcmp(dp->d_name, ".") != 0 && strcmp(dp->d_name, "..") != 0) {
             // if it is a file
-            if (dp->d_type == DT_REG && dp->d_type != DT_LNK) {
+            if (dp->d_type == DT_REG ) {
                 (*count)++;
             }
             else {
@@ -61,6 +65,10 @@ void countFiles(char* basePath, int* count) {
 ** Lists all files recursively at given path. Returns a list of files in files,
 */
 void listFiles(char* basePath, int* current, char** files) {
+    struct stat buf;
+    stat (basePath, &buf);
+    if (S_ISLNK(buf.st_mode))
+        return;
     char path[PATH_MAX];
     struct dirent* dp;
     DIR* dir = opendir(basePath);
@@ -70,7 +78,7 @@ void listFiles(char* basePath, int* current, char** files) {
     while ((dp = readdir(dir)) != NULL) {
         if (strcmp(dp->d_name, ".") != 0 && strcmp(dp->d_name, "..") != 0) {
             // if it is a file
-            if (dp->d_type == DT_REG && dp->d_type != DT_LNK) {
+            if (dp->d_type == DT_REG) {
                 sprintf(files[*current], "%s/%s", basePath, dp->d_name);
                 (*current)++;
             }
