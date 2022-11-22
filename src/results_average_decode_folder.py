@@ -36,9 +36,9 @@ for file_folder in file_folders:
                 thread_data[rank][thread] = OrderedDict()
                 for i in range(rank):
                     data = OrderedDict()
-                    data['Frequencies']= {'CPU': 0.0, 'Wall': 0.0}
+                    # data['Frequencies']= {'CPU': 0.0, 'Wall': 0.0}
                     data['Tree']= {'CPU': 0.0, 'Wall': 0.0}
-                    data['Encode']= {'CPU': 0.0, 'Wall': 0.0}
+                    data['Decode']= {'CPU': 0.0, 'Wall': 0.0}
                     data['Flush']= {'CPU': 0.0, 'Wall': 0.0}
                     data['Overall']= {'CPU': 0.0, 'Wall': 0.0}
                     thread_data[rank][thread][i] = data
@@ -46,24 +46,24 @@ for file_folder in file_folders:
             with open (file, "r") as myfile:
                 
                 for line in myfile:
-                    if 'CPU' in line and 'frequencies' in line:
-                        processor = int(line.split(' ')[0])
-                        thread_data[rank][thread][processor]['Frequencies']['CPU'] += float(line.split(' ')[-1])
-                    elif 'Wall' in line and 'frequencies' in line:
-                        processor = int(line.split(' ')[0])
-                        thread_data[rank][thread][processor]['Frequencies']['Wall'] += float(line.split(' ')[-1])
-                    elif 'CPU' in line and 'tree' in line:
+                    # if 'CPU' in line and 'frequencies' in line:
+                    #     processor = int(line.split(' ')[0])
+                    #     thread_data[rank][thread][processor]['Frequencies']['CPU'] += float(line.split(' ')[-1])
+                    # elif 'Wall' in line and 'frequencies' in line:
+                    #     processor = int(line.split(' ')[0])
+                    #     thread_data[rank][thread][processor]['Frequencies']['Wall'] += float(line.split(' ')[-1])
+                    if 'CPU' in line and 'tree' in line:
                         processor = int(line.split(' ')[0])
                         thread_data[rank][thread][processor]['Tree']['CPU'] += float(line.split(' ')[-1])
                     elif 'Wall' in line and 'tree' in line:
                         processor = int(line.split(' ')[0])
                         thread_data[rank][thread][processor]['Tree']['Wall'] += float(line.split(' ')[-1])
-                    elif 'CPU' in line and 'encode' in line:
+                    elif 'CPU' in line and 'decode' in line:
                         processor = int(line.split(' ')[0])
-                        thread_data[rank][thread][processor]['Encode']['CPU'] += float(line.split(' ')[-1])
-                    elif 'Wall' in line and 'encode' in line:
+                        thread_data[rank][thread][processor]['Decode']['CPU'] += float(line.split(' ')[-1])
+                    elif 'Wall' in line and 'decode' in line:
                         processor = int(line.split(' ')[0])
-                        thread_data[rank][thread][processor]['Encode']['Wall'] += float(line.split(' ')[-1])
+                        thread_data[rank][thread][processor]['Decode']['Wall'] += float(line.split(' ')[-1])
                     elif 'CPU' in line and 'flush' in line:
                         processor = int(line.split(' ')[0])
                         thread_data[rank][thread][processor]['Flush']['CPU'] += float(line.split(' ')[-1])
@@ -85,6 +85,6 @@ for file_folder in file_folders:
                         thread_data[rank][thread][processor][key][time] /= len(run_folders)
 
 
-    with open(join(file_folder,'encode_averaged_results.json'), 'w') as outfile:
+    with open(join(file_folder,'decode_averaged_results.json'), 'w') as outfile:
         json.dump(thread_data, outfile,indent=4)
 
