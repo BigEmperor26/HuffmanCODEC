@@ -1,0 +1,12 @@
+Wed Nov 23 05:49:23 CET 2022
+main executable /home/michele.yin/HuffmanCODEC/bin/main.out
+mode d
+input folder numpy-main_huf
+output folder numpy-main_huf_dec_1_8
+number of threads 8
+number of processes 1
+number of cores 8
+results folder /home/michele.yin/HuffmanCODEC/results/numpy_decoding
+Running on num processes 4
+Running on num threads 8
+input /numpy-main_huf is not a directory
