@@ -30,7 +30,7 @@ module load mpich-3.2
 module load openmpi-4.0.4
 
 export OMP_PLACES=threads
-time mpiexec --report-bindings -np ${PROCESSES} --map-by socket:pe=${THREADS} --bind-to core ${MAIN} -${MODE} -r -l ${INPUTFOLDER}/${INPUT} ${OUTPUT} #1> ${OUTPUTFOLDER}/enconding_result_${THREADS}_threads  2> ${OUTPUTFOLDER}/enconding_result_${THREADS}_threads_err
+time mpiexec --report-bindings -np ${PROCESSES} --map-by socket:pe=${THREADS} --bind-to core ${MAIN} -${MODE} -r ${INPUTFOLDER}/${INPUT} ${OUTPUT} #1> ${OUTPUTFOLDER}/enconding_result_${THREADS}_threads  2> ${OUTPUTFOLDER}/enconding_result_${THREADS}_threads_err
 
 # How to run
 # write SCRIPT='/home/michele.yin/HuffmanCODEC/clusterscripts/parallelEncoderFolder.sh'
