@@ -1,0 +1,30 @@
+\subsection{Local testing}
+\begin{table}[!h]
+	\caption{Overall encoding times for different folders on cluster }
+	\begin{tabular}{llrrr|rrr|rrr}
+		\toprule
+		\diagbox{}{} & Processes  &     1 &&&        2&& &        4&& \\
+		Source & Threads   & 1 & 2 & 4 & 1 & 2 & 4 & 1 & 2 & 4\\
+		\toprule
+		Numpy & &  & \\
+		\toprule
+		& Encoding times &  273.1562 &  207.1372 &  222.3222  &  160.9471 &  116.7891 &  124.3936  &  160.9471 &  116.7891 &  124.3936  \\
+		\midrule
+		& Encoding efficiency &  1.0000 &  0.6594 &  0.3072 & 0.8486 &  0.5847 &  0.2745 &  0.7875 &  0.2330 &  0.1450\\
+		\midrule
+		& Decoding times & 97.3082 &  76.6709 &  98.8446 &  57.8702 &  62.0716 &  72.3069 &   52.7536 &  54.1637 &  65.1009 \\
+		\midrule
+		& Decoding efficiency & 1.0000 &  0.6346 &  0.2461 &  0.8407 &  0.3919 &  0.1682 &  0.4611 &  0.2246 &  0.0934  \\
+		\toprule
+		Pytorch  & &  & \\
+		\toprule
+		& Encoding times &   1329.5976 &  2536.5453 &  1737.9396  &   524.3115 &   780.8548 &   522.8379 & 483.0258 &   458.4398 &   419.2587\\
+		\midrule
+		& Encoding efficiency  &  1.0000 &  0.2621 &  0.1913  &  1.2679 &  0.4257 &  0.3179 &  0.6882 &  0.3625 &  0.1982 \\
+		\midrule
+		& Decoding times  & 14.6897 &  7.7248 &  5.6166 \\
+		\midrule
+		& Decoding efficiency&  1.0 &  0.9508 &  0.6538 \\
+		\bottomrule
+	\end{tabular}
+\end{table}
