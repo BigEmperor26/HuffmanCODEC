@@ -1,0 +1,14 @@
+[hpc-c09-node07.unitn.it:46019] pmix_mca_base_component_repository_open: unable to open mca_pnet_opa: libpsm2.so.2: cannot open shared object file: No such file or directory (ignored)
+[hpc-c09-node07.unitn.it:46019] MCW rank 0 is not bound (or bound to all available processors)
+[hpc-c09-node07.unitn.it:46023] mca_base_component_repository_open: unable to open mca_btl_usnic: libfabric.so.1: cannot open shared object file: No such file or directory (ignored)
+[hpc-c09-node07.unitn.it:46023] mca_base_component_repository_open: unable to open mca_btl_uct: libucp.so.0: cannot open shared object file: No such file or directory (ignored)
+[hpc-c09-node07.unitn.it:46023] mca_base_component_repository_open: unable to open mca_btl_openib: librdmacm.so.1: cannot open shared object file: No such file or directory (ignored)
+[hpc-c09-node07.unitn.it:46023] mca_base_component_repository_open: unable to open mca_pml_yalla: libmxm.so.2: cannot open shared object file: No such file or directory (ignored)
+[hpc-c09-node07.unitn.it:46023] mca_base_component_repository_open: unable to open mca_pml_ucx: libucp.so.0: cannot open shared object file: No such file or directory (ignored)
+[hpc-c09-node07.unitn.it:46023] mca_base_component_repository_open: unable to open mca_mtl_psm2: libpsm2.so.2: cannot open shared object file: No such file or directory (ignored)
+[hpc-c09-node07.unitn.it:46023] mca_base_component_repository_open: unable to open mca_mtl_ofi: libfabric.so.1: cannot open shared object file: No such file or directory (ignored)
+[hpc-c09-node07.unitn.it:46023] mca_base_component_repository_open: unable to open mca_osc_ucx: libucp.so.0: cannot open shared object file: No such file or directory (ignored)
+
+real	1m50.441s
+user	32m38.684s
+sys	0m8.433s
