@@ -1,43 +1,43 @@
-Sat Nov 19 18:34:32 CET 2022
+Fri Nov 25 08:37:14 CET 2022
 main executable /home/michele.yin/HuffmanCODEC/bin/main.out
 mode e
 input file input_10gb.bin
-output file /home/michele.yin/HuffmanCODEC/results/synthetic_encode/input_10gb.bin.huf
+output file /home/michele.yin/HuffmanCODEC/results/synthetic_encode_barrier/input_10gb.bin.huf
 number of threads 24
 input folder /home/michele.yin/HuffmanCODEC/syntheticdata
-results folder /home/michele.yin/HuffmanCODEC/results/synthetic_encode
- Data for JOB [1172,1] offset 0 Total slots allocated 1
+results folder /home/michele.yin/HuffmanCODEC/results/synthetic_encode_barrier
+ Data for JOB [19734,1] offset 0 Total slots allocated 1
 
  Mapper requested: NULL  Last mapper: round_robin  Mapping policy: BYNODE:NOOVERSUBSCRIBE  Ranking policy: NODE
  Binding policy: CORE:IF-SUPPORTED  Cpu set: NULL  PPR: NULL  Cpus-per-rank: 24
  	Num new daemons: 0	New daemon starting vpid INVALID
  	Num nodes: 1
 
- Data for node: hpc-c11-node09	State: 3	Flags: 11
- 	Daemon: [[1172,0],0]	Daemon launched: True
+ Data for node: hpc-c07-node06	State: 3	Flags: 11
+ 	Daemon: [[19734,0],0]	Daemon launched: True
  	Num slots: 1	Slots in use: 1	Oversubscribed: FALSE
  	Num slots allocated: 1	Max slots: 0
  	Num procs: 1	Next node_rank: 1
- 	Data for proc: [[1172,1],0]
+ 	Data for proc: [[19734,1],0]
  		Pid: 0	Local rank: 0	Node rank: 0	App rank: 0
  		State: INITIALIZED	App_context: 0
  		Locale:  NODE
- 		Binding: [B/B/B/B/B/B/B/B/B/B/B/B/B/B/B/B/B/B/B/B/B/B/B/B][./././././././././././././././././././././././.][./././././././././././././././././././././././.][./././././././././././././././././././././././.]
+ 		Binding: [B/B/B/B/B/B/B/B/B/B/B/B/B/B/B/B/B/B][B/B/B/B/B/B/./././././././././././.][./././././././././././././././././.][./././././././././././././././././.]
 Running on num processes 1
 Running on num threads 24
 Number of files: 1
 processing file /home/michele.yin/HuffmanCODEC/syntheticdata/input_10gb.bin
-saving as file /home/michele.yin/HuffmanCODEC/results/synthetic_encode/input_10gb.bin.huf
-0 CPU Time to get frequencies 157.410000
-0 Wall Time to get frequencies 6.858471
-0 CPU Time required to only create the tree 0.860000
-0 Wall Time required to only create the tree 0.908218
-0 CPU Time required to only encode 1416.810000
-0 Wall Time required to only encode 59.475347
-/home/michele.yin/HuffmanCODEC/results/synthetic_encode/input_10gb.bin.huf is 0.46% of /home/michele.yin/HuffmanCODEC/syntheticdata/input_10gb.bin
-0 CPU Time required to only write flush 0.410000
-0 Wall Time required to only write flush 20.180821
-CPU Time required to process 1575.690000
-Wall Time required to process 87.500712
-0 Overall program CPU Time required to process the input for rank 0 /home/michele.yin/HuffmanCODEC/syntheticdata/input_10gb.bin 1575.690000
-0 Overall program Wall Time required to process the inputfor rank 0 /home/michele.yin/HuffmanCODEC/syntheticdata/input_10gb.bin 87.501413
+saving as file /home/michele.yin/HuffmanCODEC/results/synthetic_encode_barrier/input_10gb.bin.huf
+0 CPU Time to get frequencies 172.850000
+0 Wall Time to get frequencies 7.271336
+0 CPU Time required to only create the tree 0.990000
+0 Wall Time required to only create the tree 0.716633
+0 CPU Time required to only encode 891.260000
+0 Wall Time required to only encode 37.355480
+/home/michele.yin/HuffmanCODEC/results/synthetic_encode_barrier/input_10gb.bin.huf is 0.46% of /home/michele.yin/HuffmanCODEC/syntheticdata/input_10gb.bin
+0 CPU Time required to only write flush 0.750000
+0 Wall Time required to only write flush 28.421321
+CPU Time required to process 1066.160000
+Wall Time required to process 73.801077
+0 Overall program CPU Time required to process the input for rank 0 /home/michele.yin/HuffmanCODEC/syntheticdata/input_10gb.bin 1066.160000
+0 Overall program Wall Time required to process the inputfor rank 0 /home/michele.yin/HuffmanCODEC/syntheticdata/input_10gb.bin 73.801637
