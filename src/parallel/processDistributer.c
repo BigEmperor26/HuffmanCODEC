@@ -127,7 +127,7 @@ void fileSorterSize(char** filenames,ull * file_sizes, int files_count, int size
 }
 
 void fileDistributerSize(char* filenames,int * process_indexes,int *file_per_process, int files_count, int rank, int size, char* files_to_process, int * files_to_process_count) {
-    
+
     int active_processes = size;
     if (files_count<size){
         active_processes = files_count;

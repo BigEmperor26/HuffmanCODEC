@@ -60,12 +60,12 @@ bool decodeFile(FILE* inputFile, FILE* outputFile, Node* huffmanTree, ull chunkO
         outputCharCounter = 0;
 
         // decode the chunk
-        while (outputCharCounter <= inputChunkSizes[indexChunk]) {
+        while (outputCharCounter < inputChunkSizes[indexChunk]) {
             outputBuffer[outputCharCounter] = getCharFromHuffmanEncodedBitStream(inputBuffer, &nbytes, &nbits, huffmanTree);
             outputCharCounter++;
         }
         // flush the buffer for the output chunk
-        fwrite(outputBuffer, 1, outputCharCounter - 1, outputFile);
+        fwrite(outputBuffer, 1, outputCharCounter , outputFile);
     }
 
     return isDecodingSuccessful;
