@@ -1,0 +1,35 @@
+\subsection{numpy decoding scatter}
+\begin{centering}
+\begin{table}[!h]
+\caption{Overall decoding times}
+\begin{tabular}{lrrr}
+\toprule
+\diagbox[width=7em]{Processes}{Threads} &      1 &      2 &      4 \\
+\midrule
+1  & 46.248 & 44.085 & \textbf{43.422} \\
+2  & 30.331 & \textbf{28.251} & 28.600 \\
+4  & 22.234 & 21.866 & \textbf{21.471} \\
+8  & 18.648 & \textbf{16.757} & 16.952 \\
+10 & 16.364 & \textbf{15.773} & 15.839 \\
+12 & 15.574 & 15.720 & \textbf{15.148} \\
+16 & 22.756 & \textbf{22.066} & 22.733 \\
+\bottomrule
+\end{tabular}
+\end{table}
+\begin{table}[!h]
+\caption{Overall decoding efficiency}
+\begin{tabular}{lrrr}
+\toprule
+\diagbox[width=7em]{Processes}{Threads} &     1 &     2 &     4 \\
+\midrule
+1  & 1.000 & 0.525 & 0.266 \\
+2  & 0.762 & 0.409 & 0.202 \\
+4  & 0.520 & 0.264 & 0.135 \\
+8  & 0.310 & 0.172 & 0.085 \\
+10 & 0.283 & 0.147 & 0.073 \\
+12 & 0.247 & 0.123 & 0.064 \\
+16 & 0.127 & 0.065 & 0.032 \\
+\bottomrule
+\end{tabular}
+\end{table}
+\end{centering}

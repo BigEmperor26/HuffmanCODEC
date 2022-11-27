@@ -1,0 +1,35 @@
+\subsection{pytorch encoding pack}
+\begin{centering}
+\begin{table}[!h]
+\caption{Overall encoding times}
+\begin{tabular}{lrrr}
+\toprule
+\diagbox[width=7em]{Processes}{Threads} &       1 &       2 &       4 \\
+\midrule
+1  & 247.430 & 229.251 & \textbf{225.37}0 \\
+2  & 174.185 & \textbf{168.884} & 168.979 \\
+4  & 157.589 & \textbf{155.282} & 157.478 \\
+8  & 161.628 & 158.789 & \textbf{156.443} \\
+10 & 188.020 & 167.726 & \textbf{158.378} \\
+12 & 161.222 & 158.014 & \textbf{154.675} \\
+16 & 159.562 & 153.257 & \textbf{148.363} \\
+\bottomrule
+\end{tabular}
+\end{table}
+\begin{table}[!h]
+\caption{Overall encoding efficiency}
+\begin{tabular}{lrrr}
+\toprule
+\diagbox[width=7em]{Processes}{Threads} &     1 &     2 &     4 \\
+\midrule
+1  & 1.000 & 0.540 & 0.274 \\
+2  & 0.710 & 0.366 & 0.183 \\
+4  & 0.393 & 0.199 & 0.098 \\
+8  & 0.191 & 0.097 & 0.049 \\
+10 & 0.132 & 0.074 & 0.039 \\
+12 & 0.128 & 0.065 & 0.033 \\
+16 & 0.097 & 0.050 & 0.026 \\
+\bottomrule
+\end{tabular}
+\end{table}
+\end{centering}

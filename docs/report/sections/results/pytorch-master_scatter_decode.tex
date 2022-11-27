@@ -1,0 +1,35 @@
+\subsection{pytorch decoding scatter}
+\begin{centering}
+\begin{table}[!h]
+\caption{Overall decoding times}
+\begin{tabular}{lrrr}
+\toprule
+\diagbox[width=7em]{Processes}{Threads} &       1 &       2 &       4 \\
+\midrule
+1  & 289.364 & 226.511 & \textbf{221.229} \\
+2  & 170.616 & 165.478 & \textbf{163.885} \\
+4  & 159.921 & 139.867 & \textbf{125.015} \\
+8  & 103.844 &  99.911 &  \textbf{99.173} \\
+10 &  \textbf{96.378} & 115.867 & 106.989 \\
+12 &  96.026 &  \textbf{91.898} &  92.894 \\
+16 &  90.868 &  90.680 &  \textbf{81.377} \\
+\bottomrule
+\end{tabular}
+\end{table}
+\begin{table}[!h]
+\caption{Overall decoding efficiency}
+\begin{tabular}{lrrr}
+\toprule
+\diagbox[width=7em]{Processes}{Threads} &     1 &     2 &     4 \\
+\midrule
+1  & 1.000 & 0.639 & 0.327 \\
+2  & 0.848 & 0.437 & 0.221 \\
+4  & 0.452 & 0.259 & 0.145 \\
+8  & 0.348 & 0.181 & 0.091 \\
+10 & 0.300 & 0.125 & 0.068 \\
+12 & 0.251 & 0.131 & 0.065 \\
+16 & 0.199 & 0.100 & 0.056 \\
+\bottomrule
+\end{tabular}
+\end{table}
+\end{centering}
