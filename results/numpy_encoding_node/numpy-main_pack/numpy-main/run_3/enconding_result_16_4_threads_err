@@ -1,0 +1,87 @@
+[hpc-c09-node13.maas.icts.unitn.it:10721] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+--------------------------------------------------------------------------
+WARNING: a request was made to bind a process. While the system
+supports binding the process itself, at least one node does NOT
+support binding memory to the process location.
+
+  Node:  hpc-c09-node13
+
+Open MPI uses the "hwloc" library to perform process and memory
+binding. This error message means that hwloc has indicated that
+processor binding support is not available on this machine.
+
+On OS X, processor and memory binding is not available at all (i.e.,
+the OS does not expose this functionality).
+
+On Linux, lack of the functionality can mean that you are on a
+platform where processor and memory affinity is not supported in Linux
+itself, or that hwloc was built without NUMA and/or processor affinity
+support. When building hwloc (which, depending on your Open MPI
+installation, may be embedded in Open MPI itself), it is important to
+have the libnuma header and library files available. Different linux
+distributions package these files under different names; look for
+packages with the word "numa" in them. You may also need a developer
+version of the package (e.g., with "dev" or "devel" in the name) to
+obtain the relevant header files.
+
+If you are getting this message on a non-OS X, non-Linux platform,
+then hwloc does not support processor / memory affinity on this
+platform. If the OS/platform does actually support processor / memory
+affinity, then you should contact the hwloc maintainers:
+https://github.com/open-mpi/hwloc.
+
+This is a warning only; your job will continue, though performance may
+be degraded.
+--------------------------------------------------------------------------
+[hpc-c09-node13.maas.icts.unitn.it:10721] MCW rank 0 bound to socket 0[core 0[hwt 0]], socket 0[core 1[hwt 0]], socket 0[core 2[hwt 0]], socket 0[core 3[hwt 0]]: [B/B/B/B/./././././././././././.][./././././././././././././././.][./././././././././././././././.][./././././././././././././././.]
+[hpc-c09-node13.maas.icts.unitn.it:10726] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c09-node13.maas.icts.unitn.it:10726] mca_base_component_repository_open: unable to open mca_btl_openib: librdmacm.so.1: cannot open shared object file: No such file or directory (ignored)
+[hpc-c09-node13.maas.icts.unitn.it:10721] MCW rank 1 bound to socket 0[core 4[hwt 0]], socket 0[core 5[hwt 0]], socket 0[core 6[hwt 0]], socket 0[core 7[hwt 0]]: [././././B/B/B/B/./././././././.][./././././././././././././././.][./././././././././././././././.][./././././././././././././././.]
+[hpc-c09-node13.maas.icts.unitn.it:10727] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c09-node13.maas.icts.unitn.it:10727] mca_base_component_repository_open: unable to open mca_btl_openib: librdmacm.so.1: cannot open shared object file: No such file or directory (ignored)
+[hpc-c09-node13.maas.icts.unitn.it:10721] MCW rank 2 bound to socket 0[core 8[hwt 0]], socket 0[core 9[hwt 0]], socket 0[core 10[hwt 0]], socket 0[core 11[hwt 0]]: [././././././././B/B/B/B/./././.][./././././././././././././././.][./././././././././././././././.][./././././././././././././././.]
+[hpc-c09-node13.maas.icts.unitn.it:10728] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c09-node13.maas.icts.unitn.it:10728] mca_base_component_repository_open: unable to open mca_btl_openib: librdmacm.so.1: cannot open shared object file: No such file or directory (ignored)
+[hpc-c09-node13.maas.icts.unitn.it:10721] MCW rank 3 bound to socket 0[core 12[hwt 0]], socket 0[core 13[hwt 0]], socket 0[core 14[hwt 0]], socket 0[core 15[hwt 0]]: [././././././././././././B/B/B/B][./././././././././././././././.][./././././././././././././././.][./././././././././././././././.]
+[hpc-c09-node13.maas.icts.unitn.it:10730] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c09-node13.maas.icts.unitn.it:10730] mca_base_component_repository_open: unable to open mca_btl_openib: librdmacm.so.1: cannot open shared object file: No such file or directory (ignored)
+[hpc-c09-node13.maas.icts.unitn.it:10721] MCW rank 4 bound to socket 1[core 16[hwt 0]], socket 1[core 17[hwt 0]], socket 1[core 18[hwt 0]], socket 1[core 19[hwt 0]]: [./././././././././././././././.][B/B/B/B/./././././././././././.][./././././././././././././././.][./././././././././././././././.]
+[hpc-c09-node13.maas.icts.unitn.it:10735] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c09-node13.maas.icts.unitn.it:10735] mca_base_component_repository_open: unable to open mca_btl_openib: librdmacm.so.1: cannot open shared object file: No such file or directory (ignored)
+[hpc-c09-node13.maas.icts.unitn.it:10721] MCW rank 5 bound to socket 1[core 20[hwt 0]], socket 1[core 21[hwt 0]], socket 1[core 22[hwt 0]], socket 1[core 23[hwt 0]]: [./././././././././././././././.][././././B/B/B/B/./././././././.][./././././././././././././././.][./././././././././././././././.]
+[hpc-c09-node13.maas.icts.unitn.it:10737] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c09-node13.maas.icts.unitn.it:10737] mca_base_component_repository_open: unable to open mca_btl_openib: librdmacm.so.1: cannot open shared object file: No such file or directory (ignored)
+[hpc-c09-node13.maas.icts.unitn.it:10721] MCW rank 6 bound to socket 1[core 24[hwt 0]], socket 1[core 25[hwt 0]], socket 1[core 26[hwt 0]], socket 1[core 27[hwt 0]]: [./././././././././././././././.][././././././././B/B/B/B/./././.][./././././././././././././././.][./././././././././././././././.]
+[hpc-c09-node13.maas.icts.unitn.it:10740] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c09-node13.maas.icts.unitn.it:10740] mca_base_component_repository_open: unable to open mca_btl_openib: librdmacm.so.1: cannot open shared object file: No such file or directory (ignored)
+[hpc-c09-node13.maas.icts.unitn.it:10721] MCW rank 7 bound to socket 1[core 28[hwt 0]], socket 1[core 29[hwt 0]], socket 1[core 30[hwt 0]], socket 1[core 31[hwt 0]]: [./././././././././././././././.][././././././././././././B/B/B/B][./././././././././././././././.][./././././././././././././././.]
+[hpc-c09-node13.maas.icts.unitn.it:10742] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c09-node13.maas.icts.unitn.it:10742] mca_base_component_repository_open: unable to open mca_btl_openib: librdmacm.so.1: cannot open shared object file: No such file or directory (ignored)
+[hpc-c09-node13.maas.icts.unitn.it:10721] MCW rank 8 bound to socket 2[core 32[hwt 0]], socket 2[core 33[hwt 0]], socket 2[core 34[hwt 0]], socket 2[core 35[hwt 0]]: [./././././././././././././././.][./././././././././././././././.][B/B/B/B/./././././././././././.][./././././././././././././././.]
+[hpc-c09-node13.maas.icts.unitn.it:10745] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c09-node13.maas.icts.unitn.it:10745] mca_base_component_repository_open: unable to open mca_btl_openib: librdmacm.so.1: cannot open shared object file: No such file or directory (ignored)
+[hpc-c09-node13.maas.icts.unitn.it:10721] MCW rank 9 bound to socket 2[core 36[hwt 0]], socket 2[core 37[hwt 0]], socket 2[core 38[hwt 0]], socket 2[core 39[hwt 0]]: [./././././././././././././././.][./././././././././././././././.][././././B/B/B/B/./././././././.][./././././././././././././././.]
+[hpc-c09-node13.maas.icts.unitn.it:10749] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c09-node13.maas.icts.unitn.it:10749] mca_base_component_repository_open: unable to open mca_btl_openib: librdmacm.so.1: cannot open shared object file: No such file or directory (ignored)
+[hpc-c09-node13.maas.icts.unitn.it:10721] MCW rank 10 bound to socket 2[core 40[hwt 0]], socket 2[core 41[hwt 0]], socket 2[core 42[hwt 0]], socket 2[core 43[hwt 0]]: [./././././././././././././././.][./././././././././././././././.][././././././././B/B/B/B/./././.][./././././././././././././././.]
+[hpc-c09-node13.maas.icts.unitn.it:10752] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c09-node13.maas.icts.unitn.it:10752] mca_base_component_repository_open: unable to open mca_btl_openib: librdmacm.so.1: cannot open shared object file: No such file or directory (ignored)
+[hpc-c09-node13.maas.icts.unitn.it:10721] MCW rank 11 bound to socket 2[core 44[hwt 0]], socket 2[core 45[hwt 0]], socket 2[core 46[hwt 0]], socket 2[core 47[hwt 0]]: [./././././././././././././././.][./././././././././././././././.][././././././././././././B/B/B/B][./././././././././././././././.]
+[hpc-c09-node13.maas.icts.unitn.it:10754] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c09-node13.maas.icts.unitn.it:10721] MCW rank 12 bound to socket 3[core 48[hwt 0]], socket 3[core 49[hwt 0]], socket 3[core 50[hwt 0]], socket 3[core 51[hwt 0]]: [./././././././././././././././.][./././././././././././././././.][./././././././././././././././.][B/B/B/B/./././././././././././.]
+[hpc-c09-node13.maas.icts.unitn.it:10721] MCW rank 13 bound to socket 3[core 52[hwt 0]], socket 3[core 53[hwt 0]], socket 3[core 54[hwt 0]], socket 3[core 55[hwt 0]]: [./././././././././././././././.][./././././././././././././././.][./././././././././././././././.][././././B/B/B/B/./././././././.]
+[hpc-c09-node13.maas.icts.unitn.it:10721] MCW rank 14 bound to socket 3[core 56[hwt 0]], socket 3[core 57[hwt 0]], socket 3[core 58[hwt 0]], socket 3[core 59[hwt 0]]: [./././././././././././././././.][./././././././././././././././.][./././././././././././././././.][././././././././B/B/B/B/./././.]
+[hpc-c09-node13.maas.icts.unitn.it:10721] MCW rank 15 bound to socket 3[core 60[hwt 0]], socket 3[core 61[hwt 0]], socket 3[core 62[hwt 0]], socket 3[core 63[hwt 0]]: [./././././././././././././././.][./././././././././././././././.][./././././././././././././././.][././././././././././././B/B/B/B]
+[hpc-c09-node13.maas.icts.unitn.it:10754] mca_base_component_repository_open: unable to open mca_btl_openib: librdmacm.so.1: cannot open shared object file: No such file or directory (ignored)
+[hpc-c09-node13.maas.icts.unitn.it:10757] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c09-node13.maas.icts.unitn.it:10761] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c09-node13.maas.icts.unitn.it:10757] mca_base_component_repository_open: unable to open mca_btl_openib: librdmacm.so.1: cannot open shared object file: No such file or directory (ignored)
+[hpc-c09-node13.maas.icts.unitn.it:10761] mca_base_component_repository_open: unable to open mca_btl_openib: librdmacm.so.1: cannot open shared object file: No such file or directory (ignored)
+[hpc-c09-node13.maas.icts.unitn.it:10763] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c09-node13.maas.icts.unitn.it:10766] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c09-node13.maas.icts.unitn.it:10763] mca_base_component_repository_open: unable to open mca_btl_openib: librdmacm.so.1: cannot open shared object file: No such file or directory (ignored)
+[hpc-c09-node13.maas.icts.unitn.it:10766] mca_base_component_repository_open: unable to open mca_btl_openib: librdmacm.so.1: cannot open shared object file: No such file or directory (ignored)
+
+real	0m57.395s
+user	5m28.546s
+sys	0m8.061s

@@ -1,0 +1,9 @@
+Fri Nov 25 17:21:27 CET 2022
+main executable /home/michele.yin/HuffmanCODEC/bin/main.out
+mode d
+input folder pytorch-master_huf
+output folder /home/michele.yin/HuffmanCODEC/results/pytorch_decoding_node/pytorch-master_huf_dec
+number of threads 8
+number of processes 16
+number of cores 128
+results folder /home/michele.yin/HuffmanCODEC/results/pytorch_decoding_node
