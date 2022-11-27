@@ -7,7 +7,7 @@ All the tests have been performed on the HPC2 cluster of the University of Trent
 
 \begin{itemize}
 	\item Threads are allocated in the same node and, if possible, on the same socket to guarantee fast communication between them. This has been achieved by using the MPI option \verb|--map-by|.
-	\item \textcolor{red}{Processes are allocated in different nodes, by using the PBS directive} \verb|place=scatter:excl|. This because in our application different processes do not communicate very often between each other, but they just split their work and use the file-system. 
+	\item Processes are allocated in different nodes, by using the PBS directive \verb|place=scatter:excl|. This because in our application different processes do not communicate very often between each other, but they just split their work and use the file-system. We also tested \verb|place=pack:excl| but found worse results
 \end{itemize}
 
 The provided timings are obtained by averaging the result of three runs with the exact same configurations: this helps to minimize the effect random variance between runs due to potential hardware congestion.
@@ -69,7 +69,7 @@ As already discussed previously, we also tested a version on a lock-based synchr
 We tested on different folders as benchmark the parallelization performances of our algorithm. Theoretically, our algorithm should scale very well with increasing number of processes and files, because once the main process sends the list of files to encode to each process there is no further communication between different processes. However, we find that real world results are different. 
 While we don't expect much increasing in the performance by the number of threads, because the files are on average very small, we should get better results by using many processes.
 In reality our testing shows that this is not the case. Our efficiencies are extremely low. We believe the main limitation of our algorithm is the I/O of the cluster. When tested on a local machine (MacBook A2442) with one thread and 1,2,4 processes, we find that our algorithm does indeed scale with the number of processes.
-
+We also find that \verb|scatter| scales better than \verb|pack|. Probably because with \verb|scatter| we are not limited by the I/O of a single node.
 \subsection{Memory, storage and other considerations}
 Our memory requirements don't scale upwards with the size of the files we need to encode, because at any given time, the most we only store is the size of two buffers, each is a \verb|unsigned char buffer[num_threads][4096]|. These buffers are emptied at each I/O cycle, therefore leading to a high memory efficiency. Only when processing multiple files our memory requirements scale up with the number of files, as each process needs to store information about the files is assigned to process.
 
