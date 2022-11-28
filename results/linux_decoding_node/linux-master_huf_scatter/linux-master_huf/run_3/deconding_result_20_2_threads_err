@@ -1,0 +1,117 @@
+[hpc-c03-node11.unitn.it:02876] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c02-node06.unitn.it:160052] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c02-node07.unitn.it:64887] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c02-node03.unitn.it:103433] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c02-node05.unitn.it:138775] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c03-node06.unitn.it:05923] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c03-node22.unitn.it:45483] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c05-node04.unitn.it:15567] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c07-node09.unitn.it:15926] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c07-node10.unitn.it:71182] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c05-node01.unitn.it:28989] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c07-node06.unitn.it:65124] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c05-node02.unitn.it:27916] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c07-node08.maas.icts.unitn.it:72258] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c07-node02.unitn.it:45129] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c07-node04.unitn.it:65143] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c07-node03.unitn.it:12418] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c07-node07.unitn.it:61881] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c07-node11.unitn.it:46857] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+--------------------------------------------------------------------------
+WARNING: a request was made to bind a process. While the system
+supports binding the process itself, at least one node does NOT
+support binding memory to the process location.
+
+  Node:  hpc-c03-node11
+
+Open MPI uses the "hwloc" library to perform process and memory
+binding. This error message means that hwloc has indicated that
+processor binding support is not available on this machine.
+
+On OS X, processor and memory binding is not available at all (i.e.,
+the OS does not expose this functionality).
+
+On Linux, lack of the functionality can mean that you are on a
+platform where processor and memory affinity is not supported in Linux
+itself, or that hwloc was built without NUMA and/or processor affinity
+support. When building hwloc (which, depending on your Open MPI
+installation, may be embedded in Open MPI itself), it is important to
+have the libnuma header and library files available. Different linux
+distributions package these files under different names; look for
+packages with the word "numa" in them. You may also need a developer
+version of the package (e.g., with "dev" or "devel" in the name) to
+obtain the relevant header files.
+
+If you are getting this message on a non-OS X, non-Linux platform,
+then hwloc does not support processor / memory affinity on this
+platform. If the OS/platform does actually support processor / memory
+affinity, then you should contact the hwloc maintainers:
+https://github.com/open-mpi/hwloc.
+
+This is a warning only; your job will continue, though performance may
+be degraded.
+--------------------------------------------------------------------------
+[hpc-c03-node11.unitn.it:02876] MCW rank 0 bound to socket 0[core 0[hwt 0]], socket 0[core 1[hwt 0]]: [B/B/./././././././././.][./././././././././././.][./././././././././././.][./././././././././././.]
+[hpc-c02-node03.unitn.it:103433] MCW rank 1 bound to socket 0[core 0[hwt 0]], socket 0[core 1[hwt 0]]: [B/B/./././././././././././.][./././././././././././././.]
+[hpc-c02-node07.unitn.it:64887] MCW rank 5 bound to socket 0[core 0[hwt 0]], socket 0[core 1[hwt 0]]: [B/B/./././././././././././.][./././././././././././././.]
+[hpc-c02-node05.unitn.it:138775] MCW rank 3 bound to socket 0[core 0[hwt 0]], socket 0[core 1[hwt 0]]: [B/B/./././././././././././.][./././././././././././././.]
+[hpc-c02-node06.unitn.it:160052] MCW rank 2 bound to socket 0[core 0[hwt 0]], socket 0[core 1[hwt 0]]: [B/B/./././././././././././.][./././././././././././././.]
+[hpc-c06-node01.unitn.it:165438] MCW rank 4 bound to socket 0[core 0[hwt 0]], socket 0[core 1[hwt 0]]: [B/B/./././././././.][./././././././././.]
+[hpc-c07-node09.unitn.it:15926] MCW rank 10 bound to socket 0[core 0[hwt 0]], socket 0[core 1[hwt 0]]: [B/B/./././././././././././././././.][./././././././././././././././././.][./././././././././././././././././.][./././././././././././././././././.]
+[hpc-c05-node02.unitn.it:27916] MCW rank 11 bound to socket 0[core 0[hwt 0]], socket 0[core 1[hwt 0]]: [B/B/./././././././././././././././.][./././././././././././././././././.][./././././././././././././././././.][./././././././././././././././././.]
+[hpc-c03-node22.unitn.it:45483] MCW rank 7 bound to socket 0[core 0[hwt 0]], socket 0[core 1[hwt 0]]: [B/B/./././././././././.][./././././././././././.][./././././././././././.][./././././././././././.]
+[hpc-c07-node11.unitn.it:46857] MCW rank 18 bound to socket 0[core 0[hwt 0]], socket 0[core 1[hwt 0]]: [B/B/./././././././././././././././.][./././././././././././././././././.][./././././././././././././././././.][./././././././././././././././././.]
+[hpc-c07-node02.unitn.it:45129] MCW rank 16 bound to socket 0[core 0[hwt 0]], socket 0[core 1[hwt 0]]: [B/B/./././././././././././././././.][./././././././././././././././././.][./././././././././././././././././.][./././././././././././././././././.]
+[hpc-c07-node10.unitn.it:71182] MCW rank 9 bound to socket 0[core 0[hwt 0]], socket 0[core 1[hwt 0]]: [B/B/./././././././././././././././.][./././././././././././././././././.][./././././././././././././././././.][./././././././././././././././././.]
+[hpc-c05-node01.unitn.it:28989] MCW rank 13 bound to socket 0[core 0[hwt 0]], socket 0[core 1[hwt 0]]: [B/B/./././././././././././././././.][./././././././././././././././././.][./././././././././././././././././.][./././././././././././././././././.]
+[hpc-c07-node08.maas.icts.unitn.it:72258] MCW rank 19 bound to socket 0[core 0[hwt 0]], socket 0[core 1[hwt 0]]: [B/B/./././././././././././././././.][./././././././././././././././././.][./././././././././././././././././.][./././././././././././././././././.]
+[hpc-c07-node04.unitn.it:65143] MCW rank 12 bound to socket 0[core 0[hwt 0]], socket 0[core 1[hwt 0]]: [B/B/./././././././././././././././.][./././././././././././././././././.][./././././././././././././././././.][./././././././././././././././././.]
+[hpc-c05-node04.unitn.it:15567] MCW rank 14 bound to socket 0[core 0[hwt 0]], socket 0[core 1[hwt 0]]: [B/B/./././././././././././././././.][./././././././././././././././././.][./././././././././././././././././.][./././././././././././././././././.]
+[hpc-c07-node03.unitn.it:12418] MCW rank 15 bound to socket 0[core 0[hwt 0]], socket 0[core 1[hwt 0]]: [B/B/./././././././././././././././.][./././././././././././././././././.][./././././././././././././././././.][./././././././././././././././././.]
+[hpc-c03-node06.unitn.it:05923] MCW rank 6 bound to socket 0[core 0[hwt 0]], socket 0[core 1[hwt 0]]: [B/B/./././././././././.][./././././././././././.][./././././././././././.][./././././././././././.]
+[hpc-c07-node06.unitn.it:65124] MCW rank 8 bound to socket 0[core 0[hwt 0]], socket 0[core 1[hwt 0]]: [B/B/./././././././././././././././.][./././././././././././././././././.][./././././././././././././././././.][./././././././././././././././././.]
+[hpc-c03-node11.unitn.it:02881] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c07-node07.unitn.it:61881] MCW rank 17 bound to socket 0[core 0[hwt 0]], socket 0[core 1[hwt 0]]: [B/B/./././././././././././././././.][./././././././././././././././././.][./././././././././././././././././.][./././././././././././././././././.]
+[hpc-c02-node03.unitn.it:103437] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c02-node06.unitn.it:160056] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c02-node07.unitn.it:64891] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c02-node05.unitn.it:138779] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c03-node11.unitn.it:02881] mca_base_component_repository_open: unable to open mca_btl_openib: librdmacm.so.1: cannot open shared object file: No such file or directory (ignored)
+[hpc-c02-node03.unitn.it:103437] mca_base_component_repository_open: unable to open mca_btl_openib: librdmacm.so.1: cannot open shared object file: No such file or directory (ignored)
+[hpc-c02-node06.unitn.it:160056] mca_base_component_repository_open: unable to open mca_btl_openib: librdmacm.so.1: cannot open shared object file: No such file or directory (ignored)
+[hpc-c02-node07.unitn.it:64891] mca_base_component_repository_open: unable to open mca_btl_openib: librdmacm.so.1: cannot open shared object file: No such file or directory (ignored)
+[hpc-c02-node05.unitn.it:138779] mca_base_component_repository_open: unable to open mca_btl_openib: librdmacm.so.1: cannot open shared object file: No such file or directory (ignored)
+[hpc-c07-node09.unitn.it:15930] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c07-node10.unitn.it:71186] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c07-node02.unitn.it:45133] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c05-node04.unitn.it:15571] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c03-node22.unitn.it:45487] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c05-node01.unitn.it:28993] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c07-node09.unitn.it:15930] mca_base_component_repository_open: unable to open mca_btl_openib: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c05-node02.unitn.it:27920] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c07-node03.unitn.it:12422] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c07-node11.unitn.it:46861] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c07-node08.maas.icts.unitn.it:72262] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c07-node06.unitn.it:65128] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c07-node10.unitn.it:71186] mca_base_component_repository_open: unable to open mca_btl_openib: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c07-node04.unitn.it:65147] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c05-node04.unitn.it:15571] mca_base_component_repository_open: unable to open mca_btl_openib: librdmacm.so.1: cannot open shared object file: No such file or directory (ignored)
+[hpc-c07-node02.unitn.it:45133] mca_base_component_repository_open: unable to open mca_btl_openib: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c03-node06.unitn.it:05927] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c07-node07.unitn.it:61885] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c05-node01.unitn.it:28993] mca_base_component_repository_open: unable to open mca_btl_openib: librdmacm.so.1: cannot open shared object file: No such file or directory (ignored)
+[hpc-c03-node22.unitn.it:45487] mca_base_component_repository_open: unable to open mca_btl_openib: librdmacm.so.1: cannot open shared object file: No such file or directory (ignored)
+[hpc-c05-node02.unitn.it:27920] mca_base_component_repository_open: unable to open mca_btl_openib: librdmacm.so.1: cannot open shared object file: No such file or directory (ignored)
+[hpc-c07-node11.unitn.it:46861] mca_base_component_repository_open: unable to open mca_btl_openib: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c07-node06.unitn.it:65128] mca_base_component_repository_open: unable to open mca_btl_openib: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c07-node08.maas.icts.unitn.it:72262] mca_base_component_repository_open: unable to open mca_btl_openib: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c07-node03.unitn.it:12422] mca_base_component_repository_open: unable to open mca_btl_openib: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c07-node04.unitn.it:65147] mca_base_component_repository_open: unable to open mca_btl_openib: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c03-node06.unitn.it:05927] mca_base_component_repository_open: unable to open mca_btl_openib: librdmacm.so.1: cannot open shared object file: No such file or directory (ignored)
+[hpc-c07-node07.unitn.it:61885] mca_base_component_repository_open: unable to open mca_btl_openib: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c03-node11.unitn.it:02876] 19 more processes have sent help message help-orte-rmaps-base.txt / rmaps:membind-not-supported
+[hpc-c03-node11.unitn.it:02876] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+
+real	0m42.327s
+user	0m8.322s
+sys	0m3.078s
