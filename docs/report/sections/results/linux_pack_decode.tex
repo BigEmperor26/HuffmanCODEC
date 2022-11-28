@@ -1,0 +1,39 @@
+\subsection{linux decoding pack}
+\begin{centering}
+\begin{table}[!h]
+\caption{Overall decoding times}
+\begin{tabular}{lrrr}
+\toprule
+\diagbox[width=8em]{Processes}{Threads} &       1 &       2 &       4 \\
+\midrule
+1  & 194.257 & 184.958 & \textbf{170.975} \\
+2  & 126.599 & \textbf{125.535} & 130.044 \\
+4  & 115.689 & 103.416 & \textbf{101.447} \\
+8  & 101.767 & \textbf{100.484} & 104.773 \\
+10 & \textbf{101.006} & 102.295 & 102.599 \\
+12 & \textbf{100.869} & 116.434 & 102.087 \\
+16 & \textbf{104.753} & 114.768 & 173.998 \\
+20 &  93.438 &  \textbf{92.893} & 125.593 \\
+24 &  94.186 &  \textbf{93.018} & 122.240 \\
+\bottomrule
+\end{tabular}
+\end{table}
+\begin{table}[!h]
+\caption{Overall decoding efficiency}
+\begin{tabular}{lrrr}
+\toprule
+\diagbox[width=8em]{Processes}{Threads} &     1 &     2 &     4 \\
+\midrule
+1  & 1.000 & 0.525 & 0.284 \\
+2  & 0.767 & 0.387 & 0.187 \\
+4  & 0.420 & 0.235 & 0.120 \\
+8  & 0.239 & 0.121 & 0.058 \\
+10 & 0.192 & 0.095 & 0.047 \\
+12 & 0.160 & 0.070 & 0.040 \\
+16 & 0.116 & 0.053 & 0.017 \\
+20 & 0.104 & 0.052 & 0.019 \\
+24 & 0.086 & 0.044 & 0.017 \\
+\bottomrule
+\end{tabular}
+\end{table}
+\end{centering}
