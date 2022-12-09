@@ -30,13 +30,13 @@ In this section we evaluate our algorithm on single files, by using multithreadi
 
 With small files (i.e. less than a few MiBs) the algorithm is actually slower with more threads. This is likely to be the case because the data is not large enough to offset the cost of creating multiple threads. Considering the cost parallel processing, we highly suggest not doing parallelization for small files.
 
-However, when the data is large enough our multithreaded approach scales up. With the largest file (10 GiB) our algorithm has an efficiency of 93\% when tested with 4 threads. This number steadily decreases with the number of threads, and we hit 32\% with 24 threads.
+However, when the data is large enough our multithreaded approach scales up. With the largest file (10 GiB) our algorithm has an efficiency of 93\% when tested with 4 threads. This number steadily decreases with the number of threads, and we hit 16\% with 64 threads.
 
-Please note that our tool is heavily limited by the cluster I/O, since we can not make it parallel: especially writings to disk require a considerable amount of time. As a proof of this, if we consider only the processing section of our algorithm, and ignore the time required by the \verb|fflush()| operation before a \verb|fclose()|, we see significantly decreased times. Although we start from similar efficiency at low threading, we achieve a 54\% efficiency with 24 threads in this case: if we consider only CPU time, which does not count the time spent waiting in I/O, we get very promising results.
+Please note that our tool is heavily limited by the cluster I/O, since we can not make it parallel: especially writings to disk require a considerable amount of time. As a proof of this, if we consider only the processing section of our algorithm, and ignore the time required by the \verb|fflush()| operation before a \verb|fclose()|, we see significantly decreased times. Although we start from similar efficiency at low threading, we achieve a 41\% efficiency with 64 threads in this case. % if we consider only CPU time, which does not count the time spent waiting in I/O, we get very promising results.
 
 \begin{figure}
 	\centering
-	\includegraphics[width=0.8\linewidth]{"../imgs/Flush vs non Flush"}
+	\includegraphics[width=1\linewidth]{"../imgs/Flush vs non Flush"}
 	\caption{Encoding times with and without the flush()}
 	\label{fig:flush-vs-non-flush}
 \end{figure}
@@ -45,7 +45,7 @@ We also noticed worse times in the decoding procedure with respect to encoding. 
 
 \begin{figure}
 	\centering
-	\includegraphics[width=0.8\linewidth]{"../imgs/Encoding vs Decoding"}
+	\includegraphics[width=1\linewidth]{"../imgs/Encoding vs Decoding"}
 	\caption{Encoding vs Decoding times}
 	\label{fig:encoding-vs-decoding}
 \end{figure}
@@ -53,18 +53,23 @@ We also noticed worse times in the decoding procedure with respect to encoding. 
 As already discussed previously, we also tested a version on a lock-based synchronization instead of barriers. Although theoretically we should get better results, in practice we obtain almost equal performances across the board, with only the largest files having some significant difference. This difference is greater in decoding than in encoding.
 \begin{figure}
 	\centering
-	\includegraphics[width=0.8\linewidth]{"../imgs/Barrier vs Locks encoding"}
+	\includegraphics[width=1\linewidth]{"../imgs/Barrier vs Locks encoding"}
 	\caption{Barrier vs Lock based synchronization performance}
 	\label{fig:barrier-vs-locks-encoding}
 \end{figure}
 
 \begin{figure}
 	\centering
-	\includegraphics[width=0.8\linewidth]{"../imgs/Encoding Barrier times"}
-	\caption{Encoding times}
-	\label{fig:encoding-barrier-times}
+	\includegraphics[width=1\linewidth]{"../imgs/encoding speedup wide"}
+	\caption{Encoding speedup}
+	\label{fig:encoding-speedup}
 \end{figure}
-
+\begin{figure}
+	\centering
+	\includegraphics[width=1\linewidth]{"../imgs/encode efficiency wide"}
+	\caption{Encoding efficiency}
+	\label{fig:encoding-efficiency}
+\end{figure}
 \subsection{Multiprocessing}
 We tested on different folders as benchmark the parallelization performances of our algorithm. Theoretically, our algorithm should scale very well with increasing number of processes and files, because once the main process sends the list of files to encode to each process there is no further communication between different processes. However, we find that real world results are different. 
 While we don't expect much increasing in the performance by the number of threads, because the files are on average very small, we should get better results by using many processes.
