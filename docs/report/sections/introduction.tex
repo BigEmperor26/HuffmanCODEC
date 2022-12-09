@@ -1,6 +1,6 @@
 \section{Introduction}
-The \emph{Huffman algorithm} is designed to find a more convenient bit representation, to store data through lossless compression. Instead of considering groups of eight bits as the way to encode data, the Huffman algorithm uses variable-length sequences of bits with prefixes defined as \emph{alphabet}.
+The \emph{Huffman algorithm} is designed to find a more convenient bit representation, to store data through lossless compression. Instead of considering groups of eight bits to encode data, the Huffman algorithm uses variable length sequences of bits defined as \emph{alphabet}.
 
-The objective of our work is to build a scalable Huffman encoder and decoder that are able to scale horizontally according to the provided hardware resources. Moreover, the application should handle both single files and nested folders properly.
+The objective of our work is to build a scalable Huffman encoder and decoder that are able to scale according to the provided hardware resources. Moreover, the application should handle both single files and nested folders properly.
 
 Even if nowadays the Huffman algorithm is mainly used for teaching purposes, its prefix mechanism is still part of many notable standards, such as Deflate (PKZIP's algorithm), JPEG, and MP3 compression algorithms. For this reason, there are no state-of-the-art online-available implementations to compare our tool with. In fact, differently from our work, many of the tools we found are not built considering low-level optimizations (such as to use in-memory buffers to improve I/O timings) or non-essential features (such as folders and big files handling).
