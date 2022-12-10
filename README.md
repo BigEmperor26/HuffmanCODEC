@@ -1,4 +1,4 @@
-# Parallel Huffman Coding and Encoding
+# Parallel Huffman Coding and Decoding
 
 This repository contains the High Performance Computing for Data Science project for:
 - Bozzo Francesco, 229312
