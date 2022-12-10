@@ -16,11 +16,13 @@ Link to the report with analysis of perfomances and discussion about design choi
 clear && gcc src/serial/encode.c src/datastructures/priorityQ.c src/datastructures/dictionary.c src/serial/huffman.c && ./a.out data/test.bin
 clear && gcc src/serial/decode.c src/datastructures/priorityQ.c src/datastructures/dictionary.c src/serial/huffman.c && ./a.out data/test.bin.huf
 ```
-
+alternatively 
 ```bash
+# make files
 make encoder
-bin/encode.out data/test.bin
 make decoder
+# encode and decode respectively
+bin/encode.out data/test.bin
 bin/decode.out data/test.bin.huf
 ```
 ## Parallel
