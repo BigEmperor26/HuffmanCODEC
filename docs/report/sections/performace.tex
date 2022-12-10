@@ -23,7 +23,7 @@ Secondly, because our algorithm also works with many files at once, we chose som
 
 %Considering the dataset sizes and amount testing we have done, we estimate to have accessed the disk (both read and writes) for about $\sim$ 6 TiB of data for our whole benchmark analysis.
 
-\subsection{Other works}
+
 
 \subsection{Multithreading evaluation}
 In this section we evaluate our algorithm on single files, by using multithreading and testing our parallelization performances with an increasing number of threads.
@@ -70,6 +70,13 @@ As already discussed previously, we also tested a version on a lock-based synchr
 	\caption{Encoding efficiency}
 	\label{fig:encoding-efficiency}
 \end{figure}
+
+We tested the performance of other implementations of Huffman algorithm, to have a reference point for our own implementation. We tested the following implementations:
+\begin{itemize}
+	\item MPI 1
+	\item MPI 2
+\end{itemize}
+
 \subsection{Multiprocessing}
 We tested on different folders as benchmark the parallelization performances of our algorithm. Theoretically, our algorithm should scale very well with increasing number of processes and files, because once the main process sends the list of files to encode to each process there is no further communication between different processes. However, we find that real world results are different. 
 While we don't expect much increasing in the performance by the number of threads, because the files are on average very small, we should get better results by using many processes.
