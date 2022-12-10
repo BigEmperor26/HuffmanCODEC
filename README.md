@@ -64,6 +64,9 @@ mpiexec -np processes bin/main.out -d -r data_huf/ data_dec/
 -h help text
 ```
 ### Test against valgrind
+
+Note, that the libomp.h library has a memory leak while creating multiple threads, so if this command is run on the cluster, there will always be 1 error detected by valgrind, unless only 1 thread is used
+
 ```bash
 ## serial
 make encoder
@@ -73,10 +76,12 @@ make decoder
 valgrind --leak-check=full --show-leak-kinds=all ./bin/decode.out ./data/test.bin.huf
 ## parallel
 make build
+export OMP_NUM_THREADS=threads
 valgrind --leak-check=full --show-leak-kinds=all ./bin/main.out -e ./data/test.bin ./data/test.bin.huf
 mpiexec -n 4 valgrind --leak-check=full --show-leak-kinds=all ./bin/main.out -e -r ./data ./data_huf
 ## parallel
 make build
+export OMP_NUM_THREADS=threads
 valgrind --leak-check=full --show-leak-kinds=all ./bin/main.out -d ./data/test.bin.huf ./data/test.bin.dec
 mpiexec -n 4 valgrind --leak-check=full --show-leak-kinds=all ./bin/main.out -d -r ./data_huf ./data_dec
 ```
