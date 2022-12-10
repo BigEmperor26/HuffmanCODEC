@@ -74,7 +74,7 @@ valgrind --leak-check=full --show-leak-kinds=all ./bin/decode.out ./data/test.bi
 ## parallel
 make build
 valgrind --leak-check=full --show-leak-kinds=all ./bin/main.out -e ./data/test.bin ./data/test.bin.huf
-mpiexec -n 4 valgrind --leak-check=full --show-leak-kinds=all ./bin/main. out -e -r ./data ./data_huf
+mpiexec -n 4 valgrind --leak-check=full --show-leak-kinds=all ./bin/main.out -e -r ./data ./data_huf
 ## parallel
 make build
 valgrind --leak-check=full --show-leak-kinds=all ./bin/main.out -d ./data/test.bin.huf ./data/test.bin.dec
