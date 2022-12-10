@@ -69,7 +69,10 @@ ull parallel_get_frequencies(FILE* file,Dictionary *d, int num_threads){
     }
     // merge dictionaries
     mergeDictionaries(d,dictionaries,num_threads);
-    
+    for(int i = 0; i < num_threads; i++){
+        freeDictionary(dictionaries[i]);
+    }
+    free(dictionaries);
     free(chunk);
     free(read);
     return file_size;
