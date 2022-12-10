@@ -25,7 +25,7 @@ bin/decode.out data/test.bin.huf
 ```bash
 # MPI and OPENMP
 make build
-# ONLY MPI, no multithreadign
+# ONLY MPI, no multithreading
 make build_no_openmp
 ```
 ### How to encode
@@ -35,31 +35,31 @@ bin/main.out -e data/test.bin data/test.bin.huf
 # multithread
 export OMP_NUM_THREADS=threads
 bin/main.out -e data/test.bin data/test.bin.huf
-# multiprocess
-mpiexec -np processes bin/main.out -e data/test.bin data/test.bin.huf
-# multiprocess and multithread
+# multiprocess folders
+mpiexec -np processes bin/main.out -e -r data/ data_enc/
+# multiprocess folders and multithread files
 export OMP_NUM_THREADS=threads
-mpiexec -np processes bin/main.out -e data/test.bin data/test.bin.huf
+mpiexec -np processes bin/main.out -e -r data/ data_enc/
 ```
 ### How to decode
 ```bash
 # single process, single threaded
-bin/main.out -d data/test.bin.huf data/test.bin
+bin/main.out -d data/test.bin.huf data/test.bin.dec
 # multithread
 export OMP_NUM_THREADS=threads
-bin/main.out -d data/test.bin.huf data/test.bin
-# multiprocess
-mpiexec -np processes bin/main.out -d data/test.bin.huf data/test.bin
-# multiprocess and multithread
+bin/main.out -d data/test.bin.huf data/test.bin.dec
+# multiprocess folders
+mpiexec -np processes bin/main.out -d -r data_enc/ data_dec/
+# multiprocess folders and multithread files
 export OMP_NUM_THREADS=threads
-mpiexec -np processes bin/main.out -d data/test.bin.huf data/test.bin
+mpiexec -np processes bin/main.out -d -r data_enc/ data_dec/
 ```
 ### Options
 ```bash
 -e to encode
 -d to decode
 -r process a folder
--b blocking synchronization
+-b blocking synchronization ( default selection )
 -l locks synchronization
 -h help text
 ```
