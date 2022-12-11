@@ -29,7 +29,7 @@ In this section we evaluate our algorithm on single files, by using multithreadi
 
 With small files (i.e. less than a few MiBs) the algorithm is actually slower with more threads. This is likely because the data is not large enough to offset the cost of forking multiple threads. Considering the cost parallel processing, we highly suggest not doing parallelization for small files. However, when the data is large enough our multithreaded approach scales up. With the largest file (10 GiB) our algorithm has an efficiency of 93\% when tested with 4 threads. This number steadily decreases with the number of threads, and we hit 16\% with 64 threads.
 
-The same issue is even more visible by looking at one implementation we found on GitHub that uses only MPI for parallelization\cite{HuffmanCodingMPICUDA}: with many processes, while with large files (even though it does not work with files bigger than $\sim$500 MiB) it performs better than our implementation, with small files it is not able to scale. This is happening due to the overhead of splitting small files among too many processes. This fact can also be observed in Figure \ref{fig:ours-vs-online}
+The same issue is even more visible by looking at one implementation we found on GitHub that uses only MPI for parallelization\cite{HuffmanCodingMPICUDA}: with many processes, while with large files (even though it does not work with files bigger than $\sim$500 MiB) it performs better than our implementation, with small files it is not able to scale. This is happening due to the overhead of splitting small files among too many processes. This fact can be observed also by looking at \cref{fig:ours-vs-online}.
 \begin{figure}
 	\centering
 	\includegraphics[width=1\linewidth]{"../imgs/our vs online 7"}
