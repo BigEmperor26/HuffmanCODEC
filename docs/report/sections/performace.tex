@@ -41,7 +41,7 @@ Additionally, please note that our tool is heavily limited by the cluster I/O: e
 \end{figure}
 
 We also noticed worse times in the decoding procedure with respect to encoding. This is probably due to the fact that the tool is reading fixed chunks of 4096 bytes in encoding, but during decoding the chunk can have a variable length.
-Moreover, by executing another implementation found on GitHub \cite{HuffmanParallel2},we found that reading and writing buffers to the disk (and not single bytes) can obtain improvement very similar to one order of magnitude.
+Moreover, by executing another implementation found on GitHub \cite{HuffmanParallel2}, we found that reading and writing buffers to the disk (and not single bytes) can obtain improvement very similar to one order of magnitude.
 
 % \begin{figure}
 % 	\centering

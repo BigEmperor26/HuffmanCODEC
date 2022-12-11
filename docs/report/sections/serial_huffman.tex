@@ -13,7 +13,7 @@ We also considered a parallel approach to implement MPQ \cite{BRODAL19984}, but 
 The Huffman encoding procedure makes use of a MPQ to build its alphabet efficiently. The idea is to build a tree similar to \cref{fig:tree} that defines all the variable length prefix sequences of bits: these sequences are represented by the path from the tree root to a leaf. Using a greedy approach, the Huffman encoding ensures that the less frequent a byte is in a file, the more likely is to have a longer Huffman representation, which means that his path from the root to its specific leaf is longer.
 
 \begin{center}
-    \begin{figure}
+    \begin{figure}[h!]
         \centering
         \begin{tikzpicture}
             [
