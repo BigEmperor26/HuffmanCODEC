@@ -2,10 +2,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-// #include <linux/limits.h>
 #include <mpi.h>
 #include "processDistributer.h"
 #include "../datastructures/priorityQ.h"
+
 /* function to distribute files_count files to size processes
 ** filenames is expectted to be a contiguous array of size files_count*PATH_MAX
 */
