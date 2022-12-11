@@ -1,39 +1,40 @@
 \subsection{linux encoding scatter}
-\begin{centering}
 \begin{table}[!h]
-\caption{Overall encoding times}
-\begin{tabular}{lrrr}
-\toprule
-\diagbox[width=8em]{Processes}{Threads} &       1 &       2 &       4 \\
-\midrule
-1  & 189.447 & 150.256 & \textbf{147.334} \\
-2  & 122.175 & 118.490 & \textbf{117.44}0 \\
-4  &  84.408 &  81.996 &  \textbf{81.776} \\
-8  &  68.110 &  67.038 &  \textbf{43.153} \\
-10 &  63.032 &  61.393 &  \textbf{61.122} \\
-12 &  62.554 &  \textbf{61.992} &  62.346 \\
-16 &  57.539 &  \textbf{56.922} &  56.938 \\
-20 &  54.402 &  51.974 &  \textbf{51.381} \\
-24 &  52.580 &  51.944 &  \textbf{51.464} \\
-\bottomrule
-\end{tabular}
+	\centering
+    \caption{Overall encoding times}
+    \begin{tabular}{lrrr}
+        \toprule
+        \diagbox[width=8em]{Processes}{Threads} &       1 &       2 &       4 \\
+        \midrule
+        1  & 189.447 & 150.256 & \textbf{147.334} \\
+        2  & 122.175 & 118.490 & \textbf{117.44}0 \\
+        4  &  84.408 &  81.996 &  \textbf{81.776} \\
+        8  &  68.110 &  67.038 &  \textbf{43.153} \\
+        10 &  63.032 &  61.393 &  \textbf{61.122} \\
+        12 &  62.554 &  \textbf{61.992} &  62.346 \\
+        16 &  57.539 &  \textbf{56.922} &  56.938 \\
+        20 &  54.402 &  51.974 &  \textbf{51.381} \\
+        24 &  52.580 &  51.944 &  \textbf{51.464} \\
+        \bottomrule
+    \end{tabular}
 \end{table}
+
 \begin{table}[!h]
-\caption{Overall encoding efficiency}
-\begin{tabular}{lrrr}
-\toprule
-\diagbox[width=8em]{Processes}{Threads} &     1 &     2 &     4 \\
-\midrule
-1  & 1.000 & 0.630 & 0.321 \\
-2  & 0.775 & 0.400 & 0.202 \\
-4  & 0.561 & 0.289 & 0.145 \\
-8  & 0.348 & 0.177 & 0.137 \\
-10 & 0.301 & 0.154 & 0.077 \\
-12 & 0.252 & 0.127 & 0.063 \\
-16 & 0.206 & 0.104 & 0.052 \\
-20 & 0.174 & 0.091 & 0.046 \\
-24 & 0.150 & 0.076 & 0.038 \\
-\bottomrule
-\end{tabular}
+    \centering
+    \caption{Overall encoding efficiency}
+    \begin{tabular}{lrrr}
+        \toprule
+        \diagbox[width=8em]{Processes}{Threads} &     1 &     2 &     4 \\
+        \midrule
+        1  & 1.000 & 0.630 & 0.321 \\
+        2  & 0.775 & 0.400 & 0.202 \\
+        4  & 0.561 & 0.289 & 0.145 \\
+        8  & 0.348 & 0.177 & 0.137 \\
+        10 & 0.301 & 0.154 & 0.077 \\
+        12 & 0.252 & 0.127 & 0.063 \\
+        16 & 0.206 & 0.104 & 0.052 \\
+        20 & 0.174 & 0.091 & 0.046 \\
+        24 & 0.150 & 0.076 & 0.038 \\
+        \bottomrule
+    \end{tabular}
 \end{table}
-\end{centering}
