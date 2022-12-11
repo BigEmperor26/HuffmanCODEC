@@ -7,55 +7,10 @@ We implemented the MPQ using a standard C array considered as a minimum heap, by
 \end{equation}
 where \(A[i]\), \(A[l(i)]\), and \(A[r(i)]\) are respectively a node, its left child, and its right child in a min-heap tree.
 
-A parallel approach was also considered to implement to MPQ \cite{BRODAL19984}, but it has been discarded due to the high complexity compared to the slim gains on a MPQ of at most 256 elements.
+We also considered a parallel approach to implement MPQ \cite{BRODAL19984}, but it has been discarded due to the high complexity compared to the slim gains on a MPQ of at most 256 elements.
 
 \subsection{Encoding}
 The Huffman encoding procedure makes use of a MPQ to build its alphabet efficiently. The idea is to build a tree similar to \cref{fig:tree} that defines all the variable length prefix sequences of bits: these sequences are represented by the path from the tree root to a leaf. Using a greedy approach, the Huffman encoding ensures that the less frequent a byte is in a file, the more likely is to have a longer Huffman representation, which means that his path from the root to its specific leaf is longer.
-
-Once having computed the frequencies for each one of the 256 different bytes in a file, the Huffman algorithm populates a min priority queue with Huffman tree nodes storing the byte value and its frequency. Successively, it removes the least two frequent bytes from the queue, creates a new node with children the two extracted nodes, assigns it to a dummy character and the sum of the frequencies of its two children, and inserts it into the min priority queue. After \(n-1\) iterations, the last node is the root of the Huffman tree \cite{bertossi2010algoritmi}. \Cref{alg:buildtree} explains in the detail this procedure.
-\begin{algorithm}
-    \caption{Build the Huffman tree}\label{alg:buildtree}
-
-    \SetKwData{Q}{Q}\SetKwData{z1}{z1}\SetKwData{z2}{z2}\SetKwData{z}{z}
-    \SetKwFunction{insert}{insert}\SetKwFunction{deleteMin}{deleteMin}
-    \SetKwInOut{Input}{input}\SetKwInOut{Output}{output}
-    \SetKwFor{}{}{}{}
-
-    // Populate the min priority queue with characters and their frequencies\;
-    \For{\(i=1\) \KwTo \(n-1\)}{
-        Q.insert(f[i], Tree(f[i], c[i]))\;
-    }
-    // Repeat until the queue has only a single element left\;
-    \For{\(i=1\) \KwTo \(n-1\)}{
-        // Get the two least frequent nodes\;
-        z1, z2 = Q.deleteMin(), Q.deleteMin()\;
-
-        // Create and insert inner tree node into the queue\;
-        z = Tree(z1.f + z2.f, null)\;
-        z.left, z.right = z1, z2\;
-        Q.insert(z.f, z)\;
-    }
-
-    // The last element in the queue is the root of the Huffman tree\;
-    \Return{Q.deleteMin()}\;
-\end{algorithm}
-
-When Huffman tree is built, it is possible to generate the Huffman alphabet visiting the tree using a DFS algorithm; assigning 0 to each left-child traverse and 1 for the right one as presented in \cref{alg:encode}. Finally, it is possible to compress the file by creating a stream of bits corresponding to its content using the Huffman alphabet.
-
-\begin{algorithm}
-    \caption{Encode(node)}\label{alg:encode}
-    \While{not eof()}{
-        bit = read()\;
-        \eIf{bit == 0}{
-            Encode(node.left)\;
-        }{
-            Encode(node.right)\;
-        }
-        \If{node is leaf}{
-            \Return{node.value}\;
-        }
-    }
-\end{algorithm}
 
 \begin{center}
     \begin{figure}
@@ -93,8 +48,52 @@ When Huffman tree is built, it is possible to generate the Huffman alphabet visi
         \caption{An example of Huffman tree.}
         \label{fig:tree}
     \end{figure}
-
 \end{center}
+
+Once having computed the frequencies for each one of the 256 different bytes in a file, the Huffman algorithm populates a MPQ with Huffman tree nodes storing the byte value and its frequency. Successively, it removes the least two frequent bytes from the queue, creates a new node with children the two extracted nodes, assigns it to a dummy character and the sum of the frequencies of its two children, and inserts it into the MPQ. After \(n-1\) iterations, the last node in the MPQ is the actual root of the Huffman tree \cite{bertossi2010algoritmi}. \Cref{alg:buildtree} explains in the detail this procedure.
+\begin{algorithm}
+    \caption{Build the Huffman tree}\label{alg:buildtree}
+
+    \SetKwData{Q}{Q}\SetKwData{z1}{z1}\SetKwData{z2}{z2}\SetKwData{z}{z}
+    \SetKwFunction{insert}{insert}\SetKwFunction{deleteMin}{deleteMin}
+    \SetKwInOut{Input}{input}\SetKwInOut{Output}{output}
+    \SetKwFor{}{}{}{}
+
+    // Populate the min priority queue with characters and their frequencies\;
+    \For{\(i=1\) \KwTo \(n-1\)}{
+        Q.insert(f[i], Tree(f[i], c[i]))\;
+    }
+    // Repeat until the queue has only a single element left\;
+    \For{\(i=1\) \KwTo \(n-1\)}{
+        // Get the two least frequent nodes\;
+        z1, z2 = Q.deleteMin(), Q.deleteMin()\;
+
+        // Create and insert inner tree node into the queue\;
+        z = Tree(z1.f + z2.f, null)\;
+        z.left, z.right = z1, z2\;
+        Q.insert(z.f, z)\;
+    }
+
+    // The last element in the queue is the root of the Huffman tree\;
+    \Return{Q.deleteMin()}\;
+\end{algorithm}
+
+When the Huffman tree is built, it is possible to generate the Huffman alphabet by visiting the tree using a DFS algorithm; assigning 0 to each left-child traverse and 1 for the right one as presented in \cref{alg:encode}. Finally, it is possible to compress the file by creating a stream of bits corresponding to its content using the Huffman alphabet.
+
+\begin{algorithm}
+    \caption{Encode(node)}\label{alg:encode}
+    \While{not eof()}{
+        bit = read()\;
+        \eIf{bit == 0}{
+            Encode(node.left)\;
+        }{
+            Encode(node.right)\;
+        }
+        \If{node is leaf}{
+            \Return{node.value}\;
+        }
+    }
+\end{algorithm}
 
 \subsection{Decoding}
 Finally, having the encoded file and the Huffman tree, it is straightforward to decompress the file to its original shape. The prefix alphabet ensures to have that it is possible to visit the tree using a DFS approach and get a unique decoded version of the file using an approach similar to \cref{alg:encode}.
@@ -102,8 +101,8 @@ Finally, having the encoded file and the Huffman tree, it is straightforward to 
 \subsection{Implementation}
 In order implement the Huffman encoding and decoding algorithm, several details have been taken into account.
 \begin{itemize}
-    \item The byte frequencies computed during the encoding process are saved in the compressed file. In this way, the decoding procedure can easily rebuild the Huffman tree.
+    \item The byte frequencies computed during the encoding process are saved in the compressed file. In this way, the decoding procedure can easily rebuild the Huffman tree and therefore the alphabet.
     \item Both the encoding and decoding procedures make use of buffers to improve I/O performance: the streams of bytes are first written inside the buffer and then saved on the disk.
-    \item The encoding procedure works with chunks of \(4096\) bytes. This ensures that the tool can handle even large files when dealing with bit buffers. The decoding procedure deals with chunks of maximum size of \(4096*32\) bytes, since the maximum length of a Huffman tree traverse from root to leaf is of 256 bits, which is 32 times a byte. As explained later, dealing with chunks makes handy the parallel implementation of the encoding and decoding algorithms.
+    \item The encoding procedure works with chunks of \(4096\) bytes. This ensures that the tool can handle very large files when dealing with bit buffers. The decoding procedure deals with chunks of maximum size of \(4096*32\) bytes, since the maximum length of a Huffman tree traverse from root to leaf is of 256 bits, which is 32 times a byte. As explained later, dealing with chunks makes handy the parallel implementation of the encoding and decoding algorithms.
     \item In the encoded file, the chunk sizes and offsets are saved at the end of the file: this is to avoid considering the last bits of the byte of a chunk, which may not be relevant because the encoded representation may not be a multiple of a byte.
 \end{itemize}
