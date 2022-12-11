@@ -47,13 +47,4 @@ bool popPriorityQ(PriorityQ* pq, Node** node);
 bool topPriorityQ(PriorityQ* pq, Node** node);
 
 
-/*
-void printHeight(struct vectorTree* v, int height);
-// print the tree in a nice format
-void printTree(struct vectorTree* v);
-
-int intlog2(int x);
-int intpow2(int x);
-*/
-
 #endif

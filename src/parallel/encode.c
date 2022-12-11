@@ -151,10 +151,6 @@ bool fileEncoderLocks(FILE* inputFile, FILE* outputFile, char* huffmanAlphabet[]
     if (numOfChunks % num_threads != 0) {
         chunkIterations++;
     }
-    // locks for multithreading
-    // omp_lock_t readlock[num_threads];
-    // omp_lock_t processlock[num_threads];
-    // omp_lock_t writelock[num_threads];
     omp_lock_t* readlock = malloc(sizeof(omp_lock_t) * num_threads);
     omp_lock_t* processlock = malloc(sizeof(omp_lock_t) * num_threads);
     omp_lock_t* writelock = malloc(sizeof(omp_lock_t) * num_threads);
@@ -207,7 +203,6 @@ bool fileEncoderLocks(FILE* inputFile, FILE* outputFile, char* huffmanAlphabet[]
             // all other num_threads on processing
         }
         else {
-            //double start_lock = omp_get_wtime();
             int work_ID = omp_get_thread_num() - 1;
 #pragma omp critical
             {
@@ -216,22 +211,13 @@ bool fileEncoderLocks(FILE* inputFile, FILE* outputFile, char* huffmanAlphabet[]
             }
             // //test lock instead
             omp_set_lock(&processlock[work_ID]);
-            //double start = omp_get_wtime();
             if (inputBufferChunkSizes[work_ID] > 0) {
                 // Huffman compression of NUM_THREAD chunks
                 isEncodingSuccessful = chunkEncoder(inputChunk + work_ID * MAX_DECODED_BUFFER_SIZE, outputChunk + work_ID * MAX_ENCODED_BUFFER_SIZE, huffmanAlphabet, inputBufferChunkSizes[work_ID], &outputBufferChunkSizes[work_ID]) && isEncodingSuccessful;
-                // if (i*num_threads + work_ID < numOfChunks)
-                //     outputChunkSizes[i*num_threads+work_ID] = outputBufferChunkSizes[work_ID];
             }
             else {
                 outputBufferChunkSizes[work_ID] = 0;
-                // if (i*num_threads + work_ID < numOfChunks)
-                //     outputChunkSizes[i*num_threads+work_ID] = 0;
             }
-            //double end = omp_get_wtime();
-            // printf("Time required to process chunk %d for thread %d\n",i*num_threads+work_ID,thread_ID);
-            // printf("Time since chunk acquired %f %d\n",end-start_lock,thread_ID);
-            // printf("Time to process %f %d\n",end-start,thread_ID);
             omp_unset_lock(&writelock[work_ID]);
         }
     }

@@ -48,13 +48,6 @@ int directoryProcesser(int rank, int size, char* inputname, char* outputname, in
             MPI_Finalize();
             exit(1);
         }
-        // // check if output file folder already exists to prevent override
-        // bool outputdirectory = directoryExists((const char*)outputname);
-        // if (outputdirectory){
-        //     printf("%s output already exists\n",outputname);
-        //     MPI_Finalize();
-        //     exit(1); 
-        // }
         printf("Number of files: %d\n", files_count);
     }
     //printf("Rank %d Number of files: %d\n",rank, files_count);
@@ -86,17 +79,6 @@ int directoryProcesser(int rank, int size, char* inputname, char* outputname, in
         for (int i = 0;i < files_count;i++) {
             printf("%s\n", files_ptr[i]);
         }
-        // ull * pre_sorted_file_sizes = (ull*)malloc(sizeof(ull)*files_count);
-        // char* pre_sorted_files = (char*)malloc(sizeof(char)*files_count*PATH_MAX);
-        // char ** pre_sorted_files_ptr = (char**)malloc(sizeof(char*)*files_count);
-        // for (int i = 0;i < files_count;i++) {
-        //     pre_sorted_files_ptr[i] = pre_sorted_files+i*PATH_MAX;
-        // }
-        //filePreSorter((char **)files_ptr, file_sizes,files_count,pre_sorted_files_ptr,pre_sorted_file_sizes);
-        // for (int i = 0;i < files_count;i++) {
-        //      printf("%s  size %llu\n", pre_sorted_files_ptr[i],pre_sorted_file_sizes[i]);
-        // }
-        //fileSorterSize((char **)pre_sorted_files_ptr, pre_sorted_file_sizes, files_count,size,(char **)sorted_files_ptr,sorted_file_indexes,files_per_process,files_sizes_per_process);
         fileSorterSize((char**)files_ptr, file_sizes, files_count, size, (char**)sorted_files_ptr, sorted_file_indexes, files_per_process, files_sizes_per_process);
         ull total = 0;
         for (int i = 0;i < files_count;i++) {
@@ -105,9 +87,6 @@ int directoryProcesser(int rank, int size, char* inputname, char* outputname, in
         printf("Total size of all files is %llu MiB\n", total / (1024 * 1024));
         free(files_ptr);
         free(sorted_files_ptr);
-        // free(pre_sorted_file_sizes);
-        // free(pre_sorted_files);
-        // free(pre_sorted_files_ptr);
 
     }
     MPI_Barrier(MPI_COMM_WORLD);
@@ -191,13 +170,6 @@ int fileProcesser(int rank, char* inputname, char* outputname, int num_threads, 
             MPI_Finalize();
             exit(1);
         }
-        // // check if output file already exists to prevent override
-        // bool outputfile = fileExists((const char*)outputname);
-        // if (outputfile){
-        //     printf("%s output already exists\n",outputname);
-        //     MPI_Finalize();
-        //     exit(1); 
-        // }
         printf("Number of files: %d\n", files_count);
         // processsing the file
         printf("processing file %s\n", inputname);

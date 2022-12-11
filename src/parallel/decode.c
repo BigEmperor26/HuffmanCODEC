@@ -181,10 +181,6 @@ bool fileDecoderLocks(FILE* inputFile, FILE* outputFile, Node* huffmanTree, ull 
     if (numOfChunks % num_threads != 0) {
         chunkIterations++;
     }
-    // locks for multithreading
-    // omp_lock_t readlock[num_threads];
-    // omp_lock_t processlock[num_threads];
-    // omp_lock_t writelock[num_threads];
     omp_lock_t* readlock = malloc(sizeof(omp_lock_t) * num_threads);
     omp_lock_t* processlock = malloc(sizeof(omp_lock_t) * num_threads);
     omp_lock_t* writelock = malloc(sizeof(omp_lock_t) * num_threads);
@@ -246,7 +242,6 @@ bool fileDecoderLocks(FILE* inputFile, FILE* outputFile, Node* huffmanTree, ull 
         }
         // all other num_threads on processing
         else {
-            //double start_lock = omp_get_wtime();
             int work_ID = omp_get_thread_num() - 1;
 #pragma omp critical
             {
@@ -254,15 +249,9 @@ bool fileDecoderLocks(FILE* inputFile, FILE* outputFile, Node* huffmanTree, ull 
                 current_chunk = (current_chunk + 1) % num_threads;
             }
             omp_set_lock(&processlock[work_ID]);
-            //double start = omp_get_wtime();
             if (outputBufferChunkSizes[work_ID] > 0) {
-                //sleep(1);
                 chunkDecoder(inputChunk + work_ID * MAX_ENCODED_BUFFER_SIZE, outputChunk + work_ID * (MAX_DECODED_BUFFER_SIZE), huffmanTree, outputBufferChunkSizes[work_ID], &decodedOutputBufferChunkSizes[work_ID]);
             }
-            //double end = omp_get_wtime();
-            // printf("Time required to process chunk %d for thread %d\n",i*num_threads+work_ID,thread_ID);
-            // printf("Time since chunk acquired %f %d\n",end-start_lock,thread_ID);
-            // printf("Time to process %f %d\n",end-start,thread_ID);
             omp_unset_lock(&writelock[work_ID]);
         }
 
