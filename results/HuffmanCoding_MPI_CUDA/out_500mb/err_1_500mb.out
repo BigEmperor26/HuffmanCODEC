@@ -1,0 +1,415 @@
+[hpc-c03-node10.unitn.it:47794] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c03-node10.unitn.it:47794] SETTING BINDING TO CORE
+--------------------------------------------------------------------------
+WARNING: a request was made to bind a process. While the system
+supports binding the process itself, at least one node does NOT
+support binding memory to the process location.
+
+  Node:  hpc-c03-node10
+
+Open MPI uses the "hwloc" library to perform process and memory
+binding. This error message means that hwloc has indicated that
+processor binding support is not available on this machine.
+
+On OS X, processor and memory binding is not available at all (i.e.,
+the OS does not expose this functionality).
+
+On Linux, lack of the functionality can mean that you are on a
+platform where processor and memory affinity is not supported in Linux
+itself, or that hwloc was built without NUMA and/or processor affinity
+support. When building hwloc (which, depending on your Open MPI
+installation, may be embedded in Open MPI itself), it is important to
+have the libnuma header and library files available. Different linux
+distributions package these files under different names; look for
+packages with the word "numa" in them. You may also need a developer
+version of the package (e.g., with "dev" or "devel" in the name) to
+obtain the relevant header files.
+
+If you are getting this message on a non-OS X, non-Linux platform,
+then hwloc does not support processor / memory affinity on this
+platform. If the OS/platform does actually support processor / memory
+affinity, then you should contact the hwloc maintainers:
+https://github.com/open-mpi/hwloc.
+
+This is a warning only; your job will continue, though performance may
+be degraded.
+--------------------------------------------------------------------------
+[hpc-c03-node10.unitn.it:47799] mca_base_component_repository_open: unable to open mca_oob_ud: libosmcomp.so.3: cannot open shared object file: No such file or directory (ignored)
+[hpc-c03-node10.unitn.it:47799] mca_base_component_repository_open: unable to open mca_btl_openib: librdmacm.so.1: cannot open shared object file: No such file or directory (ignored)
+--------------------------------------------------------------------------
+The library attempted to open the following supporting CUDA libraries,
+but each of them failed.  CUDA-aware support is disabled.
+libcuda.so.1: cannot open shared object file: No such file or directory
+libcuda.dylib: cannot open shared object file: No such file or directory
+/usr/lib64/libcuda.so.1: cannot open shared object file: No such file or directory
+/usr/lib64/libcuda.dylib: cannot open shared object file: No such file or directory
+If you are not interested in CUDA-aware support, then run with
+--mca mpi_cuda_support 0 to suppress this message.  If you are interested
+in CUDA-aware support, then try setting LD_LIBRARY_PATH to the location
+of libcuda.so.1 to get passed this issue.
+--------------------------------------------------------------------------
+*** Error in `/home/francesco.bozzo/huffman_benchmark/HuffmanCoding_MPI_CUDA/bin/MPI_compress': free(): invalid size: 0x0000000000602bf0 ***
+======= Backtrace: =========
+/lib64/libc.so.6(+0x81489)[0x2b28b6a77489]
+/home/francesco.bozzo/huffman_benchmark/HuffmanCoding_MPI_CUDA/bin/MPI_compress[0x401531]
+/lib64/libc.so.6(__libc_start_main+0xf5)[0x2b28b6a183d5]
+/home/francesco.bozzo/huffman_benchmark/HuffmanCoding_MPI_CUDA/bin/MPI_compress[0x400c99]
+======= Memory map: ========
+00400000-00402000 r-xp 00000000 00:27 2155108138                         /home/francesco.bozzo/huffman_benchmark/HuffmanCoding_MPI_CUDA/bin/MPI_compress
+00601000-00602000 r--p 00001000 00:27 2155108138                         /home/francesco.bozzo/huffman_benchmark/HuffmanCoding_MPI_CUDA/bin/MPI_compress
+00602000-00603000 rw-p 00002000 00:27 2155108138                         /home/francesco.bozzo/huffman_benchmark/HuffmanCoding_MPI_CUDA/bin/MPI_compress
+00603000-00616000 rw-p 00000000 00:00 0 
+00fd9000-011ad000 rw-p 00000000 00:00 0                                  [heap]
+2b28b62bc000-2b28b62de000 r-xp 00000000 08:01 8920575                    /usr/lib64/ld-2.17.so
+2b28b62de000-2b28b62df000 rw-p 00000000 00:00 0 
+2b28b62df000-2b28b62e0000 r--s 00000000 08:01 3674709                    /var/tmp/pbs.9057836.hpc-head-n1.unitn.it/ompi.hpc-c03-node10.188799/pid.47794/pmix_dstor_47794/initial-pmix_shared-segment-0
+2b28b62e0000-2b28b62e1000 rw-s 00000000 08:01 3674710                    /var/tmp/pbs.9057836.hpc-head-n1.unitn.it/ompi.hpc-c03-node10.188799/pid.47794/pmix_dstor_47794/dstore_sm.lock
+2b28b62e1000-2b28b62e2000 rw-p 00000000 00:00 0 
+2b28b62e2000-2b28b62e3000 rw-s 00000000 00:13 79155448                   /dev/shm/sem.NmVesk (deleted)
+2b28b62e3000-2b28b62e4000 rw-p 00000000 00:00 0 
+2b28b62e5000-2b28b62e6000 rw-s 00000000 00:13 79155449                   /dev/shm/sem.Q8RC6j (deleted)
+2b28b62ef000-2b28b649b000 rw-p 00000000 00:00 0 
+2b28b64dd000-2b28b64de000 r--p 00021000 08:01 8920575                    /usr/lib64/ld-2.17.so
+2b28b64de000-2b28b64df000 rw-p 00022000 08:01 8920575                    /usr/lib64/ld-2.17.so
+2b28b64df000-2b28b64e0000 rw-p 00000000 00:00 0 
+2b28b64e0000-2b28b65b7000 r-xp 00000000 00:26 536989873                  /apps/openmpi-3.0.0/lib/libmpi.so.40.0.0
+2b28b65b7000-2b28b67b7000 ---p 000d7000 00:26 536989873                  /apps/openmpi-3.0.0/lib/libmpi.so.40.0.0
+2b28b67b7000-2b28b67b8000 r--p 000d7000 00:26 536989873                  /apps/openmpi-3.0.0/lib/libmpi.so.40.0.0
+2b28b67b8000-2b28b67c9000 rw-p 000d8000 00:26 536989873                  /apps/openmpi-3.0.0/lib/libmpi.so.40.0.0
+2b28b67c9000-2b28b67da000 rw-p 00000000 00:00 0 
+2b28b67da000-2b28b67f1000 r-xp 00000000 08:01 8913434                    /usr/lib64/libpthread-2.17.so
+2b28b67f1000-2b28b69f0000 ---p 00017000 08:01 8913434                    /usr/lib64/libpthread-2.17.so
+2b28b69f0000-2b28b69f1000 r--p 00016000 08:01 8913434                    /usr/lib64/libpthread-2.17.so
+2b28b69f1000-2b28b69f2000 rw-p 00017000 08:01 8913434                    /usr/lib64/libpthread-2.17.so
+2b28b69f2000-2b28b69f6000 rw-p 00000000 00:00 0 
+2b28b69f6000-2b28b6bb8000 r-xp 00000000 08:01 8913343                    /usr/lib64/libc-2.17.so
+2b28b6bb8000-2b28b6db8000 ---p 001c2000 08:01 8913343                    /usr/lib64/libc-2.17.so
+2b28b6db8000-2b28b6dbc000 r--p 001c2000 08:01 8913343                    /usr/lib64/libc-2.17.so
+2b28b6dbc000-2b28b6dbe000 rw-p 001c6000 08:01 8913343                    /usr/lib64/libc-2.17.so
+2b28b6dbe000-2b28b6dc3000 rw-p 00000000 00:00 0 
+2b28b6dc3000-2b28b6e6d000 r-xp 00000000 00:26 536989583                  /apps/openmpi-3.0.0/lib/libopen-rte.so.40.0.0
+2b28b6e6d000-2b28b706c000 ---p 000aa000 00:26 536989583                  /apps/openmpi-3.0.0/lib/libopen-rte.so.40.0.0
+2b28b706c000-2b28b706e000 r--p 000a9000 00:26 536989583                  /apps/openmpi-3.0.0/lib/libopen-rte.so.40.0.0
+2b28b706e000-2b28b7072000 rw-p 000ab000 00:26 536989583                  /apps/openmpi-3.0.0/lib/libopen-rte.so.40.0.0
+2b28b7072000-2b28b7074000 rw-p 00000000 00:00 0 
+2b28b7074000-2b28b7166000 r-xp 00000000 00:26 536989667                  /apps/openmpi-3.0.0/lib/libopen-pal.so.40.0.0
+2b28b7166000-2b28b7366000 ---p 000f2000 00:26 536989667                  /apps/openmpi-3.0.0/lib/libopen-pal.so.40.0.0
+2b28b7366000-2b28b7369000 r--p 000f2000 00:26 536989667                  /apps/openmpi-3.0.0/lib/libopen-pal.so.40.0.0
+2b28b7369000-2b28b736f000 rw-p 000f5000 00:26 536989667                  /apps/openmpi-3.0.0/lib/libopen-pal.so.40.0.0
+2b28b736f000-2b28b7376000 rw-p 00000000 00:00 0 
+2b28b7376000-2b28b73ca000 r-xp 00000000 08:01 16515156                   /opt/pbs/lib/libpbs.so.0.0.0
+2b28b73ca000-2b28b75ca000 ---p 00054000 08:01 16515156                   /opt/pbs/lib/libpbs.so.0.0.0
+2b28b75ca000-2b28b75cb000 r--p 00054000 08:01 16515156                   /opt/pbs/lib/libpbs.so.0.0.0
+2b28b75cb000-2b28b75d1000 rw-p 00055000 08:01 16515156                   /opt/pbs/lib/libpbs.so.0.0.0
+2b28b75d1000-2b28b75d4000 rw-p 00000000 00:00 0 
+2b28b75d4000-2b28b75d6000 r-xp 00000000 08:01 8918754                    /usr/lib64/libdl-2.17.so
+2b28b75d6000-2b28b77d6000 ---p 00002000 08:01 8918754                    /usr/lib64/libdl-2.17.so
+2b28b77d6000-2b28b77d7000 r--p 00002000 08:01 8918754                    /usr/lib64/libdl-2.17.so
+2b28b77d7000-2b28b77d8000 rw-p 00003000 08:01 8918754                    /usr/lib64/libdl-2.17.so
+2b28b77d8000-2b28b77e0000 r-xp 00000000 08:01 8913351                    /usr/lib64/libcrypt-2.17.so
+2b28b77e0000-2b28b79df000 ---p 00008000 08:01 8913351                    /usr/lib64/libcrypt-2.17.so
+2b28b79df000-2b28b79e0000 r--p 00007000 08:01 8913351                    /usr/lib64/libcrypt-2.17.so
+2b28b79e0000-2b28b79e1000 rw-p 00008000 08:01 8913351                    /usr/lib64/libcrypt-2.17.so
+2b28b79e1000-2b28b7a0f000 rw-p 00000000 00:00 0 
+2b28b7a0f000-2b28b7c44000 r-xp 00000000 08:01 8913567                    /usr/lib64/libcrypto.so.1.0.2k
+2b28b7c44000-2b28b7e44000 ---p 00235000 08:01 8913567                    /usr/lib64/libcrypto.so.1.0.2k
+2b28b7e44000-2b28b7e60000 r--p 00235000 08:01 8913567                    /usr/lib64/libcrypto.so.1.0.2k
+2b28b7e60000-2b28b7e6d000 rw-p 00251000 08:01 8913567                    /usr/lib64/libcrypto.so.1.0.2k
+2b28b7e6d000-2b28b7e71000 rw-p 00000000 00:00 0 
+2b28b7e71000-2b28b7e78000 r-xp 00000000 08:01 8918761                    /usr/lib64/librt-2.17.so
+2b28b7e78000-2b28b8077000 ---p 00007000 08:01 8918761                    /usr/lib64/librt-2.17.so
+2b28b8077000-2b28b8078000 r--p 00006000 08:01 8918761                    /usr/lib64/librt-2.17.so
+2b28b8078000-2b28b8079000 rw-p 00007000 08:01 8918761                    /usr/lib64/librt-2.17.so
+2b28b8079000-2b28b817a000 r-xp 00000000 08:01 8918755                    /usr/lib64/libm-2.17.so
+2b28b817a000-2b28b8379000 ---p 00101000 08:01 8918755                    /usr/lib64/libm-2.17.so
+2b28b8379000-2b28b837a000 r--p 00100000 08:01 8918755                    /usr/lib64/libm-2.17.so
+2b28b837a000-2b28b837b000 rw-p 00101000 08:01 8918755                    /usr/lib64/libm-2.17.so
+2b28b837b000-2b28b837d000 r-xp 00000000 08:01 8913450                    /usr/lib64/libutil-2.17.so
+2b28b837d000-2b28b857c000 ---p 00002000 08:01 8913450                    /usr/lib64/libutil-2.17.so
+2b28b857c000-2b28b857d000 r--p 00001000 08:01 8913450                    /usr/lib64/libutil-2.17.so
+2b28b857d000-2b28b857e000 rw-p 00002000 08:01 8913450                    /usr/lib64/libutil-2.17.so
+2b28b857e000-2b28b8593000 r-xp 00000000 08:01 8913517                    /usr/lib64/libz.so.1.2.7
+2b28b8593000-2b28b8792000 ---p 00015000 08:01 8913517                    /usr/lib64/libz.so.1.2.7
+2b28b8792000-2b28b8793000 r--p 00014000 08:01 8913517                    /usr/lib64/libz.so.1.2.7
+2b28b8793000-2b28b8794000 rw-p 00015000 08:01 8913517                    /usr/lib64/libz.so.1.2.7
+2b28b8794000-2b28b8796000 r-xp 00000000 08:01 8913058                    /usr/lib64/libfreebl3.so
+2b28b8796000-2b28b8995000 ---p 00002000 08:01 8913058                    /usr/lib64/libfreebl3.so
+2b28b8995000-2b28b8996000 r--p 00001000 08:01 8913058                    /usr/lib64/libfreebl3.so
+2b28b8996000-2b28b8997000 rw-p 00002000 08:01 8913058                    /usr/lib64/libfreebl3.so
+2b28b8997000-2b28b899a000 r-xp 00000000 00:26 536989554                  /apps/openmpi-3.0.0/lib/openmpi/mca_shmem_mmap.so
+2b28b899a000-2b28b8b99000 ---p 00003000 00:26 536989554                  /apps/openmpi-3.0.0/lib/openmpi/mca_shmem_mmap.so
+2b28b8b99000-2b28b8b9a000 r--p 00002000 00:26 536989554                  /apps/openmpi-3.0.0/lib/openmpi/mca_shmem_mmap.so
+2b28b8b9a000-2b28b8b9b000 rw-p 00003000 00:26 536989554                  /apps/openmpi-3.0.0/lib/openmpi/mca_shmem_mmap.so
+2b28b8b9b000-2b28b8b9c000 r-xp 00000000 00:26 536989773                  /apps/openmpi-3.0.0/lib/openmpi/mca_schizo_orte.so
+2b28b8b9c000-2b28b8d9c000 ---p 00001000 00:26 536989773                  /apps/openmpi-3.0.0/lib/openmpi/mca_schizo_orte.so
+2b28b8d9c000-2b28b8d9d000 r--p 00001000 00:26 536989773                  /apps/openmpi-3.0.0/lib/openmpi/mca_schizo_orte.so
+2b28b8d9d000-2b28b8d9e000 rw-p 00002000 00:26 536989773                  /apps/openmpi-3.0.0/lib/openmpi/mca_schizo_orte.so
+2b28b8d9e000-2b28b8da6000 r-xp 00000000 00:26 536989770                  /apps/openmpi-3.0.0/lib/openmpi/mca_schizo_ompi.so
+2b28b8da6000-2b28b8fa5000 ---p 00008000 00:26 536989770                  /apps/openmpi-3.0.0/lib/openmpi/mca_schizo_ompi.so
+2b28b8fa5000-2b28b8fa6000 r--p 00007000 00:26 536989770                  /apps/openmpi-3.0.0/lib/openmpi/mca_schizo_ompi.so
+2b28b8fa6000-2b28b8fa8000 rw-p 00008000 00:26 536989770                  /apps/openmpi-3.0.0/lib/openmpi/mca_schizo_ompi.so
+2b28b8fa8000-2b28b8faa000 r-xp 00000000 00:26 536989779                  /apps/openmpi-3.0.0/lib/openmpi/mca_schizo_slurm.so
+2b28b8faa000-2b28b91a9000 ---p 00002000 00:26 536989779                  /apps/openmpi-3.0.0/lib/openmpi/mca_schizo_slurm.so
+2b28b91a9000-2b28b91aa000 r--p 00001000 00:26 536989779                  /apps/openmpi-3.0.0/lib/openmpi/mca_schizo_slurm.so
+2b28b91aa000-2b28b91ab000 rw-p 00002000 00:26 536989779                  /apps/openmpi-3.0.0/lib/openmpi/mca_schizo_slurm.so
+2b28b91ab000-2b28b91ac000 r-xp 00000000 00:26 536989767                  /apps/openmpi-3.0.0/lib/openmpi/mca_schizo_flux.so
+2b28b91ac000-2b28b93ac000 ---p 00001000 00:26 536989767                  /apps/openmpi-3.0.0/lib/openmpi/mca_schizo_flux.so
+2b28b93ac000-2b28b93ad000 r--p 00001000 00:26 536989767                  /apps/openmpi-3.0.0/lib/openmpi/mca_schizo_flux.so
+2b28b93ad000-2b28b93ae000 rw-p 00002000 00:26 536989767                  /apps/openmpi-3.0.0/lib/openmpi/mca_schizo_flux.so
+2b28b93ae000-2b28b93af000 r-xp 00000000 00:26 536989776                  /apps/openmpi-3.0.0/lib/openmpi/mca_schizo_singularity.so
+2b28b93af000-2b28b95af000 ---p 00001000 00:26 536989776                  /apps/openmpi-3.0.0/lib/openmpi/mca_schizo_singularity.so
+2b28b95af000-2b28b95b0000 r--p 00001000 00:26 536989776                  /apps/openmpi-3.0.0/lib/openmpi/mca_schizo_singularity.so
+2b28b95b0000-2b28b95b1000 rw-p 00002000 00:26 536989776                  /apps/openmpi-3.0.0/lib/openmpi/mca_schizo_singularity.so
+2b28b95b1000-2b28b95b5000 r-xp 00000000 00:26 536989624                  /apps/openmpi-3.0.0/lib/openmpi/mca_ess_pmi.so
+2b28b95b5000-2b28b97b4000 ---p 00004000 00:26 536989624                  /apps/openmpi-3.0.0/lib/openmpi/mca_ess_pmi.so
+2b28b97b4000-2b28b97b5000 r--p 00003000 00:26 536989624                  /apps/openmpi-3.0.0/lib/openmpi/mca_ess_pmi.so
+2b28b97b5000-2b28b97b6000 rw-p 00004000 00:26 536989624                  /apps/openmpi-3.0.0/lib/openmpi/mca_ess_pmi.so
+2b28b97b6000-2b28b97b7000 ---p 00000000 00:00 0 
+2b28b97b7000-2b28b99b7000 rw-p 00000000 00:00 0 
+2b28b99b7000-2b28b99bc000 r-xp 00000000 00:26 536989763                  /apps/openmpi-3.0.0/lib/pmix/mca_ptl_usock.so
+2b28b99bc000-2b28b9bbb000 ---p 00005000 00:26 536989763                  /apps/openmpi-3.0.0/lib/pmix/mca_ptl_usock.so
+2b28b9bbb000-2b28b9bbc000 r--p 00004000 00:26 536989763                  /apps/openmpi-3.0.0/lib/pmix/mca_ptl_usock.so
+2b28b9bbc000-2b28b9bbd000 rw-p 00005000 00:26 536989763                  /apps/openmpi-3.0.0/lib/pmix/mca_ptl_usock.so
+2b28b9bbd000-2b28b9c79000 r-xp 00000000 00:26 536989538                  /apps/openmpi-3.0.0/lib/openmpi/mca_pmix_pmix2x.so
+2b28b9c79000-2b28b9e78000 ---p 000bc000 00:26 536989538                  /apps/openmpi-3.0.0/lib/openmpi/mca_pmix_pmix2x.so
+2b28b9e78000-2b28b9e7a000 r--p 000bb000 00:26 536989538                  /apps/openmpi-3.0.0/lib/openmpi/mca_pmix_pmix2x.so
+2b28b9e7a000-2b28b9e7e000 rw-p 000bd000 00:26 536989538                  /apps/openmpi-3.0.0/lib/openmpi/mca_pmix_pmix2x.so
+2b28b9e7e000-2b28b9e81000 rw-p 00000000 00:00 0 
+2b28b9e81000-2b28b9e8a000 r-xp 00000000 00:26 536989761                  /apps/openmpi-3.0.0/lib/pmix/mca_ptl_tcp.so
+2b28b9e8a000-2b28ba089000 ---p 00009000 00:26 536989761                  /apps/openmpi-3.0.0/lib/pmix/mca_ptl_tcp.so
+2b28ba089000-2b28ba08a000 r--p 00008000 00:26 536989761                  /apps/openmpi-3.0.0/lib/pmix/mca_ptl_tcp.so
+2b28ba08a000-2b28ba08b000 rw-p 00009000 00:26 536989761                  /apps/openmpi-3.0.0/lib/pmix/mca_ptl_tcp.so
+2b28ba08b000-2b28ba08c000 r-xp 00000000 00:26 536989753                  /apps/openmpi-3.0.0/lib/pmix/mca_psec_none.so
+2b28ba08c000-2b28ba28b000 ---p 00001000 00:26 536989753                  /apps/openmpi-3.0.0/lib/pmix/mca_psec_none.so
+2b28ba28b000-2b28ba28c000 r--p 00000000 00:26 536989753                  /apps/openmpi-3.0.0/lib/pmix/mca_psec_none.so
+2b28ba28c000-2b28ba28d000 rw-p 00001000 00:26 536989753                  /apps/openmpi-3.0.0/lib/pmix/mca_psec_none.so
+2b28ba28d000-2b28ba28f000 r-xp 00000000 00:26 536989751                  /apps/openmpi-3.0.0/lib/pmix/mca_psec_native.so
+2b28ba28f000-2b28ba48e000 ---p 00002000 00:26 536989751                  /apps/openmpi-3.0.0/lib/pmix/mca_psec_native.so
+2b28ba48e000-2b28ba48f000 r--p 00001000 00:26 536989751                  /apps/openmpi-3.0.0/lib/pmix/mca_psec_native.so
+2b28ba48f000-2b28ba490000 rw-p 00002000 00:26 536989751                  /apps/openmpi-3.0.0/lib/pmix/mca_psec_native.so
+2b28ba490000-2b28ba491000 ---p 00000000 00:00 0 
+2b28ba491000-2b28ba691000 rw-p 00000000 00:00 0 
+2b28ba691000-2b28baa91000 r--s 00000000 08:01 3674712                    /var/tmp/pbs.9057836.hpc-head-n1.unitn.it/ompi.hpc-c03-node10.188799/pid.47794/pmix_dstor_47794/smseg-4026531841-0
+2b28baa91000-2b28bae91000 r--s 00000000 08:01 3674713                    /var/tmp/pbs.9057836.hpc-head-n1.unitn.it/ompi.hpc-c03-node10.188799/pid.47794/pmix_dstor_47794/smdataseg-4026531841-0
+2b28bae91000-2b28bae93000 r-xp 00000000 00:26 536989603                  /apps/openmpi-3.0.0/lib/openmpi/mca_errmgr_default_app.so
+2b28bae93000-2b28bb092000 ---p 00002000 00:26 536989603                  /apps/openmpi-3.0.0/lib/openmpi/mca_errmgr_default_app.so
+2b28bb092000-2b28bb093000 r--p 00001000 00:26 536989603                  /apps/openmpi-3.0.0/lib/openmpi/mca_errmgr_default_app.so
+2b28bb093000-2b28bb094000 rw-p 00002000 00:26 536989603                  /apps/openmpi-3.0.0/lib/openmpi/mca_errmgr_default_app.so
+2b28bb094000-2b28bb099000 r-xp 00000000 00:26 536989643                  /apps/openmpi-3.0.0/lib/openmpi/mca_grpcomm_direct.so
+2b28bb099000-2b28bb298000 ---p 00005000 00:26 536989643                  /apps/openmpi-3.0.0/lib/openmpi/mca_grpcomm_direct.so
+2b28bb298000-2b28bb299000 r--p 00004000 00:26 536989643                  /apps/openmpi-3.0.0/lib/openmpi/mca_grpcomm_direct.so
+2b28bb299000-2b28bb29a000 rw-p 00005000 00:26 536989643                  /apps/openmpi-3.0.0/lib/openmpi/mca_grpcomm_direct.so
+2b28bb29a000-2b28bb29c000 r-xp 00000000 00:26 536989782                  /apps/openmpi-3.0.0/lib/openmpi/mca_state_app.so
+2b28bb29c000-2b28bb49b000 ---p 00002000 00:26 536989782                  /apps/openmpi-3.0.0/lib/openmpi/mca_state_app.so
+2b28bb49b000-2b28bb49c000 r--p 00001000 00:26 536989782                  /apps/openmpi-3.0.0/lib/openmpi/mca_state_app.so
+2b28bb49c000-2b28bb49d000 rw-p 00002000 00:26 536989782                  /apps/openmpi-3.0.0/lib/openmpi/mca_state_app.so
+2b28bb49d000-2b28bb4a3000 r-xp 00000000 00:26 536989594                  /apps/openmpi-3.0.0/lib/openmpi/mca_dfs_app.so
+2b28bb4a3000-2b28bb6a3000 ---p 00006000 00:26 536989594                  /apps/openmpi-3.0.0/lib/openmpi/mca_dfs_app.so
+2b28bb6a3000-2b28bb6a4000 r--p 00006000 00:26 536989594                  /apps/openmpi-3.0.0/lib/openmpi/mca_dfs_app.so
+2b28bb6a4000-2b28bb6a5000 rw-p 00007000 00:26 536989594                  /apps/openmpi-3.0.0/lib/openmpi/mca_dfs_app.so
+2b28bb6a5000-2b28bb6a7000 r-xp 00000000 00:26 536989693                  /apps/openmpi-3.0.0/lib/openmpi/mca_allocator_bucket.so
+2b28bb6a7000-2b28bb8a6000 ---p 00002000 00:26 536989693                  /apps/openmpi-3.0.0/lib/openmpi/mca_allocator_bucket.so
+2b28bb8a6000-2b28bb8a7000 r--p 00001000 00:26 536989693                  /apps/openmpi-3.0.0/lib/openmpi/mca_allocator_bucket.so
+2b28bb8a7000-2b28bb8a8000 rw-p 00002000 00:26 536989693                  /apps/openmpi-3.0.0/lib/openmpi/mca_allocator_bucket.so
+2b28bb8a8000-2b28bb8a9000 r-xp 00000000 00:26 536989708                  /apps/openmpi-3.0.0/lib/openmpi/mca_btl_sm.so
+2b28bb8a9000-2b28bbaa8000 ---p 00001000 00:26 536989708                  /apps/openmpi-3.0.0/lib/openmpi/mca_btl_sm.so
+2b28bbaa8000-2b28bbaa9000 r--p 00000000 00:26 536989708                  /apps/openmpi-3.0.0/lib/openmpi/mca_btl_sm.so
+2b28bbaa9000-2b28bbaaa000 rw-p 00001000 00:26 536989708                  /apps/openmpi-3.0.0/lib/openmpi/mca_btl_sm.so
+2b28bbaaa000-2b28bbaac000 r-xp 00000000 00:26 536982023                  /apps/openmpi-3.0.0/lib/openmpi/mca_routed_binomial.so
+2b28bbaac000-2b28bbcac000 ---p 00002000 00:26 536982023                  /apps/openmpi-3.0.0/lib/openmpi/mca_routed_binomial.so
+2b28bbcac000-2b28bbcad000 r--p 00002000 00:26 536982023                  /apps/openmpi-3.0.0/lib/openmpi/mca_routed_binomial.so
+2b28bbcad000-2b28bbcae000 rw-p 00003000 00:26 536982023                  /apps/openmpi-3.0.0/lib/openmpi/mca_routed_binomial.so
+2b28bbcae000-2b28bbcb0000 r-xp 00000000 00:26 536982013                  /apps/openmpi-3.0.0/lib/openmpi/mca_routed_debruijn.so
+2b28bbcb0000-2b28bbeaf000 ---p 00002000 00:26 536982013                  /apps/openmpi-3.0.0/lib/openmpi/mca_routed_debruijn.so
+2b28bbeaf000-2b28bbeb0000 r--p 00001000 00:26 536982013                  /apps/openmpi-3.0.0/lib/openmpi/mca_routed_debruijn.so
+2b28bbeb0000-2b28bbeb1000 rw-p 00002000 00:26 536982013                  /apps/openmpi-3.0.0/lib/openmpi/mca_routed_debruijn.so
+2b28bc000000-2b28bc021000 rw-p 00000000 00:00 0 
+2b28bc021000-2b28c0000000 ---p 00000000 00:00 0 
+2b28c0000000-2b28c0021000 rw-p 00000000 00:00 0 
+2b28c0021000-2b28c4000000 ---p 00000000 00:00 0 
+2b28c4000000-2b28c4002000 r-xp 00000000 00:26 536982010                  /apps/openmpi-3.0.0/lib/openmpi/mca_routed_direct.so
+2b28c4002000-2b28c4201000 ---p 00002000 00:26 536982010                  /apps/openmpi-3.0.0/lib/openmpi/mca_routed_direct.so
+2b28c4201000-2b28c4202000 r--p 00001000 00:26 536982010                  /apps/openmpi-3.0.0/lib/openmpi/mca_routed_direct.so
+2b28c4202000-2b28c4203000 rw-p 00002000 00:26 536982010                  /apps/openmpi-3.0.0/lib/openmpi/mca_routed_direct.so
+2b28c4203000-2b28c4206000 r-xp 00000000 00:26 536982002                  /apps/openmpi-3.0.0/lib/openmpi/mca_routed_radix.so
+2b28c4206000-2b28c4405000 ---p 00003000 00:26 536982002                  /apps/openmpi-3.0.0/lib/openmpi/mca_routed_radix.so
+2b28c4405000-2b28c4406000 r--p 00002000 00:26 536982002                  /apps/openmpi-3.0.0/lib/openmpi/mca_routed_radix.so
+2b28c4406000-2b28c4407000 rw-p 00003000 00:26 536982002                  /apps/openmpi-3.0.0/lib/openmpi/mca_routed_radix.so
+2b28c4407000-2b28c4419000 r-xp 00000000 00:26 536978662                  /apps/openmpi-3.0.0/lib/openmpi/mca_oob_tcp.so
+2b28c4419000-2b28c4619000 ---p 00012000 00:26 536978662                  /apps/openmpi-3.0.0/lib/openmpi/mca_oob_tcp.so
+2b28c4619000-2b28c461a000 r--p 00012000 00:26 536978662                  /apps/openmpi-3.0.0/lib/openmpi/mca_oob_tcp.so
+2b28c461a000-2b28c461b000 rw-p 00013000 00:26 536978662                  /apps/openmpi-3.0.0/lib/openmpi/mca_oob_tcp.so
+2b28c461b000-2b28c461e000 r-xp 00000000 00:26 536982027                  /apps/openmpi-3.0.0/lib/openmpi/mca_rml_oob.so
+2b28c461e000-2b28c481d000 ---p 00003000 00:26 536982027                  /apps/openmpi-3.0.0/lib/openmpi/mca_rml_oob.so
+2b28c481d000-2b28c481e000 r--p 00002000 00:26 536982027                  /apps/openmpi-3.0.0/lib/openmpi/mca_rml_oob.so
+2b28c481e000-2b28c481f000 rw-p 00003000 00:26 536982027                  /apps/openmpi-3.0.0/lib/openmpi/mca_rml_oob.so
+2b28c481f000-2b28c4821000 r-xp 00000000 00:26 536989690                  /apps/openmpi-3.0.0/lib/openmpi/mca_allocator_basic.so
+2b28c4821000-2b28c4a21000 ---p 00002000 00:26 536989690                  /apps/openmpi-3.0.0/lib/openmpi/mca_allocator_basic.so
+2b28c4a21000-2b28c4a22000 r--p 00002000 00:26 536989690                  /apps/openmpi-3.0.0/lib/openmpi/mca_allocator_basic.so
+2b28c4a22000-2b28c4a23000 rw-p 00003000 00:26 536989690                  /apps/openmpi-3.0.0/lib/openmpi/mca_allocator_basic.so
+2b28c4a23000-2b28c4a25000 r-xp 00000000 00:26 536989547                  /apps/openmpi-3.0.0/lib/openmpi/mca_rcache_gpusm.so
+2b28c4a25000-2b28c4c24000 ---p 00002000 00:26 536989547                  /apps/openmpi-3.0.0/lib/openmpi/mca_rcache_gpusm.so
+2b28c4c24000-2b28c4c25000 r--p 00001000 00:26 536989547                  /apps/openmpi-3.0.0/lib/openmpi/mca_rcache_gpusm.so
+2b28c4c25000-2b28c4c26000 rw-p 00002000 00:26 536989547                  /apps/openmpi-3.0.0/lib/openmpi/mca_rcache_gpusm.so
+2b28c4c26000-2b28c4c2d000 r-xp 00000000 00:26 536989673                  /apps/openmpi-3.0.0/lib/libmca_common_cuda.so.40.0.0
+2b28c4c2d000-2b28c4e2d000 ---p 00007000 00:26 536989673                  /apps/openmpi-3.0.0/lib/libmca_common_cuda.so.40.0.0
+2b28c4e2d000-2b28c4e2e000 r--p 00007000 00:26 536989673                  /apps/openmpi-3.0.0/lib/libmca_common_cuda.so.40.0.0
+2b28c4e2e000-2b28c4e2f000 rw-p 00008000 00:26 536989673                  /apps/openmpi-3.0.0/lib/libmca_common_cuda.so.40.0.0
+2b28c4e2f000-2b28c4e33000 r-xp 00000000 00:26 536989544                  /apps/openmpi-3.0.0/lib/openmpi/mca_rcache_grdma.so
+2b28c4e33000-2b28c5032000 ---p 00004000 00:26 536989544                  /apps/openmpi-3.0.0/lib/openmpi/mca_rcache_grdma.so
+2b28c5032000-2b28c5033000 r--p 00003000 00:26 536989544                  /apps/openmpi-3.0.0/lib/openmpi/mca_rcache_grdma.so
+2b28c5033000-2b28c5034000 rw-p 00004000 00:26 536989544                  /apps/openmpi-3.0.0/lib/openmpi/mca_rcache_grdma.so
+2b28c5034000-2b28c5038000 r-xp 00000000 00:26 536989550                  /apps/openmpi-3.0.0/lib/openmpi/mca_rcache_rgpusm.so
+2b28c5038000-2b28c5237000 ---p 00004000 00:26 536989550                  /apps/openmpi-3.0.0/lib/openmpi/mca_rcache_rgpusm.so
+2b28c5237000-2b28c5238000 r--p 00003000 00:26 536989550                  /apps/openmpi-3.0.0/lib/openmpi/mca_rcache_rgpusm.so
+2b28c5238000-2b28c5239000 rw-p 00004000 00:26 536989550                  /apps/openmpi-3.0.0/lib/openmpi/mca_rcache_rgpusm.so
+2b28c5239000-2b28c523c000 r-xp 00000000 00:26 536989733                  /apps/openmpi-3.0.0/lib/openmpi/mca_mpool_hugepage.so
+2b28c523c000-2b28c543b000 ---p 00003000 00:26 536989733                  /apps/openmpi-3.0.0/lib/openmpi/mca_mpool_hugepage.so
+2b28c543b000-2b28c543c000 r--p 00002000 00:26 536989733                  /apps/openmpi-3.0.0/lib/openmpi/mca_mpool_hugepage.so
+2b28c543c000-2b28c543d000 rw-p 00003000 00:26 536989733                  /apps/openmpi-3.0.0/lib/openmpi/mca_mpool_hugepage.so
+2b28c543d000-2b28c5441000 r-xp 00000000 00:26 536990313                  /apps/openmpi-3.0.0/lib/openmpi/mca_bml_r2.so
+2b28c5441000-2b28c5640000 ---p 00004000 00:26 536990313                  /apps/openmpi-3.0.0/lib/openmpi/mca_bml_r2.so
+2b28c5640000-2b28c5641000 r--p 00003000 00:26 536990313                  /apps/openmpi-3.0.0/lib/openmpi/mca_bml_r2.so
+2b28c5641000-2b28c5642000 rw-p 00004000 00:26 536990313                  /apps/openmpi-3.0.0/lib/openmpi/mca_bml_r2.so
+2b28c5642000-2b28c5650000 r-xp 00000000 00:26 536989716                  /apps/openmpi-3.0.0/lib/openmpi/mca_btl_tcp.so
+2b28c5650000-2b28c5850000 ---p 0000e000 00:26 536989716                  /apps/openmpi-3.0.0/lib/openmpi/mca_btl_tcp.so
+2b28c5850000-2b28c5851000 r--p 0000e000 00:26 536989716                  /apps/openmpi-3.0.0/lib/openmpi/mca_btl_tcp.so
+2b28c5851000-2b28c5853000 rw-p 0000f000 00:26 536989716                  /apps/openmpi-3.0.0/lib/openmpi/mca_btl_tcp.so
+2b28c5853000-2b28c5856000 r-xp 00000000 00:26 536989696                  /apps/openmpi-3.0.0/lib/openmpi/mca_btl_self.so
+2b28c5856000-2b28c5a55000 ---p 00003000 00:26 536989696                  /apps/openmpi-3.0.0/lib/openmpi/mca_btl_self.so
+2b28c5a55000-2b28c5a56000 r--p 00002000 00:26 536989696                  /apps/openmpi-3.0.0/lib/openmpi/mca_btl_self.so
+2b28c5a56000-2b28c5a57000 rw-p 00003000 00:26 536989696                  /apps/openmpi-3.0.0/lib/openmpi/mca_btl_self.so
+2b28c5a57000-2b28c5a59000 r-xp 00000000 00:26 536990361                  /apps/openmpi-3.0.0/lib/openmpi/mca_fs_ufs.so
+2b28c5a59000-2b28c5c58000 ---p 00002000 00:26 536990361                  /apps/openmpi-3.0.0/lib/openmpi/mca_fs_ufs.so
+2b28c5c58000-2b28c5c59000 r--p 00001000 00:26 536990361                  /apps/openmpi-3.0.0/lib/openmpi/mca_fs_ufs.so
+2b28c5c59000-2b28c5c5a000 rw-p 00002000 00:26 536990361                  /apps/openmpi-3.0.0/lib/openmpi/mca_fs_ufs.so
+2b28c5c5c000-2b28c5c82000 r-xp 00000000 00:26 536990386                  /apps/openmpi-3.0.0/lib/openmpi/mca_pml_ob1.so
+2b28c5c82000-2b28c5e81000 ---p 00026000 00:26 536990386                  /apps/openmpi-3.0.0/lib/openmpi/mca_pml_ob1.so
+2b28c5e81000-2b28c5e82000 r--p 00025000 00:26 536990386                  /apps/openmpi-3.0.0/lib/openmpi/mca_pml_ob1.so
+2b28c5e82000-2b28c5e83000 rw-p 00026000 00:26 536990386                  /apps/openmpi-3.0.0/lib/openmpi/mca_pml_ob1.so
+2b28c5e83000-2b28c5e84000 rw-p 00000000 00:00 0 
+2b28c5e84000-2b28c5e86000 r-xp 00000000 00:26 536990325                  /apps/openmpi-3.0.0/lib/openmpi/mca_coll_self.so
+2b28c5e86000-2b28c6086000 ---p 00002000 00:26 536990325                  /apps/openmpi-3.0.0/lib/openmpi/mca_coll_self.so
+2b28c6086000-2b28c6087000 r--p 00002000 00:26 536990325                  /apps/openmpi-3.0.0/lib/openmpi/mca_coll_self.so
+2b28c6087000-2b28c6088000 rw-p 00003000 00:26 536990325                  /apps/openmpi-3.0.0/lib/openmpi/mca_coll_self.so
+2b28c6088000-2b28c608b000 r-xp 00000000 00:26 536990333                  /apps/openmpi-3.0.0/lib/openmpi/mca_coll_sync.so
+2b28c608b000-2b28c628b000 ---p 00003000 00:26 536990333                  /apps/openmpi-3.0.0/lib/openmpi/mca_coll_sync.so
+2b28c628b000-2b28c628c000 r--p 00003000 00:26 536990333                  /apps/openmpi-3.0.0/lib/openmpi/mca_coll_sync.so
+2b28c628c000-2b28c628d000 rw-p 00004000 00:26 536990333                  /apps/openmpi-3.0.0/lib/openmpi/mca_coll_sync.so
+2b28c628d000-2b28c62a8000 r-xp 00000000 00:26 536990322                  /apps/openmpi-3.0.0/lib/openmpi/mca_coll_libnbc.so
+2b28c62a8000-2b28c64a7000 ---p 0001b000 00:26 536990322                  /apps/openmpi-3.0.0/lib/openmpi/mca_coll_libnbc.so
+2b28c64a7000-2b28c64a8000 r--p 0001a000 00:26 536990322                  /apps/openmpi-3.0.0/lib/openmpi/mca_coll_libnbc.so
+2b28c64a8000-2b28c64a9000 rw-p 0001b000 00:26 536990322                  /apps/openmpi-3.0.0/lib/openmpi/mca_coll_libnbc.so
+2b28c64a9000-2b28c64ac000 r-xp 00000000 00:26 536990340                  /apps/openmpi-3.0.0/lib/openmpi/mca_coll_cuda.so
+2b28c64ac000-2b28c66ab000 ---p 00003000 00:26 536990340                  /apps/openmpi-3.0.0/lib/openmpi/mca_coll_cuda.so
+2b28c66ab000-2b28c66ac000 r--p 00002000 00:26 536990340                  /apps/openmpi-3.0.0/lib/openmpi/mca_coll_cuda.so
+2b28c66ac000-2b28c66ad000 rw-p 00003000 00:26 536990340                  /apps/openmpi-3.0.0/lib/openmpi/mca_coll_cuda.so
+2b28c66ad000-2b28c66ba000 r-xp 00000000 00:26 536990316                  /apps/openmpi-3.0.0/lib/openmpi/mca_coll_basic.so
+2b28c66ba000-2b28c68b9000 ---p 0000d000 00:26 536990316                  /apps/openmpi-3.0.0/lib/openmpi/mca_coll_basic.so
+2b28c68b9000-2b28c68ba000 r--p 0000c000 00:26 536990316                  /apps/openmpi-3.0.0/lib/openmpi/mca_coll_basic.so
+2b28c68ba000-2b28c68bb000 rw-p 0000d000 00:26 536990316                  /apps/openmpi-3.0.0/lib/openmpi/mca_coll_basic.so
+2b28c68bb000-2b28c68ca000 r-xp 00000000 00:26 536990336                  /apps/openmpi-3.0.0/lib/openmpi/mca_coll_tuned.so
+2b28c68ca000-2b28c6ac9000 ---p 0000f000 00:26 536990336                  /apps/openmpi-3.0.0/lib/openmpi/mca_coll_tuned.so
+2b28c6ac9000-2b28c6aca000 r--p 0000e000 00:26 536990336                  /apps/openmpi-3.0.0/lib/openmpi/mca_coll_tuned.so
+2b28c6aca000-2b28c6acb000 rw-p 0000f000 00:26 536990336                  /apps/openmpi-3.0.0/lib/openmpi/mca_coll_tuned.so
+2b28c6acb000-2b28c6acf000 r-xp 00000000 00:26 536990319                  /apps/openmpi-3.0.0/lib/openmpi/mca_coll_inter.so
+2b28c6acf000-2b28c6cce000 ---p 00004000 00:26 536990319                  /apps/openmpi-3.0.0/lib/openmpi/mca_coll_inter.so
+2b28c6cce000-2b28c6ccf000 r--p 00003000 00:26 536990319                  /apps/openmpi-3.0.0/lib/openmpi/mca_coll_inter.so
+2b28c6ccf000-2b28c6cd0000 rw-p 00004000 00:26 536990319                  /apps/openmpi-3.0.0/lib/openmpi/mca_coll_inter.so
+2b28c6cd0000-2b28c6cd6000 r-xp 00000000 00:26 536990329                  /apps/openmpi-3.0.0/lib/openmpi/mca_coll_sm.so
+2b28c6cd6000-2b28c6ed5000 ---p 00006000 00:26 536990329                  /apps/openmpi-3.0.0/lib/openmpi/mca_coll_sm.so
+2b28c6ed5000-2b28c6ed6000 r--p 00005000 00:26 536990329                  /apps/openmpi-3.0.0/lib/openmpi/mca_coll_sm.so
+2b28c6ed6000-2b28c6ed7000 rw-p 00006000 00:26 536990329                  /apps/openmpi-3.0.0/lib/openmpi/mca_coll_sm.so
+2b28c6ed7000-2b28c6ed9000 r-xp 00000000 00:26 536989678                  /apps/openmpi-3.0.0/lib/libmca_common_sm.so.40.0.0
+2b28c6ed9000-2b28c70d8000 ---p 00002000 00:26 536989678                  /apps/openmpi-3.0.0/lib/libmca_common_sm.so.40.0.0
+2b28c70d8000-2b28c70d9000 r--p 00001000 00:26 536989678                  /apps/openmpi-3.0.0/lib/libmca_common_sm.so.40.0.0
+2b28c70d9000-2b28c70da000 rw-p 00002000 00:26 536989678                  /apps/openmpi-3.0.0/lib/libmca_common_sm.so.40.0.0
+2b28c70da000-2b28c7106000 r-xp 00000000 00:26 536990376                  /apps/openmpi-3.0.0/lib/openmpi/mca_osc_rdma.so
+2b28c7106000-2b28c7305000 ---p 0002c000 00:26 536990376                  /apps/openmpi-3.0.0/lib/openmpi/mca_osc_rdma.so
+2b28c7305000-2b28c7306000 r--p 0002b000 00:26 536990376                  /apps/openmpi-3.0.0/lib/openmpi/mca_osc_rdma.so
+2b28c7306000-2b28c7307000 rw-p 0002c000 00:26 536990376                  /apps/openmpi-3.0.0/lib/openmpi/mca_osc_rdma.so
+2b28c7307000-2b28c7325000 r-xp 00000000 00:26 536990373                  /apps/openmpi-3.0.0/lib/openmpi/mca_osc_pt2pt.so
+2b28c7325000-2b28c7524000 ---p 0001e000 00:26 536990373                  /apps/openmpi-3.0.0/lib/openmpi/mca_osc_pt2pt.so
+2b28c7524000-2b28c7525000 r--p 0001d000 00:26 536990373                  /apps/openmpi-3.0.0/lib/openmpi/mca_osc_pt2pt.so
+2b28c7525000-2b28c7526000 rw-p 0001e000 00:26 536990373                  /apps/openmpi-3.0.0/lib/openmpi/mca_osc_pt2pt.so
+2b28c7526000-2b28c752c000 r-xp 00000000 00:26 536990370                  /apps/openmpi-3.0.0/lib/openmpi/mca_osc_sm.so
+2b28c752c000-2b28c772b000 ---p 00006000 00:26 536990370                  /apps/openmpi-3.0.0/lib/openmpi/mca_osc_sm.so
+2b28c772b000-2b28c772c000 r--p 00005000 00:26 536990370                  /apps/openmpi-3.0.0/lib/openmpi/mca_osc_sm.so
+2b28c772c000-2b28c772e000 rw-p 00006000 00:26 536990370                  /apps/openmpi-3.0.0/lib/openmpi/mca_osc_sm.so
+2b28c772e000-2b28c776d000 r-xp 00000000 00:26 536990367                  /apps/openmpi-3.0.0/lib/openmpi/mca_io_romio314.so
+2b28c776d000-2b28c796c000 ---p 0003f000 00:26 536990367                  /apps/openmpi-3.0.0/lib/openmpi/mca_io_romio314.so
+2b28c796c000-2b28c796d000 r--p 0003e000 00:26 536990367                  /apps/openmpi-3.0.0/lib/openmpi/mca_io_romio314.so
+2b28c796d000-2b28c796f000 rw-p 0003f000 00:26 536990367                  /apps/openmpi-3.0.0/lib/openmpi/mca_io_romio314.so
+2b28c796f000-2b28c797b000 r-xp 00000000 00:26 536990364                  /apps/openmpi-3.0.0/lib/openmpi/mca_io_ompio.so
+2b28c797b000-2b28c7b7a000 ---p 0000c000 00:26 536990364                  /apps/openmpi-3.0.0/lib/openmpi/mca_io_ompio.so
+2b28c7b7a000-2b28c7b7b000 r--p 0000b000 00:26 536990364                  /apps/openmpi-3.0.0/lib/openmpi/mca_io_ompio.so
+2b28c7b7b000-2b28c7b7c000 rw-p 0000c000 00:26 536990364                  /apps/openmpi-3.0.0/lib/openmpi/mca_io_ompio.so
+2b28c7b7c000-2b28c7b82000 r-xp 00000000 00:26 536990307                  /apps/openmpi-3.0.0/lib/libmca_common_ompio.so.40.0.0
+2b28c7b82000-2b28c7d81000 ---p 00006000 00:26 536990307                  /apps/openmpi-3.0.0/lib/libmca_common_ompio.so.40.0.0
+2b28c7d81000-2b28c7d82000 r--p 00005000 00:26 536990307                  /apps/openmpi-3.0.0/lib/libmca_common_ompio.so.40.0.0
+2b28c7d82000-2b28c7d83000 rw-p 00006000 00:26 536990307                  /apps/openmpi-3.0.0/lib/libmca_common_ompio.so.40.0.0
+2b28c7d83000-2b28c7d84000 r-xp 00000000 00:26 536990352                  /apps/openmpi-3.0.0/lib/openmpi/mca_fcoll_individual.so
+2b28c7d84000-2b28c7f84000 ---p 00001000 00:26 536990352                  /apps/openmpi-3.0.0/lib/openmpi/mca_fcoll_individual.so
+2b28c7f84000-2b28c7f85000 r--p 00001000 00:26 536990352                  /apps/openmpi-3.0.0/lib/openmpi/mca_fcoll_individual.so
+2b28c7f85000-2b28c7f86000 rw-p 00002000 00:26 536990352                  /apps/openmpi-3.0.0/lib/openmpi/mca_fcoll_individual.so
+2b28c7f86000-2b28c7f8d000 r-xp 00000000 00:26 536990355                  /apps/openmpi-3.0.0/lib/openmpi/mca_fcoll_static.so
+2b28c7f8d000-2b28c818c000 ---p 00007000 00:26 536990355                  /apps/openmpi-3.0.0/lib/openmpi/mca_fcoll_static.so
+2b28c818c000-2b28c818d000 r--p 00006000 00:26 536990355                  /apps/openmpi-3.0.0/lib/openmpi/mca_fcoll_static.so
+2b28c818d000-2b28c818e000 rw-p 00007000 00:26 536990355                  /apps/openmpi-3.0.0/lib/openmpi/mca_fcoll_static.so
+2b28c818e000-2b28c8196000 r-xp 00000000 00:26 536990358                  /apps/openmpi-3.0.0/lib/openmpi/mca_fcoll_two_phase.so
+2b28c8196000-2b28c8395000 ---p 00008000 00:26 536990358                  /apps/openmpi-3.0.0/lib/openmpi/mca_fcoll_two_phase.so
+2b28c8395000-2b28c8396000 r--p 00007000 00:26 536990358                  /apps/openmpi-3.0.0/lib/openmpi/mca_fcoll_two_phase.so
+2b28c8396000-2b28c8397000 rw-p 00008000 00:26 536990358                  /apps/openmpi-3.0.0/lib/openmpi/mca_fcoll_two_phase.so
+2b28c8397000-2b28c839f000 r-xp 00000000 00:26 536990349                  /apps/openmpi-3.0.0/lib/openmpi/mca_fcoll_dynamic_gen2.so
+2b28c839f000-2b28c859e000 ---p 00008000 00:26 536990349                  /apps/openmpi-3.0.0/lib/openmpi/mca_fcoll_dynamic_gen2.so
+2b28c859e000-2b28c859f000 r--p 00007000 00:26 536990349                  /apps/openmpi-3.0.0/lib/openmpi/mca_fcoll_dynamic_gen2.so
+2b28c859f000-2b28c85a0000 rw-p 00008000 00:26 536990349                  /apps/openmpi-3.0.0/lib/openmpi/mca_fcoll_dynamic_gen2.so
+2b28c85a0000-2b28c85a6000 r-xp 00000000 00:26 536990346                  /apps/openmpi-3.0.0/lib/openmpi/mca_fcoll_dynamic.so
+2b28c85a6000-2b28c87a6000 ---p 00006000 00:26 536990346                  /apps/openmpi-3.0.0/lib/openmpi/mca_fcoll_dynamic.so
+2b28c87a6000-2b28c87a7000 r--p 00006000 00:26 536990346                  /apps/openmpi-3.0.0/lib/openmpi/mca_fcoll_dynamic.so
+2b28c87a7000-2b28c87a8000 rw-p 00007000 00:26 536990346                  /apps/openmpi-3.0.0/lib/openmpi/mca_fcoll_dynamic.so
+2b28c87a8000-2b28c87ab000 r-xp 00000000 00:26 536990343                  /apps/openmpi-3.0.0/lib/openmpi/mca_fbtl_posix.so
+2b28c87ab000-2b28c89aa000 ---p 00003000 00:26 536990343                  /apps/openmpi-3.0.0/lib/openmpi/mca_fbtl_posix.so
+2b28c89aa000-2b28c89ab000 r--p 00002000 00:26 536990343                  /apps/openmpi-3.0.0/lib/openmpi/mca_fbtl_posix.so
+2b28c89ab000-2b28c89ac000 rw-p 00003000 00:26 536990343                  /apps/openmpi-3.0.0/lib/openmpi/mca_fbtl_posix.so
+2b28c89ac000-2b28c89b2000 r-xp 00000000 00:26 536990395                  /apps/openmpi-3.0.0/lib/openmpi/mca_sharedfp_sm.so
+2b28c89b2000-2b28c8bb1000 ---p 00006000 00:26 536990395                  /apps/openmpi-3.0.0/lib/openmpi/mca_sharedfp_sm.so
+2b28c8bb1000-2b28c8bb2000 r--p 00005000 00:26 536990395                  /apps/openmpi-3.0.0/lib/openmpi/mca_sharedfp_sm.so
+2b28c8bb2000-2b28c8bb3000 rw-p 00006000 00:26 536990395                  /apps/openmpi-3.0.0/lib/openmpi/mca_sharedfp_sm.so
+2b28c8bb3000-2b28c8bb9000 r-xp 00000000 00:26 536990392                  /apps/openmpi-3.0.0/lib/openmpi/mca_sharedfp_lockedfile.so
+2b28c8bb9000-2b28c8db8000 ---p 00006000 00:26 536990392                  /apps/openmpi-3.0.0/lib/openmpi/mca_sharedfp_lockedfile.so
+2b28c8db8000-2b28c8db9000 r--p 00005000 00:26 536990392                  /apps/openmpi-3.0.0/lib/openmpi/mca_sharedfp_lockedfile.so
+2b28c8db9000-2b28c8dba000 rw-p 00006000 00:26 536990392                  /apps/openmpi-3.0.0/lib/openmpi/mca_sharedfp_lockedfile.so
+2b28c8dba000-2b28c8dc0000 r-xp 00000000 00:26 536990389                  /apps/openmpi-3.0.0/lib/openmpi/mca_sharedfp_individual.so
+2b28c8dc0000-2b28c8fbf000 ---p 00006000 00:26 536990389                  /apps/openmpi-3.0.0/lib/openmpi/mca_sharedfp_individual.so
+2b28c8fbf000-2b28c8fc0000 r--p 00005000 00:26 536990389                  /apps/openmpi-3.0.0/lib/openmpi/mca_sharedfp_individual.so
+2b28c8fc0000-2b28c8fc1000 rw-p 00006000 00:26 536990389                  /apps/openmpi-3.0.0/lib/openmpi/mca_sharedfp_individual.so
+2b28c8fc1000-2b29077c3000 rw-p 00000000 00:00 0 
+2b29077c3000-2b29077d8000 r-xp 00000000 08:01 8920569                    /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+2b29077d8000-2b29079d7000 ---p 00015000 08:01 8920569                    /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+2b29079d7000-2b29079d8000 r--p 00014000 08:01 8920569                    /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+2b29079d8000-2b29079d9000 rw-p 00015000 08:01 8920569                    /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+2b2908000000-2b2908021000 rw-p 00000000 00:00 0 
+2b2908021000-2b290c000000 ---p 00000000 00:00 0 
+7fff914c0000-7fff914e2000 rw-p 00000000 00:00 0                          [stack]
+7fff915cf000-7fff915d1000 r-xp 00000000 00:00 0                          [vdso]
+ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsyscall]
+[hpc-c03-node10:47799] *** Process received signal ***
+[hpc-c03-node10:47799] Signal: Aborted (6)
+[hpc-c03-node10:47799] Signal code:  (-6)
+[hpc-c03-node10:47799] [ 0] /lib64/libpthread.so.0(+0xf5d0)[0x2b28b67e95d0]
+[hpc-c03-node10:47799] [ 1] /lib64/libc.so.6(gsignal+0x37)[0x2b28b6a2c207]
+[hpc-c03-node10:47799] [ 2] /lib64/libc.so.6(abort+0x148)[0x2b28b6a2d8f8]
+[hpc-c03-node10:47799] [ 3] /lib64/libc.so.6(+0x78d27)[0x2b28b6a6ed27]
+[hpc-c03-node10:47799] [ 4] /lib64/libc.so.6(+0x81489)[0x2b28b6a77489]
+[hpc-c03-node10:47799] [ 5] /home/francesco.bozzo/huffman_benchmark/HuffmanCoding_MPI_CUDA/bin/MPI_compress[0x401531]
+[hpc-c03-node10:47799] [ 6] /lib64/libc.so.6(__libc_start_main+0xf5)[0x2b28b6a183d5]
+[hpc-c03-node10:47799] [ 7] /home/francesco.bozzo/huffman_benchmark/HuffmanCoding_MPI_CUDA/bin/MPI_compress[0x400c99]
+[hpc-c03-node10:47799] *** End of error message ***
+--------------------------------------------------------------------------
+mpiexec noticed that process rank 0 with PID 0 on node hpc-c03-node10 exited on signal 6 (Aborted).
+--------------------------------------------------------------------------
+
+real	0m36.012s
+user	0m21.677s
+sys	0m2.416s
