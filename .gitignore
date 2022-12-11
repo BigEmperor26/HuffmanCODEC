@@ -59,3 +59,4 @@ dkms.conf
 # *.dec
 
 data/linux*
+.vscode
