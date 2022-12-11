@@ -1,39 +1,40 @@
 \subsection{pytorch encoding scatter}
-\begin{centering}
 \begin{table}[!h]
-\caption{Overall encoding times}
-\begin{tabular}{lrrr}
-\toprule
-\diagbox[width=8em]{Processes}{Threads} &       1 &       2 &       4 \\
-\midrule
-1  & 317.663 & 268.323 & \textbf{265.387} \\
-2  & 184.717 & 179.515 & \textbf{173.75}0 \\
-4  & 139.132 & \textbf{123.383} & 126.569 \\
-8  & 105.950 & 102.119 & \textbf{100.966} \\
-10 &  98.206 &  94.839 &  \textbf{91.242} \\
-12 &  95.794 &  96.229 &  \textbf{90.712} \\
-16 &  87.427 &  84.979 &  \textbf{84.262} \\
-20 &  95.613 &  \textbf{87.998} &  91.617 \\
-24 &  85.077 &  \textbf{84.196} &  84.829 \\
-\bottomrule
-\end{tabular}
+    \centering
+    \caption{Overall encoding times}
+    \begin{tabular}{lrrr}
+        \toprule
+        \diagbox[width=8em]{Processes}{Threads} &       1 &       2 &       4 \\
+        \midrule
+        1  & 317.663 & 268.323 & \textbf{265.387} \\
+        2  & 184.717 & 179.515 & \textbf{173.75}0 \\
+        4  & 139.132 & \textbf{123.383} & 126.569 \\
+        8  & 105.950 & 102.119 & \textbf{100.966} \\
+        10 &  98.206 &  94.839 &  \textbf{91.242} \\
+        12 &  95.794 &  96.229 &  \textbf{90.712} \\
+        16 &  87.427 &  84.979 &  \textbf{84.262} \\
+        20 &  95.613 &  \textbf{87.998} &  91.617 \\
+        24 &  85.077 &  \textbf{84.196} &  84.829 \\
+        \bottomrule
+    \end{tabular}
 \end{table}
+
 \begin{table}[!h]
-\caption{Overall encoding efficiency}
-\begin{tabular}{lrrr}
-\toprule
-\diagbox[width=8em]{Processes}{Threads} &     1 &     2 &     4 \\
-\midrule
-1  & 1.000 & 0.592 & 0.299 \\
-2  & 0.860 & 0.442 & 0.229 \\
-4  & 0.571 & 0.322 & 0.157 \\
-8  & 0.375 & 0.194 & 0.098 \\
-10 & 0.323 & 0.167 & 0.087 \\
-12 & 0.276 & 0.138 & 0.073 \\
-16 & 0.227 & 0.117 & 0.059 \\
-20 & 0.166 & 0.090 & 0.043 \\
-24 & 0.156 & 0.079 & 0.039 \\
-\bottomrule
-\end{tabular}
+    \centering
+    \caption{Overall encoding efficiency}
+    \begin{tabular}{lrrr}
+    \toprule
+    \diagbox[width=8em]{Processes}{Threads} &     1 &     2 &     4 \\
+    \midrule
+    1  & 1.000 & 0.592 & 0.299 \\
+    2  & 0.860 & 0.442 & 0.229 \\
+    4  & 0.571 & 0.322 & 0.157 \\
+    8  & 0.375 & 0.194 & 0.098 \\
+    10 & 0.323 & 0.167 & 0.087 \\
+    12 & 0.276 & 0.138 & 0.073 \\
+    16 & 0.227 & 0.117 & 0.059 \\
+    20 & 0.166 & 0.090 & 0.043 \\
+    24 & 0.156 & 0.079 & 0.039 \\
+    \bottomrule
+    \end{tabular}
 \end{table}
-\end{centering}

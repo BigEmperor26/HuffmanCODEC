@@ -1,39 +1,40 @@
 \subsection{numpy encoding scatter}
-\begin{centering}
 \begin{table}[!h]
-\caption{Overall encoding times}
-\begin{tabular}{lrrr}
-\toprule
-\diagbox[width=8em]{Processes}{Threads} &      1 &      2 &      4 \\
-\midrule
-1  & \textbf{39.346} & 42.755 & 39.929 \\
-2  & 28.056 & 27.240 & \textbf{26.568} \\
-4  & 20.548 & \textbf{19.755} & 33.501 \\
-8  & 16.588 & 15.468 & \textbf{15.198} \\
-10 & 27.227 & 21.108 & \textbf{20.999} \\
-12 & 26.551 & 25.964 & \textbf{25.659} \\
-16 & 20.122 & \textbf{19.575} & 19.687 \\
-20 & 62.409 & \textbf{26.71}0 & 27.580 \\
-24 & 25.184 & 28.774 & \textbf{20.043} \\
-\bottomrule
-\end{tabular}
+    \centering
+    \caption{Overall encoding times}
+    \begin{tabular}{lrrr}
+        \toprule
+        \diagbox[width=8em]{Processes}{Threads} &      1 &      2 &      4 \\
+        \midrule
+        1  & \textbf{39.346} & 42.755 & 39.929 \\
+        2  & 28.056 & 27.240 & \textbf{26.568} \\
+        4  & 20.548 & \textbf{19.755} & 33.501 \\
+        8  & 16.588 & 15.468 & \textbf{15.198} \\
+        10 & 27.227 & 21.108 & \textbf{20.999} \\
+        12 & 26.551 & 25.964 & \textbf{25.659} \\
+        16 & 20.122 & \textbf{19.575} & 19.687 \\
+        20 & 62.409 & \textbf{26.71}0 & 27.580 \\
+        24 & 25.184 & 28.774 & \textbf{20.043} \\
+        \bottomrule
+    \end{tabular}
 \end{table}
+
 \begin{table}[!h]
-\caption{Overall encoding efficiency}
-\begin{tabular}{lrrr}
-\toprule
-\diagbox[width=8em]{Processes}{Threads} &     1 &     2 &     4 \\
-\midrule
-1  & 1.000 & 0.460 & 0.246 \\
-2  & 0.701 & 0.361 & 0.185 \\
-4  & 0.479 & 0.249 & 0.073 \\
-8  & 0.296 & 0.159 & 0.081 \\
-10 & 0.145 & 0.093 & 0.047 \\
-12 & 0.123 & 0.063 & 0.032 \\
-16 & 0.122 & 0.063 & 0.031 \\
-20 & 0.032 & 0.037 & 0.018 \\
-24 & 0.065 & 0.028 & 0.020 \\
-\bottomrule
-\end{tabular}
+    \centering
+    \caption{Overall encoding efficiency}
+    \begin{tabular}{lrrr}
+        \toprule
+        \diagbox[width=8em]{Processes}{Threads} &     1 &     2 &     4 \\
+        \midrule
+        1  & 1.000 & 0.460 & 0.246 \\
+        2  & 0.701 & 0.361 & 0.185 \\
+        4  & 0.479 & 0.249 & 0.073 \\
+        8  & 0.296 & 0.159 & 0.081 \\
+        10 & 0.145 & 0.093 & 0.047 \\
+        12 & 0.123 & 0.063 & 0.032 \\
+        16 & 0.122 & 0.063 & 0.031 \\
+        20 & 0.032 & 0.037 & 0.018 \\
+        24 & 0.065 & 0.028 & 0.020 \\
+        \bottomrule
+    \end{tabular}
 \end{table}
-\end{centering}

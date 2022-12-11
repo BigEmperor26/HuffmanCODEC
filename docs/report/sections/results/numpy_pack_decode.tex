@@ -1,39 +1,40 @@
 \subsection{numpy decoding pack}
-\begin{centering}
 \begin{table}[!h]
-\caption{Overall decoding times}
-\begin{tabular}{lrrr}
-\toprule
-\diagbox[width=8em]{Processes}{Threads} &      1 &      2 &      4 \\
-\midrule
-1  & 43.866 & \textbf{42.586} & 43.507 \\
-2  & \textbf{31.064} & 33.149 & 36.228 \\
-4  & 34.853 & 33.162 & \textbf{30.35}0 \\
-8  & 30.040 & 27.924 & \textbf{27.418} \\
-10 & 28.016 & 28.269 & \textbf{27.062} \\
-12 & \textbf{28.995} & 29.148 & 29.472 \\
-16 & 30.624 & \textbf{30.456} & 32.091 \\
-20 & 38.500 & \textbf{34.945} & 39.356 \\
-24 & 34.141 & 33.487 & \textbf{32.558} \\
-\bottomrule
-\end{tabular}
+    \centering
+    \caption{Overall decoding times}
+    \begin{tabular}{lrrr}
+        \toprule
+        \diagbox[width=8em]{Processes}{Threads} &      1 &      2 &      4 \\
+        \midrule
+        1  & 43.866 & \textbf{42.586} & 43.507 \\
+        2  & \textbf{31.064} & 33.149 & 36.228 \\
+        4  & 34.853 & 33.162 & \textbf{30.35}0 \\
+        8  & 30.040 & 27.924 & \textbf{27.418} \\
+        10 & 28.016 & 28.269 & \textbf{27.062} \\
+        12 & \textbf{28.995} & 29.148 & 29.472 \\
+        16 & 30.624 & \textbf{30.456} & 32.091 \\
+        20 & 38.500 & \textbf{34.945} & 39.356 \\
+        24 & 34.141 & 33.487 & \textbf{32.558} \\
+        \bottomrule
+    \end{tabular}
 \end{table}
+
 \begin{table}[!h]
-\caption{Overall decoding efficiency}
-\begin{tabular}{lrrr}
-\toprule
-\diagbox[width=8em]{Processes}{Threads} &     1 &     2 &     4 \\
-\midrule
-1  & 1.000 & 0.515 & 0.252 \\
-2  & 0.706 & 0.331 & 0.151 \\
-4  & 0.315 & 0.165 & 0.090 \\
-8  & 0.183 & 0.098 & 0.050 \\
-10 & 0.157 & 0.078 & 0.041 \\
-12 & 0.126 & 0.063 & 0.031 \\
-16 & 0.090 & 0.045 & 0.021 \\
-20 & 0.057 & 0.031 & 0.014 \\
-24 & 0.054 & 0.027 & 0.014 \\
-\bottomrule
-\end{tabular}
-\end{table}
-\end{centering}
+    \centering
+    \caption{Overall decoding efficiency}
+    \begin{tabular}{lrrr}
+        \toprule
+        \diagbox[width=8em]{Processes}{Threads} &     1 &     2 &     4 \\
+        \midrule
+        1  & 1.000 & 0.515 & 0.252 \\
+        2  & 0.706 & 0.331 & 0.151 \\
+        4  & 0.315 & 0.165 & 0.090 \\
+        8  & 0.183 & 0.098 & 0.050 \\
+        10 & 0.157 & 0.078 & 0.041 \\
+        12 & 0.126 & 0.063 & 0.031 \\
+        16 & 0.090 & 0.045 & 0.021 \\
+        20 & 0.057 & 0.031 & 0.014 \\
+        24 & 0.054 & 0.027 & 0.014 \\
+        \bottomrule
+        \end{tabular}
+    \end{table}
