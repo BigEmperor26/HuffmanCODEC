@@ -53,7 +53,7 @@
 \begin{abstract}
     This report aims to explain the design and implementation of a parallel encoding and decoding tool for the Huffman algorithm.
     To scale horizontally with increasing hardware resources, the application uses MPI for multiprocessing and OpenMP for multithreading.
-    Our tool is able to process both single files and nested folders obtaining very competitive results with respect the other benchmarks.
+    Our tool is able to process both single files and nested folders obtaining very competitive results with respect the other online-available benchmarks.
 \end{abstract}
 
 \input{sections/introduction}
@@ -61,7 +61,10 @@
 \input{sections/parallel_huffman}
 \input{sections/performace}
 \input{sections/conclusion}
+
 \bibliography{bibliography.bib}{}
 \bibliographystyle{IEEEtran}
+
 \input{sections/appendix}
+
 \end{document}
