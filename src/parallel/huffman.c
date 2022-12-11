@@ -23,10 +23,9 @@ ull get_frequencies(FILE* file, Dictionary* dict) {
 }
 
 
-Node* getHuffmanTree(Dictionary* dict){
+Node* getHuffmanTree(Dictionary* dict) {
     PriorityQ* pq = createPriorityQ(MAX_HEAP_SIZE);
 
-    // TODO: this operation takes O(nlogn), but it could take just O(n) with heapify
     for (int i = 0; i < dict->size; i++) {
         Node* node = createNode(i, dict->frequencies[i], NULL, NULL);
         pushPriorityQ(pq, node);
@@ -70,14 +69,14 @@ void getHuffmanAlphabet(Node* node, int level, char currentCode[], char* huffman
 }
 
 void printHuffmanAlphabet(char* huffmanAlphabet[]) {
-    for (int i=0; i<MAX_HEAP_SIZE; i++){
+    for (int i = 0; i < MAX_HEAP_SIZE; i++) {
         printf("%d\t%c\t%s\n", i, i, huffmanAlphabet[i]);
     }
 }
 
 
 void freeHuffmanAlphabet(char* huffmanAlphabet[]) {
-    for (int i=0; i<MAX_HEAP_SIZE; i++){
+    for (int i = 0; i < MAX_HEAP_SIZE; i++) {
         free(huffmanAlphabet[i]);
         huffmanAlphabet[i] = NULL;
     }

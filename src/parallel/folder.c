@@ -11,12 +11,12 @@
 /*
 ** function to create all folders recursively in give dir
 */
-void recursivemkdir(const char *dir) {
+void recursivemkdir(const char* dir) {
     char tmp[PATH_MAX];
-    char *p = NULL;
+    char* p = NULL;
     size_t len;
 
-    snprintf(tmp, sizeof(tmp),"%s",dir);
+    snprintf(tmp, sizeof(tmp), "%s", dir);
     len = strlen(tmp);
     if (tmp[len - 1] == '/')
         tmp[len - 1] = 0;
@@ -34,7 +34,7 @@ void recursivemkdir(const char *dir) {
 */
 void countFiles(char* basePath, int* count) {
     struct stat buf;
-    stat (basePath, &buf);
+    stat(basePath, &buf);
     if (S_ISLNK(buf.st_mode))
         return;
     char path[PATH_MAX];
@@ -46,7 +46,7 @@ void countFiles(char* basePath, int* count) {
     while ((dp = readdir(dir)) != NULL) {
         if (strcmp(dp->d_name, ".") != 0 && strcmp(dp->d_name, "..") != 0) {
             // if it is a file
-            if (dp->d_type == DT_REG ) {
+            if (dp->d_type == DT_REG) {
                 (*count)++;
             }
             else {
@@ -66,7 +66,7 @@ void countFiles(char* basePath, int* count) {
 */
 void listFiles(char* basePath, int* current, char** files) {
     struct stat buf;
-    stat (basePath, &buf);
+    stat(basePath, &buf);
     if (S_ISLNK(buf.st_mode))
         return;
     char path[PATH_MAX];
@@ -92,36 +92,36 @@ void listFiles(char* basePath, int* current, char** files) {
     closedir(dir);
 }
 
-bool regularFile(const char *path){
+bool regularFile(const char* path) {
     struct stat path_stat;
     stat(path, &path_stat);
     return S_ISREG(path_stat.st_mode);
 }
-bool regularDirectory(const char *path){
+bool regularDirectory(const char* path) {
     struct stat path_stat;
     stat(path, &path_stat);
     return S_ISDIR(path_stat.st_mode);
 }
 
-bool fileExists(const char *path){
-    struct stat   path_stat;   
-    return (stat (path, &path_stat) == 0) && S_ISREG(path_stat.st_mode);
+bool fileExists(const char* path) {
+    struct stat   path_stat;
+    return (stat(path, &path_stat) == 0) && S_ISREG(path_stat.st_mode);
 }
-bool directoryExists(const char *path){
-    struct stat   path_stat;   
-    return (stat (path, &path_stat) == 0) && S_ISDIR(path_stat.st_mode);
+bool directoryExists(const char* path) {
+    struct stat   path_stat;
+    return (stat(path, &path_stat) == 0) && S_ISDIR(path_stat.st_mode);
 }
-int matchingCount(const char* str1, const char* str2){
+int matchingCount(const char* str1, const char* str2) {
     int count = 0;
-    while ( (str1[count] == str2[count]) && (str1[count]!= '\0') && (str2[count]!= '\0')){
+    while ((str1[count] == str2[count]) && (str1[count] != '\0') && (str2[count] != '\0')) {
         count++;
     }
     return count;
 }
-void slashFolder(char * folder){
+void slashFolder(char* folder) {
     int len = strlen(folder);
-    if (folder[len-1]!='/'){
+    if (folder[len - 1] != '/') {
         folder[len] = '/';
-        folder[len+1] = '\0';
+        folder[len + 1] = '\0';
     }
 }

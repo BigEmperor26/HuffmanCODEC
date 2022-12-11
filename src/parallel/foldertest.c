@@ -93,27 +93,27 @@ void fileSizeCounter(char** filenames, int files_count, int* file_sizes) {
     }
 }
 
-void filePreSorter(char **filenames,int*file_sizes,int files_count,char**new_filenames,int*new_file_sizes){
-    PriorityQ * files = createPriorityQ(files_count);
+void filePreSorter(char** filenames, int* file_sizes, int files_count, char** new_filenames, int* new_file_sizes) {
+    PriorityQ* files = createPriorityQ(files_count);
     for (int i = 0;i < files_count;i++) {
-        Node * node = createNode(i,file_sizes[i],NULL,NULL);
+        Node* node = createNode(i, file_sizes[i], NULL, NULL);
         pushPriorityQ(files, node);
     }
-    for (int i = files_count-1;i >=0 ;i--) {
-        Node * node;
+    for (int i = files_count - 1;i >= 0;i--) {
+        Node* node;
         popPriorityQ(files, &node);
         new_file_sizes[i] = node->priority;
         strcpy(new_filenames[i], filenames[node->value]);
         //printf("File %s with size %d\n",new_filenames[i],new_file_sizes[i]);
     }
     freePriorityQ(files);
-} 
+}
 
 
 
-int main(int argc, char ** argv){
+int main(int argc, char** argv) {
     char inputFolder[PATH_MAX];
-    strcpy(inputFolder,argv[1]);
+    strcpy(inputFolder, argv[1]);
     int files_count = 0;
     countFiles(inputFolder, &files_count);
     printf("files_count: %d \n", files_count);
@@ -124,19 +124,19 @@ int main(int argc, char ** argv){
 
     int current = 0;
     listFiles(inputFolder, &current, files);
-    int * file_sizes = (int*)malloc(sizeof(int) * files_count);
+    int* file_sizes = (int*)malloc(sizeof(int) * files_count);
     fileSizeCounter(files, files_count, file_sizes);
     printf("Unsorted files\n");
     for (int i = 0; i < files_count; i++) {
         printf("file %s  size %d\n", files[i], file_sizes[i]);
     }
-    char ** sorted_files= malloc(sizeof(char*)*files_count);
-    int * sorted_file_sizes = (int*)malloc(sizeof(int) * files_count);
+    char** sorted_files = malloc(sizeof(char*) * files_count);
+    int* sorted_file_sizes = (int*)malloc(sizeof(int) * files_count);
     for (int i = 0;i < files_count;i++) {
-        sorted_files[i] = (char*) malloc(sizeof(char)*PATH_MAX);
+        sorted_files[i] = (char*)malloc(sizeof(char) * PATH_MAX);
     }
     printf("Sorted files\n");
-    filePreSorter(files,file_sizes,files_count,sorted_files,sorted_file_sizes);
+    filePreSorter(files, file_sizes, files_count, sorted_files, sorted_file_sizes);
     for (int i = 0; i < files_count; i++) {
         printf("file %s  size %d\n", sorted_files[i], sorted_file_sizes[i]);
     }
