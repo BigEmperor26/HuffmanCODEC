@@ -29,8 +29,13 @@ In this section we evaluate our algorithm on single files, by using multithreadi
 
 With small files (i.e. less than a few MiBs) the algorithm is actually slower with more threads. This is likely because the data is not large enough to offset the cost of forking multiple threads. Considering the cost parallel processing, we highly suggest not doing parallelization for small files. However, when the data is large enough our multithreaded approach scales up. With the largest file (10 GiB) our algorithm has an efficiency of 93\% when tested with 4 threads. This number steadily decreases with the number of threads, and we hit 16\% with 64 threads.
 
-The same issue is even more visible by looking at one implementation we found on GitHub that uses only MPI for parallelization\cite{HuffmanCodingMPICUDA}: with many processes, while with large files (even though it does not work with files bigger than $\sim$500 MiB) it performs better than our implementation, with small files it is not able to scale. This is happening due to the overhead of splitting small files among too many processes.
-
+The same issue is even more visible by looking at one implementation we found on GitHub that uses only MPI for parallelization\cite{HuffmanCodingMPICUDA}: with many processes, while with large files (even though it does not work with files bigger than $\sim$500 MiB) it performs better than our implementation, with small files it is not able to scale. This is happening due to the overhead of splitting small files among too many processes. This fact can also be observed in Figure \ref{fig:ours-vs-online}
+\begin{figure}
+	\centering
+	\includegraphics[width=1\linewidth]{"../imgs/our vs online 7"}
+	\caption{Ours vs online implementation}
+	\label{fig:ours-vs-online}
+\end{figure}
 Additionally, please note that our tool is heavily limited by the cluster I/O: especially writes to disk require a considerable amount of time. As a proof of this, if we consider only the processing section of our algorithm, and ignore the time required by the \verb|fflush()| operation before \verb|fclose()|, we see significantly decreased times. Although we start from similar efficiency at low threading, we achieve a 41\% efficiency with 64 threads in this case. % if we consider only CPU time, which does not count the time spent waiting in I/O, we get very promising results.
 
 \begin{figure}
@@ -42,13 +47,6 @@ Additionally, please note that our tool is heavily limited by the cluster I/O: e
 
 We also noticed worse times in the decoding procedure with respect to encoding. This is probably due to the fact that the tool is reading fixed chunks of 4096 bytes in encoding, but during decoding the chunk can have a variable length.
 Moreover, by executing another implementation found on GitHub \cite{HuffmanParallel2}, we found that reading and writing buffers to the disk (and not single bytes) can obtain improvement very similar to one order of magnitude.
-
-% \begin{figure}
-% 	\centering
-% 	\includegraphics[width=1\linewidth]{"../imgs/Encoding vs Decoding"}
-% 	\caption{Encoding vs Decoding times}
-% 	\label{fig:encoding-vs-decoding}
-% \end{figure}
 
 As already discussed previously, we also tested a version on a lock-based synchronization instead of barriers. Although theoretically we should get better results, in practice we obtain almost equal performances across the board, with only the largest files having some significant difference. This difference is greater in decoding than in encoding.
 % \begin{figure}
