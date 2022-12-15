@@ -6,7 +6,7 @@ This repository contains the High Performance Computing for Data Science project
 
 The code requires MPI and OPENMP for multiprocessing and multithreading respectively. If OPENMP is not present, it is possible to compile and run the code without it, running single threaded
 ## Architecture
-![Architecture](./docs/imgs/flow%20overall.jpeg)
+<img src="./docs/imgs/overall%20flow%20schema.png" alt="drawing" width="500"/>
 ## Report
 Link to the report with analysis of perfomances and discussion about design choices
 [Report](./docs/report/main.pdf)
