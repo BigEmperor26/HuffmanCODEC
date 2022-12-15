@@ -1,0 +1,92 @@
+\documentclass[
+% handout,
+center,
+% aspectratio=169
+]{beamer}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage[linesnumbered,ruled,vlined]{algorithm2e}
+\usepackage[noabbrev,capitalize]{cleveref}
+\usepackage{array, booktabs, makecell}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{diagbox}
+\usepackage{tikz}
+\usepackage{soul}
+\DontPrintSemicolon
+
+\title[Huffman Coding]{\textsc{Huffman Coding}}
+\author[Bozzo - Yin]{Francesco Bozzo \and Michele Yin}
+\institute[UniTN]{University of Trento}
+\date{December 15, 2022}
+
+% \logo{\includegraphics[height=1.5cm]{logo.png}}
+%\usetheme{Madrid}
+\definecolor{links}{HTML}{54489a}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
+\usetheme{metropolis}
+\setbeamercolor{background canvas}{bg=white}
+
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+% table of contents
+% \AtBeginSection[]
+% {
+%     \begin{frame}{Table of Contents}
+%         \begin{columns}[t]
+%             \column{.45\textwidth}
+%             \tableofcontents[sections=1-2, currentsection]
+
+%             \column{.45\textwidth}
+%             \tableofcontents[sections=3-5, currentsection]
+%         \end{columns}
+%     \end{frame}
+% }
+
+\include{sections/00_introduction.tex}
+\include{sections/01_serial.tex}
+\include{sections/02_parallel.tex}
+\include{sections/03_performance.tex}
+
+% \include{sections/end.tex}
+% \include{sections/appendix.tex}
+% \begin{frame}{Column slide}
+%     \begin{columns}
+%         \column{0.50\textwidth}
+%         column1
+
+%         \column{0.50\textwidth}
+%         column2
+%     \end{columns}
+% \end{frame}
+
+
+% \begin{frame}{Block examples}
+%     \begin{block}{Observation 1}
+%         Simmons Hall is composed of metal and concrete.
+%     \end{block}
+%     \begin{exampleblock}{Observation 2}
+%         Simmons Hall is composed of metal and concrete.
+%     \end{exampleblock}
+%     \begin{textbfblock}{Conclusion}
+%         Simmons Hall $\not=$ Simmons Dormitory.
+%     \end{textbfblock}
+% \end{frame}
+% \begin{frame}[allowframebreaks,noframenumbering]
+% \frametitle{References}
+%\bibliographystyle{amsalpha}
+% \bibliographystyle{unsrt}
+% \bibliography{../report/bibliography.bib}{}
+% \end{frame}
+\end{document}
+

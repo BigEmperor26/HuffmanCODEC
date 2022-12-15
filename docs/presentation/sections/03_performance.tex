@@ -1,0 +1,101 @@
+\section{Performance and Results}
+% \begin{frame}{Results}
+%     \begin{columns}
+%         \column{0.5\textwidth}
+%             \begin{figure}
+%                 \centering
+%                 \includegraphics[width=\textwidth]{imgs/encoding average speedup.png}
+%                 \caption{Encoding speedup vs flush}
+%                 \label{fig:encoding-speedup-vs-flush}
+%             \end{figure}
+%         \column{0.5\textwidth}
+%             \begin{figure}
+%                 \centering
+%                 \includegraphics[width=\textwidth]{imgs/decoding average speedup.png}
+%                 \caption{Decoding speedup vs flush}
+%                 \label{fig:decoding-speedup-vs-flush}
+%             \end{figure}
+%     \end{columns}
+% \end{frame}
+
+\begin{frame}{Results - Encoding}
+    \begin{columns}
+        \column{0.5\textwidth}
+            \begin{figure}
+                \centering
+                \includegraphics[width=\textwidth]{imgs/encoding speedup.png}
+                \caption{Encoding speedup}
+                \label{fig:encoding-speedup}
+            \end{figure}
+        \column{0.5\textwidth}
+            \begin{figure}
+                \centering
+                \includegraphics[width=\textwidth]{imgs/encode efficiency.png}
+                \caption{Encoding efficiency}
+                \label{fig:encoding-efficiency}
+            \end{figure}
+    \end{columns}
+\end{frame}
+\begin{frame}{Results - Decoding}
+    \begin{columns}
+        \column{0.5\textwidth}
+            \begin{figure}
+                \centering
+                \includegraphics[width=\textwidth]{imgs/decode speedup.png}
+                \caption{Decoding speedup}
+                \label{fig:encoding-speedup}
+            \end{figure}
+        \column{0.5\textwidth}
+            \begin{figure}
+                \centering
+                \includegraphics[width=\textwidth]{imgs/decode efficiency.png}
+                \caption{Decoding efficiency}
+                \label{fig:encoding-efficiency}
+            \end{figure}
+    \end{columns}
+\end{frame}
+\begin{frame}{Results - Barrier vs Locks}
+    \begin{columns}
+        \column{0.5\textwidth}
+            \begin{figure}
+                \centering
+                \includegraphics[width=\textwidth]{imgs/encode average speedup barrier vs locks.png}
+                \caption{Encoding speedup barrier vs locks}
+                \label{fig:encoding-speedup}
+            \end{figure}
+        \column{0.5\textwidth}
+            \begin{figure}
+                \centering
+                \includegraphics[width=\textwidth]{imgs/decode average speedup barrier vs locks}
+                \caption{Decoding speedup barrier vs locks}
+                \label{fig:encoding-efficiency}
+            \end{figure}
+    \end{columns}
+\end{frame}
+\begin{frame}{Results - Ours vs Online Implementation}
+    \begin{columns}
+        \column{0.5\textwidth}
+            \begin{figure}
+                \centering
+                \includegraphics[width=\textwidth]{imgs/average ours vs 7}
+                \caption{Average encoding speedup ours vs online 7}
+                \label{fig:encoding-speedup}
+            \end{figure}
+        \column{0.5\textwidth}
+            \begin{figure}
+                \centering
+                \includegraphics[width=\textwidth]{imgs/ours vs online 7 1-500}
+                \caption{Encoding speedup ours vs online 7}
+                \label{fig:encoding-efficiency}
+            \end{figure}
+    \end{columns}
+\end{frame}
+\begin{frame}{Results - Folders}
+
+        \begin{figure}
+            \centering
+            \includegraphics[width=\textwidth]{imgs/linux speedup.png}
+            \caption{Encoding speedup with Linux}
+            \label{fig:encoding-linux}
+        \end{figure}
+\end{frame}

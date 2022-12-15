@@ -1,0 +1,44 @@
+\section{Introduction}
+
+\begin{frame}{Introduction}
+    Table of contents
+    \begin{itemize}
+        \item The Huffman Coding Algorithm
+        \item Serial Implementation
+        \item Parallel Implementation
+        \item Performance Evaluation and Benchmarks
+        \item Q\&A
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{The Huffman Coding Algorithm}
+    Huffman Coding is a \textbf{lossless data compression} algorithm  designed to find a more convenient bit representation to store data through variable-length sequences of bits defined as \emph{alphabet}.
+    \begin{table}[]
+        \centering
+        \begin{tabular}{lll}
+            \toprule
+            ASCII character & Byte encoding & Huffman encoding \\
+            \midrule
+             a &  01100001 & 00 \\
+             b &  01100010 & 010 \\
+             c &  01100011 & 011 \\
+             d &  01100100 & 10 \\
+             e &  01100100 & 11 \\
+             \bottomrule
+        \end{tabular}
+        \caption{Example of Huffman alphabet for 5 letters}
+        \label{tab:my_label}
+    \end{table}
+\end{frame}
+
+\begin{frame}{Frequency-based Encoding}
+    The Huffman code for each character is decided by the occurrences of that character in the text using a \textbf{greedy} procedure:
+    \begin{itemize}
+        \item more frequent -> less bits
+        \item less frequent -> more bits
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Optimal Prefix Code}
+    Even if the the Huffman algorithm is based on a greedy approach, it is able to generate an \textbf{optimal prefix code} in space efficiency.
+\end{frame}

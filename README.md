@@ -9,6 +9,9 @@ The code requires MPI and OPENMP for multiprocessing and multithreading respecti
 ## Report
 Link to the report with analysis of perfomances and discussion about design choices
 [Report](./docs/report/main.pdf)
+## Presentation
+Link to the presentation discussion about design choices
+[Report](./docs/presentation/main.pdf)
 ## Serial
 ### How to run
 

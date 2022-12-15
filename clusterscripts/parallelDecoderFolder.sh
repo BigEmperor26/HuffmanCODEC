@@ -38,4 +38,24 @@ time mpiexec --report-bindings -np ${PROCESSES} --map-by socket:pe=${THREADS} --
 # write DECODEPARSER=/home/michele.yin/HuffmanCODEC/src/results_averager_decode_folder.py
 # then copy and paste this command to submit the job
 # OUTPUTFOLDER will be created if it does not exist and it will contain the results of the for each run
-# nohup $(for INPUT in $(ls $INPUTFOLDER); do for RUN in $(seq 1 3); do for PROCESSES in 1 2 4; do for THREADS in 1 2 4 6 8 10 12 16; do mkdir -p ${OUTPUTFOLDER}/${INPUT}/run_${RUN}; export PROCESSES; export THREADS; export INPUT;export INPUTFOLDER;export OUTPUTFOLDER; qsub -Wblock=true -N Decoder_run${RUN}_processes${PROCESSES}_threads_${THREADS} -l select=1:ncpus=$(($THREADS*$PROCESSES)):mpiprocs=${PROCESSES}:ompthreads=${THREADS}:mem=4gb -o ${OUTPUTFOLDER}/${INPUT}/run_${RUN}/deconding_result_${PROCESSES}_${THREADS}_threads -e ${OUTPUTFOLDER}/${INPUT}/run_${RUN}/deconding_result_${PROCESSES}_${THREADS}_threads_err ${SCRIPT}; done; done; done; done; python ${DECODEPARSER} ${OUTPUTFOLDER}; );
+# nohup $(
+# for INPUT in $(ls $INPUTFOLDER); 
+#     do for RUN in $(seq 1 3); 
+#         do for PROCESSES in 1 2 4; 
+#             do for THREADS in 1 2 4 6 8 10 12 16; 
+#                 do mkdir -p ${OUTPUTFOLDER}/${INPUT}/run_${RUN}; 
+#                 export PROCESSES; 
+#                 export THREADS; 
+#                 export INPUT;
+#                 export INPUTFOLDER;
+#                 export OUTPUTFOLDER; 
+#                 qsub -Wblock=true -N Decoder_run${RUN}_processes${PROCESSES}_threads_${THREADS}
+#                     -l select=1:ncpus=$(($THREADS*$PROCESSES)):mpiprocs=${PROCESSES}:ompthreads=${THREADS}:mem=4gb 
+#                     -o ${OUTPUTFOLDER}/${INPUT}/run_${RUN}/deconding_result_${PROCESSES}_${THREADS}_threads 
+#                     -e ${OUTPUTFOLDER}/${INPUT}/run_${RUN}/deconding_result_${PROCESSES}_${THREADS}_threads_err 
+#                        ${SCRIPT};
+#              done; 
+#         done;
+#     done;
+# done; 
+# python ${DECODEPARSER} ${OUTPUTFOLDER}; );
